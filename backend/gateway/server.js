@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Proxy configuration
-app.use('/api/users', proxy('http://127.0.0.1:'+process.env.PORT_USERS));
+app.use('/api/users', proxy(process.env.PROXY_USERS));
 //app.use('/api/posts', proxy('http://0.0.0.0:3002'));
 
 // Health check endpoint

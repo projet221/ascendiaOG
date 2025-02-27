@@ -56,7 +56,6 @@ const userController = {
         try {
             console.log("requete recue")
             const { email, password } = req.body;
-            console.log(req.body);
             // Vérifier si l'utilisateur existe
             const user = await User.findOne({ email });
             if (!user) {
@@ -78,7 +77,6 @@ const userController = {
 
             const userResponse = user.toObject();
             delete userResponse.password;
-
             res.json({
                 user: userResponse,
                 token
@@ -91,12 +89,11 @@ const userController = {
     // Récupérer tous les utilisateurs (protégé, admin seulement)
     getAllUsers: async (req, res) => {
         try {
-            if (req.user.role !== 'user') {
+            if (req.user.role !== 'admin') {
                 return res.status(403).json({ message: 'Accès non autorisé' });
             }
 
             const allUser = await User.find().select('-password');
-            console.log(allUser);
             res.json(allUser);
         } catch (error) {
             res.status(500).json({ error: error.message });
