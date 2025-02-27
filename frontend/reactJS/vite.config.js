@@ -4,13 +4,15 @@ import Pages from 'vite-plugin-pages'
 
 export default defineConfig({
   plugins: [
-      react(),
-    Pages({dirs:'src/pages'})
+    react(),
+    Pages({ dirs: 'src/pages' }),
   ],
+  build: {
+    target: 'esnext',
+  },
   server: {
     proxy: {
-      '/api': 'http://localhost:3000', // Proxy toutes les requêtes commençant par /api
+      '/api': 'https://gateway-production-207f.up.railway.app',
     },
   },
-});
-
+})

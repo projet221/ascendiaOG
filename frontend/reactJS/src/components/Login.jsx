@@ -11,7 +11,6 @@ function Login() {
         e.preventDefault(); // Empêcher le rechargement de la page
 
         try {
-            const req1 = await fetch('/api/health', )
             const response = await fetch("/api/users/login", {
                 method: "POST",
                 headers: {
@@ -19,16 +18,15 @@ function Login() {
                 },
                 body: JSON.stringify({ email, password }),
             });
-            console.log(response);
             if (!response.ok) {
                 throw new Error("Identifiants incorrects !");
             }
 
             const data = await response.json();
             const token = data.token; // Récupérer le JWT
+            const user_id = data.user._id;
             localStorage.setItem("token", token); // Stocker le token
-
-            console.log("Réponse API:", data);
+            localStorage.setItem("user_id", user_id);
             alert("Connexion réussie !");
             navigate("/dashboard");
         } catch (err) {
