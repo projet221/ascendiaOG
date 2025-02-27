@@ -67,14 +67,14 @@ const userController = {
             if (!isMatch) {
                 return res.status(400).json({ message: 'Identifiants invalides' });
             }
-
+            console.log("avant jwt ok")
             // Créer le token JWT
             const token = jwt.sign(
                 { id: user._id, role: user.role },
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
-
+            console.log("token créé")
             const userResponse = user.toObject();
             delete userResponse.password;
             res.json({
