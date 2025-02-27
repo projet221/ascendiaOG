@@ -9,7 +9,7 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'http://localhost:3000', // Proxy toutes les requêtes commençant par /api
+      '/api': 'https://gateway-production-207f.up.railway.app', // Proxy toutes les requêtes commençant par /api
     },
   },
 });
