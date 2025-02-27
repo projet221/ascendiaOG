@@ -10,14 +10,13 @@ const modifiedRoutes = routes.map(route => {
     if (protectedRoutes.includes(route.path)) {
         return {
             ...route,
-            element: <PrivateRoute children={route.element} /> // Passe le composant de la route dans PrivateRoute
+            element: <PrivateRoute>{route.element}</PrivateRoute> // Passe le composant de la route dans PrivateRoute
         };
     }
-    console.log(route); // Affiche les routes non protégées
     return route;
 });
 
-console.log(modifiedRoutes);
+
 const router = createBrowserRouter(modifiedRoutes);
 function App() {
     return <RouterProvider router={router} />;
