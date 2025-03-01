@@ -7,6 +7,8 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
-    }
+    },
+        { "source": "/api/socialauth/connect/facebook", "destination": "https://www.facebook.com/v12.0/dialog/oauth" }
+
   ]
 }
