@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import PrivateRoute from "../components/PrivateRoute.jsx";
 
 const Dashboard = () => {
@@ -15,7 +15,7 @@ const Dashboard = () => {
             }
 
             try {
-                const response = await fetch("/api/users/"+localStorage.getItem("user_id"), {
+                const response = await fetch("/api/users/" + localStorage.getItem("user_id"), {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -43,11 +43,16 @@ const Dashboard = () => {
 
         fetchUser();
     }, []); // useEffect exécuté une seule fois au montage du composant
-
+    const deconnexion = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user_id");
+        window.location.reload();
+    }
     return (
+
         <>
             Bonjour {username}
-
+            <button onClick={deconnexion}>Déconnexion</button>
         </>
     );
 };

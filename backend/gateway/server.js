@@ -15,11 +15,12 @@ app.use(express.json());
 
 // Proxy configuration
 app.use('/api/users', proxy(process.env.PROXY_USERS));
+app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH));
 //app.use('/api/posts', proxy('http://0.0.0.0:3002'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK' });
+    res.json({status: 'OK'});
 });
 
 app.listen(PORT, () => {

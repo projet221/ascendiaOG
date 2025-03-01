@@ -1,6 +1,8 @@
 import Login from "../components/Login.jsx";
 import Register from "../components/Register.jsx";
-import { useState } from "react";
+import {useState} from "react";
+import Dashboard from "./Dashboard.jsx";
+import ConfigSocialMedia from "../components/ConfigSocialMedia.jsx";
 
 const Index = () => {
     // État local pour gérer la connexion
@@ -10,19 +12,24 @@ const Index = () => {
     const toggleConnexion = () => {
         setConnexion((prevConnexion) => !prevConnexion);
     };
+    const token = localStorage.getItem("token");
 
     return (
-        <div>
-            <div className="App">
-                <button
-                    className="btn btn-primary position-absolute top-0 start-0 m-3"
-                    onClick={toggleConnexion}
-                >
-                    {connexion ? 'Passer à Register' : 'Passer à Login'}
-                </button>
-                {connexion ? <Login /> : <Register />}
+        token ?
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <div className="grid item-center bg-white p-8 rounded-lg shadow-md w-96">
+                    <ConfigSocialMedia/>
+                </div>
             </div>
-        </div>
+            :
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <div className="grid item-center bg-white p-8 rounded-lg shadow-md w-96">
+                    {connexion ? <Login/> : <Register/>}
+                    <button className="text-center mt-6" onClick={toggleConnexion}>
+                        {connexion ? "S'inscrire" : "Se connecter"}
+                    </button>
+                </div>
+            </div>
     );
 };
 
