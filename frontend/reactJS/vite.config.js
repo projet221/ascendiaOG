@@ -14,10 +14,7 @@ export default defineConfig({
         proxy: {
             '/api': "http://localhost:3000",
         },
-        https: {
-            key: fs.readFileSync("localhost-key.pem"),
-            cert: fs.readFileSync("localhost.pem"),
-        },
+
         host: "localhost",
         // Change si besoin
 
