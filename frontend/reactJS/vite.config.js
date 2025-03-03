@@ -6,7 +6,6 @@ export default defineConfig({
     plugins: [
         react(),
         Pages({dirs: 'src/pages'}),
-        tailwindcss(),
     ],
     build: {
         target: 'esnext',
