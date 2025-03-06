@@ -1,3 +1,5 @@
+const https = require('https');
+const fs = require('fs');
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -10,6 +12,11 @@ connectDB();
 
 const app = express();
 
+const options = {
+    key: fs.readFileSync('server.key'),  // Clé privée
+    cert: fs.readFileSync('server.crt')  // Certificat SSL
+};
+
 app.use(cors());
 app.use(express.json());
 app.use(session({secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true}));
@@ -21,4 +28,8 @@ require("./config/passport"); // Charge la configuration de Passport
 app.use(socialAuthRoutes);
 
 const PORT = process.env.PORT || 3002;
-app.listen(PORT, () => console.log(`🚀 SocialAuth Service démarré sur http://localhost:${PORT}`));
+
+https.createServer(options, app).listen(PORT, () => {
+    console.log(`API socialAuth running securely on https://localhost:${PORT}`);
+});
+

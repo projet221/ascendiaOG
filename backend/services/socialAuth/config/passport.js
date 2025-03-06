@@ -5,7 +5,7 @@ const User = require("../../users/models/User");
 passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/facebook/callback",
+        callbackURL: process.env.PROXY_GATEWAY + "api/socialauth/connect/facebook/callback",
         profileFields: ["id", "emails", "name"]
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -27,7 +27,19 @@ passport.use(new FacebookStrategy({
         }
     }
 ));
-
+/*
+passport.use(new TwitterStrategy({
+        consumerKey: process.env.TWITTER_KEY,
+        consumerSecret: process.env.TWITTER_SECRET,
+        callbackURL: process.env.PROXY_GATEWAY + "/auth/twitter/callback"
+    },
+    function (token, tokenSecret, profile, cb) {
+        User.findOrCreate({twitterId: profile.id}, function (err, user) {
+            return cb(err, user);
+        });
+    }
+));
+*/
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -36,3 +48,4 @@ passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id);
     done(null, user);
 });
+
