@@ -1,5 +1,3 @@
-const https = require('https');
-const fs = require('fs');
 const express = require('express');
 const proxy = require('express-http-proxy');
 const helmet = require('helmet');
@@ -9,11 +7,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT_GATEWAY || 3000;
-
-const options = {
-    key: fs.readFileSync('server.key'),  // Clé privée
-    cert: fs.readFileSync('server.crt')  // Certificat SSL
-};
 
 // Middleware
 app.use(helmet());
@@ -30,6 +23,4 @@ app.get('/api/health', (req, res) => {
 });
 
 // Démarrer le serveur HTTPS
-https.createServer(options, app).listen(PORT, () => {
-    console.log(`API Gateway running securely on https://localhost:${PORT}`);
-});
+app.listen(PORT);
