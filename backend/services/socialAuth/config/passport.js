@@ -11,7 +11,7 @@ passport.use(new FacebookStrategy({
     async (accessToken, refreshToken, profile, done) => {
         try {
             let user = await User.findOne({facebookId: profile.id});
-
+                console.log("je suis la");
             if (!user) {
                 user = new User({
                     facebookId: profile.id,
