@@ -22,7 +22,7 @@ passport.use(new FacebookStrategy({
             });
 
             let user = await User.findOne({facebookId: profile.id});
-
+                console.log("je suis la");
             if (!user) {
                 user = new User({
                     facebookId: profile.id,

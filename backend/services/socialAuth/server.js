@@ -1,5 +1,3 @@
-const https = require('https');
-const fs = require('fs');
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -11,11 +9,6 @@ dotenv.config();
 connectDB();
 
 const app = express();
-
-const options = {
-    key: fs.readFileSync('server.key'),  // Clé privée
-    cert: fs.readFileSync('server.crt')  // Certificat SSL
-};
 
 app.use(cors());
 app.use(express.json());
@@ -29,7 +22,4 @@ app.use(socialAuthRoutes);
 
 const PORT = process.env.PORT || 3002;
 
-https.createServer(options, app).listen(PORT, () => {
-    console.log(`API socialAuth running securely on https://localhost:${PORT}`);
-});
-
+app.listen(PORT);
