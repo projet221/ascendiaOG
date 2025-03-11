@@ -1,15 +1,26 @@
 const passport = require("passport");
 const FacebookStrategy = require("passport-facebook").Strategy;
-const User = require("../../users/models/User"); 
+const TwitterStrategy = require("passport-twitter").Strategy;
+
+const User = require("../../users/models/User");
 
 passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
         callbackURL: process.env.PROXY_GATEWAY + "api/socialauth/connect/facebook/callback",
-        profileFields: ["id", "emails", "name"]
+        profileFields: ["id", "emails", "name"],
+        passReqToCallback: true // Ajoutez cette option pour passer l'objet `req` au callback
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
         try {
+            // Log l'adresse IP et l'origine de la requête
+            const clientIP = req.ip || req.connection.remoteAddress;
+            const origin = req.headers.origin || req.headers.referer;
+            console.log("Requête reçue de :", {
+                ip: clientIP,
+                origin: origin
+            });
+
             let user = await User.findOne({facebookId: profile.id});
 
             if (!user) {
@@ -27,7 +38,7 @@ passport.use(new FacebookStrategy({
         }
     }
 ));
-/*
+
 passport.use(new TwitterStrategy({
         consumerKey: process.env.TWITTER_KEY,
         consumerSecret: process.env.TWITTER_SECRET,
@@ -39,7 +50,7 @@ passport.use(new TwitterStrategy({
         });
     }
 ));
-*/
+
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
