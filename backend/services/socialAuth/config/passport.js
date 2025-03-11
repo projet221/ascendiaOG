@@ -37,7 +37,7 @@ passport.use(new FacebookStrategy({
             return done(err, null);
         }
     }
-));
+)); 
 
 passport.use(new TwitterStrategy({
         consumerKey: process.env.TWITTER_KEY,
