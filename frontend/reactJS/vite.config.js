@@ -1,8 +1,12 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 import Pages from 'vite-plugin-pages'
-import dotenv from 'dotenv'
+import * as fs from "node:fs";
+
+import dotenv from 'dotenv';
+
 dotenv.config();
+
 
 export default defineConfig({
     plugins: [
@@ -14,8 +18,11 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '/api': `${process.env.PROXY_GATEWAY},
+            '/api': `${process.env.PROXY_GATEWAY}`,
         },
+
+        host: "localhost",
+        // Change si besoin
+
     },
 })
-
