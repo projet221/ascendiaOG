@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import InputField from "./InputField";
 
 function Login() {
@@ -10,18 +10,26 @@ function Login() {
         e.preventDefault();
 
         try {
+            const requestBody = JSON.stringify({ email, password });
+            console.log("Requête envoyée :", requestBody); // Affiche la requête dans la console
+
             const response = await fetch("/api/users/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({email, password}),
+                body: requestBody,
             });
+
+            console.log("Réponse reçue :", response); // Affiche la réponse brute dans la console
+
             if (!response.ok) {
                 throw new Error("Identifiants incorrects !");
             }
 
             const data = await response.json();
+            console.log("Données de la réponse :", data); // Affiche les données de la réponse dans la console
+
             const token = data.token;
             const user_id = data.user._id;
             localStorage.setItem("token", token);
@@ -29,6 +37,7 @@ function Login() {
             window.location.reload();
         } catch (err) {
             setError(err.message);
+            console.error("Erreur lors de la connexion :", err); // Affiche l'erreur dans la console
         }
     };
 
