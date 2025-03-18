@@ -9,20 +9,18 @@ dotenv.config();
 
 
 export default defineConfig({
-    plugins: [
-        react(),
-        Pages({dirs: 'src/pages'}),
-    ],
-    build: {
-        target: 'esnext',
-    },
-    server: {
-        proxy: {
-            '/api': `${process.env.PROXY_GATEWAY}`,
+        plugins: [
+            react(),
+            Pages({dirs: 'src/pages'}),
+        ],
+        build: {
+            target: 'esnext',
         },
+        server: {
+            proxy: {
+                '/api': `${process.env.PROXY_GATEWAY}`,
+            },
+        },
+    }
+)
 
-        host: "localhost",
-        // Change si besoin
-
-    },
-})
