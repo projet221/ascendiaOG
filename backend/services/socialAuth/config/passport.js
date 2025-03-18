@@ -7,7 +7,7 @@ const User = require("../../users/models/User");
 passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: process.env.PROXY_GATEWAY + "api/socialauth/connect/facebook/callback",
+        callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/facebook/callback",
         profileFields: ["id", "emails", "name"],
         passReqToCallback: true // Ajoutez cette option pour passer l'objet `req` au callback
     },
