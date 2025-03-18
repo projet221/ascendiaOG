@@ -14,7 +14,7 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '/api': "${process.env.PROXY_GATEWAY}",
+            '/api': `${process.env.PROXY_GATEWAY},
         },
     },
 })
