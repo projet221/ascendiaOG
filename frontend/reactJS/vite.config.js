@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 import Pages from 'vite-plugin-pages'
-const dotenv = require("dotenv");
+import dotenv from 'dotenv'
 dotenv.config();
 
 export default defineConfig({
