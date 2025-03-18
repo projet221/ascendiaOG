@@ -13,11 +13,10 @@ function Login() {
         try {
             const response = await axiosInstance.post(
                 "/api/users/login",
-                JSON.stringify({email, password}),
+                {email, password},
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
+                        "Content-Type": "application/json",},
                 }
             );
             if (!response.ok) {
