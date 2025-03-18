@@ -20,6 +20,7 @@ export default defineConfig({
             proxy: {
                 '/api': `${process.env.VITE_PROXY_GATEWAY}`,
             },
+        host: '0.0.0.0',
         },
     }
 )
