@@ -20,8 +20,9 @@ function Login() {
                 }
             );
 
-            const token = response.token;
-            const user_id = response.user._id;
+            const data=response.data;
+            const token = data.token;
+            const user_id = data.user._id;
             localStorage.setItem("token", token);
             localStorage.setItem("user_id", user_id);
             window.location.reload();
