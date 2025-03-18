@@ -20,9 +20,6 @@ function Login() {
                 }
             );
             console.log(response);
-            if (!response.ok) {
-                throw new Error("Identifiants incorrects !");
-            }
 
             const data = await response.json();
             const token = data.token;
