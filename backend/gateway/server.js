@@ -15,22 +15,29 @@ app.use(express.json());
 
 app.use((req, res, next) => {
     console.log('Requête reçue :', {
-        method: req.method, // Méthode HTTP (GET, POST, etc.)
-        url: req.originalUrl, // URL complète de la requête
-        headers: req.headers, // En-têtes de la requête
-        body: req.body, // Corps de la requête (pour les méthodes POST, PUT, etc.)
+        method: req.method, 
+        url: req.originalUrl, 
+        headers: req.headers, 
+        body: req.body, 
     });
-    next(); // Passer à la suite
+    next(); 
 });
 
-// Proxy configuration
-app.use('/api/users', proxy(process.env.PROXY_USERS, {timeout: 10000}));
-app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {timeout: 10000}));
+// Proxy configuration with logging of response status code
+app.use('/api/users', proxy(process.env.PROXY_USERS, {
+    timeout: 10000,
+    userResDecorator: (proxyRes, proxyResData) => {
+        console.log(`Réponse du proxy vers le backend: ${proxyRes.statusCode}`);
+        return proxyResData; // Pass the response data forward
+    }
+}));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({status: 'OK'});
+    res.json({ status: 'OK' });
 });
 
-// Démarrer le serveur HTTPS
-app.listen(PORT);
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Gateway server is running on port ${PORT}`);
+});
