@@ -11,13 +11,15 @@ function Login() {
         e.preventDefault();
 
         try {
-            const response = await axiosInstance("/api/users/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({email, password}),
-            });
+            const response = await axiosInstance.post(
+                "/api/users/login",
+                JSON.stringify({email, password}),
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
             if (!response.ok) {
                 throw new Error("Identifiants incorrects !");
             }
