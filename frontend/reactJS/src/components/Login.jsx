@@ -19,6 +19,7 @@ function Login() {
                         "Content-Type": "application/json",},
                 }
             );
+            console.log(response);
             if (!response.ok) {
                 throw new Error("Identifiants incorrects !");
             }
