@@ -15,8 +15,9 @@ router.get("/connect/facebook", passport.authenticate("facebook", {
 
 router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }),
     async (req, res) => {
+        console.log("req.user", req.user); // Ajoutez ce log pour vérifier le contenu de req.user
         const { accessToken } = req.user;
-        const userId = req.query.user_id; // Supposons que user_id est passé dans les paramètres de la requête
+        const userId = req.query.user_id;
 
         if (!userId) {
             return res.status(400).json({ error: "user_id manquant !" });
