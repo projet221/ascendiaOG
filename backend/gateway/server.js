@@ -32,6 +32,15 @@ app.use('/api/users', proxy(process.env.PROXY_USERS, {
     }
 }));
 
+// Proxy configuration with logging of response status code
+app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {
+    timeout: 10000,
+    userResDecorator: (proxyRes, proxyResData) => {
+        console.log(`Réponse du proxy vers le backend: ${proxyRes.statusCode}`);
+        return proxyResData; // Pass the response data forward
+    }
+}));
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK' });
