@@ -1,18 +1,18 @@
 const express = require("express");
 const passport = require("passport");
-const jwt = require("jsonwebtoken");
 const SocialAuth = require("../models/SocialAuth");
 const router = express.Router();
 
 // Middleware pour protéger les routes
-const authMiddleware = require("../middlewares/authMiddleware");
+//const authMiddleware = require("../middlewares/authMiddleware");
 
 // Facebook OAuth
-router.get("/connect/facebook", passport.authenticate("facebook", {scope: ["email", "public_profile"]}));
+router.get("/connect/facebook", passport.authenticate("facebook", {scope:["email,public_profile,pages_read_user_content,read_insights,pages_show_list,business_management,pages_read_engagement,pages_manage_metadata,pages_manage_posts,instagram_basic,instagram_content_publish,ads_management,instagram_manage_insights,ads_management,ads_read,pages_manage_posts,pages_read_user_content,read_insights,pages_show_list,business_management,pages_read_engagement,pages_manage_metadata,pages_manage_posts,instagram_basic,instagram_content_publish,ads_management,instagram_manage_insights,ads_management,ads_read,pages_manage_posts,pages_read_user_content"]}));
 
 router.get("/connect/facebook/callback", passport.authenticate("facebook", {failureRedirect: "/login"}),
     async (req, res) => {
-        const {id, accessToken} = req.user;
+        //const {id, accessToken} = req.user;
+        const {accessToken} = req.user;
         const userId = req.query.user_id; // Récupérer l'ID de l'utilisateur connecté depuis l'URL
 
         if (!userId) {

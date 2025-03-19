@@ -8,18 +8,11 @@ passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
         callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/facebook/callback",
-        profileFields: ["id", "emails", "name"],
-        passReqToCallback: true // Ajoutez cette option pour passer l'objet `req` au callback
+        profileFields: ["id", "displayName", "emails", "picture.type(large)"],
+        //passReqToCallback: true // Ajoutez cette option pour passer l'objet `req` au callback
     },
     async (req, accessToken, refreshToken, profile, done) => {
         try {
-            // Log l'adresse IP et l'origine de la requête
-            const clientIP = req.ip || req.connection.remoteAddress;
-            const origin = req.headers.origin || req.headers.referer;
-            console.log("Requête reçue de :", {
-                ip: clientIP,
-                origin: origin
-            });
 
             let user = await User.findOne({facebookId: profile.id});
                 console.log("je suis la");
