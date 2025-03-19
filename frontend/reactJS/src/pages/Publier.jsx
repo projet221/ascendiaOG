@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import SelectCompte from "../components/SelectCompte";
+import AjoutFichierBouton from "../components/AjoutFichierBouton";
 
 function Publier(){
 
@@ -12,8 +13,12 @@ function Publier(){
             <div className="grid item-center bg-white ">
                 <SelectCompte/>
             </div>
+                <AjoutFichierBouton/>
             <div>
                 <textarea name="post" id="messagePost">Ecrivez message</textarea>
+            </div>
+            <div>
+                
             </div>
             <label htmlFor="publish-select">Choisissez une action :</label>
             <select id="publish-select" value={action} onChange={publier()}>
