@@ -1,5 +1,6 @@
 import InputField from "./InputField";
 import {useState} from "react";
+import {axiosInstance} from "../utils/axios.jsx";
 
 function Register() {
     const [username, setUsername] = useState("");
@@ -11,18 +12,16 @@ function Register() {
     const handleRegistration = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("/api/users/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({username, email, password}),
-            });
-            if (!response.ok) {
-                throw new Error("Identifiants incorrects !");
-            }
+            const response = await axiosInstance.post(
+                "/api/users/register",
+                {username, email, password},
+                {
+                    headers: {
+                        "Content-Type": "application/json",},
+                }
+            );
 
-            const data = await response.json();
+            const data = await response.data;
             const token = data.token;
             const user_id = data.user._id;
             localStorage.setItem("token", token);

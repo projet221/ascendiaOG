@@ -15,11 +15,8 @@ function ConfigSocialMedia() {
         try {
             const user_id = localStorage.getItem("user_id"); // Récupération du user_id stocké
 
-            if (!user_id) {
-                throw new Error("Utilisateur non identifié !");
-            }
 
-            let authUrl = `/api/socialauth/connect/${network}?user_id=${user_id}`;
+            let authUrl = import.meta.env.VITE_PROXY_GATEWAY+`/api/socialauth/connect/${network}?user_id=${user_id}`;
 
             const width = 600;
             const height = 700;
@@ -32,9 +29,6 @@ function ConfigSocialMedia() {
                 `width=${width},height=${height},top=${top},left=${left}`
             );
 
-            if (!authWindow) {
-                throw new Error("Échec de l'ouverture de la fenêtre d'authentification.");
-            }
 
             const checkPopupClosed = setInterval(() => {
                 if (authWindow.closed) {
