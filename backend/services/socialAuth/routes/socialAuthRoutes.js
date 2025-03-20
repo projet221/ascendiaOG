@@ -1,8 +1,8 @@
 const express = require("express");
 const passport = require("passport");
-const SocialAuth = require("../models/SocialAuth");
+//const SocialAuth = require("../models/SocialAuth");
 const router = express.Router();
-const axios = require("axios");
+//const axios = require("axios");
 // Facebook OAuth
 router.get("/connect/facebook", (req, res, next) => {
     const user_id = req.query.user_id; // Récupération du user_id depuis l'URL
@@ -26,14 +26,14 @@ router.get("/connect/facebook", (req, res, next) => {
 
 router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }),
     async (req, res) => {
-
+        /*
         const { code } = req.query;
        // const userId = req.cookies.user_id; // Récupérer le user_id depuis le cookie
-        /*
+
                 if (!userId) {
                     return res.status(400).json({ error: "user_id manquant !" });
                 }
-        */
+
                 if (!code) {
                     return res.status(400).json({ error: "Code d'autorisation manquant !" });
                 }
@@ -70,7 +70,8 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: "Erreur lors de l'échange du code ou de l'enregistrement du token :" });
-        }
+        }*/
+        res.send("<script>window.close();</script>");
     }
 );
 module.exports = router;
