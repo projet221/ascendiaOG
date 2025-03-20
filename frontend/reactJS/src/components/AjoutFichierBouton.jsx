@@ -12,7 +12,7 @@ const AjoutFichierBouton = ({ gestionFichier }) => {
   };
 
   return (
-    <div className="p-4 border rounded-lg flex flex-col items-center gap-3">
+    <div className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
       <input 
         type="file" 
         accept="image/*,video/*" 
