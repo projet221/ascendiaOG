@@ -3,6 +3,7 @@ import Register from "../components/Register.jsx";
 import {useState} from "react";
 import Dashboard from "./Dashboard.jsx";
 import ConfigSocialMedia from "../components/ConfigSocialMedia.jsx";
+import Publier from "./Publier.jsx";
 
 const Index = () => {
     // État local pour gérer la connexion
@@ -17,17 +18,22 @@ const Index = () => {
     return (
         token ?
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                
                 <div className="grid item-center bg-white p-8 rounded-lg shadow-md w-96">
                     <ConfigSocialMedia/>
                 </div>
             </div>
             :
+            
+            
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="grid item-center bg-white p-8 rounded-lg shadow-md w-96">
-                    {connexion ? <Login/> : <Register/>}
+                <div className="grid item-center bg-white p-8 rounded-lg shadow-md ">
+                      
+                   {connexion ? <Login/> : <Register/>}
                     <button className="text-center mt-6" onClick={toggleConnexion}>
-                        {connexion ? "S'inscrire" : "Se connecter"}
-                    </button>
+                        {connexion ? "S'inscrire" : "Se connecter"} 
+                    </button>                                                            
+            
                 </div>
             </div>
     );

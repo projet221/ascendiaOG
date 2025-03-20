@@ -15,7 +15,7 @@ function ConfigSocialMedia() {
         try {
             const user_id = localStorage.getItem("user_id"); // Récupération du user_id stocké
 
-            let authUrl = import.meta.env.VITE_PROXY_GATEWAY+`/api/socialauth/connect/${network}?user_id=${user_id}`;
+            let authUrl = import.meta.env.VITE_PROXY_GATEWAY+`/api/socialauth/connect/${network}?userId=${user_id}`;
 
             const width = 600;
             const height = 700;
