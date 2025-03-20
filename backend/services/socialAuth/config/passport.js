@@ -22,7 +22,7 @@ passport.use(new FacebookStrategy({
                     // Associer cet objet SocialAuth à l'utilisateur existant
                     provider: "facebook",
                     accessToken: accessToken,
-                    refreshToken: refreshToken || "", // Le refreshToken est optionnel
+                    refreshToken: refreshToken.accessToken || "", // Le refreshToken est optionnel
                 });
 
                 await socialAuth.save(); // Sauvegarder l'instance SocialAuth dans la base de données
