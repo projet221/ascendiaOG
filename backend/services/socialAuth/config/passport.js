@@ -1,7 +1,6 @@
 const passport = require("passport");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy;
-
 const SocialAuth = require("../models/SocialAuth");
 passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
@@ -18,7 +17,7 @@ passport.use(new FacebookStrategy({
             let socialAuth = await SocialAuth.findOne({ provider: "facebook", user: req.cookie.id }); // On suppose que `req.user` contient l'utilisateur connecté
             */
             // Si SocialAuth n'existe pas pour cet utilisateur, on le crée
-            if (!socialAuth) {
+            if (/*!socialAuth*/req !== "") {
                 socialAuth = new SocialAuth({
                     // Associer cet objet SocialAuth à l'utilisateur existant
                     provider: "facebook",

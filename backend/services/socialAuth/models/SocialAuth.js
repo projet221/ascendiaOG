@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const SocialAuthSchema = new mongoose.Schema({
+const SocialAuth = new mongoose.Schema({
     //user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true}, // Référence à l'utilisateur
     provider: {type: String, enum: ["facebook", "twitter", "instagram"], required: true}, // Réseau social
     accessToken: {type: String, required: true}, // Token d'accès pour API externe
@@ -8,4 +8,4 @@ const SocialAuthSchema = new mongoose.Schema({
     createdAt: {type: Date, default: Date.now}
 });
 
-module.exports = mongoose.model("SocialAuth", SocialAuthSchema);
+module.exports = mongoose.model("SocialAuth", SocialAuth);
