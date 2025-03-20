@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 //const SocialAuth = require("../models/SocialAuth");
 const router = express.Router();
-//const axios = require("axios");
+const axios = require("axios");
 // Facebook OAuth
 
 router.get("/connect/facebook", (req, res, next) => {
@@ -85,7 +85,7 @@ router.get('/connect/twitter', (req, res) => {
   
     // Include the user ID in the state parameter (for security)
     const state = Buffer.from(JSON.stringify({ userId })).toString('base64');
-    const adCallback = process.env.PROXY_GATEAWAY+'/api/socialauth/connect/twitter/callback';
+    const adCallback = process.env.PROXY_GATEWAY+'/api/socialauth/connect/twitter/callback';
     const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.TWITTER_KEY}&redirect_uri=${adCallback}&scope=tweet.read%20tweet.write%20users.read%20offline.access&state=${state}`;
     res.redirect(authUrl);
   });
@@ -93,16 +93,16 @@ router.get('/connect/twitter', (req, res) => {
   // Handle callback from X
   router.get('/connect/twitter/callback', async (req, res) => {
     const { code, state } = req.query;
-  
+    console.log("dans la route connect twitter");
     if (!code || !state) {
       return res.status(400).send('Invalid request.');
     }
-  
+    
     try {
       // Decode the state parameter to get the user ID
       const decodedState = JSON.parse(Buffer.from(state, 'base64').toString());
       const { userId } = decodedState;
-  
+        console.log("demande du token twitter");
       // Exchange code for access token
       const tokenResponse = await axios.post(
         'https://api.twitter.com/2/oauth2/token',
