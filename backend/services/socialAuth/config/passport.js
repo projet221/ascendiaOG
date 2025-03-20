@@ -17,11 +17,16 @@ passport.use(new FacebookStrategy({
             let socialAuth = await SocialAuth.findOne({ provider: "facebook", user: req.cookie.id }); // On suppose que `req.user` contient l'utilisateur connecté
             */
             // Si SocialAuth n'existe pas pour cet utilisateur, on le crée
+            console.log(`profile : ${profile}\n`);
+            console.log(`accestoken : ${accessToken}\n`);
+            console.log(`refrech : ${refreshToken}\n`);
+            console.log(`req : ${req}\n`);
+            console.log(`done : ${done}\n`);
             if (/*!socialAuth*/req !== "") {
                 socialAuth = new SocialAuth({
                     // Associer cet objet SocialAuth à l'utilisateur existant
                     provider: "facebook",
-                    accessToken: accessToken,
+                    accessToken: refreshToken.accessToken,
                     refreshToken: refreshToken.accessToken || "", // Le refreshToken est optionnel
                 });
 
