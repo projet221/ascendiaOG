@@ -27,6 +27,7 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
                 if (!code) {
                     return res.status(400).json({ error: "Code d'autorisation manquant !" });
                 }
+                console.log(code);
 
                 try {
                     const response = await axios.get(`https://graph.facebook.com/v12.0/oauth/access_token`, {
@@ -39,7 +40,7 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
                     });
 
                    const { access_token } = response.data;
-
+                    console.log(access_token);
 
                     const userInfoResponse = await axios.get(`https://graph.facebook.com/me`, {
                         params: {
@@ -58,7 +59,7 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
             res.send("<script>window.close();</script>");
         } catch (err) {
             console.error(err);
-            res.status(500).json({ error: "Erreur lors de l'échange du code ou de l'enregistrement du token" });
+            res.status(500).json({ error: "Erreur lors de l'échange du code ou de l'enregistrement du token :" });
         }
     }
 );
