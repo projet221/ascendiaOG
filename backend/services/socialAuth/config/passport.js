@@ -12,7 +12,9 @@ passport.use(new FacebookStrategy({
     async (req, accessToken, refreshToken, profile, done) => {
         try {
             // Vérification si un utilisateur existe déjà avec cet ID Facebook
-            let socialAuth = await SocialAuth.findOne({ provider: "facebook", user: req.user.id }); // On suppose que `req.user` contient l'utilisateur connecté
+            console.log(req.headers,req);
+            console.log("---------------------------------------");
+            let socialAuth = await SocialAuth.findOne({ provider: "facebook", user: req.cookie.id }); // On suppose que `req.user` contient l'utilisateur connecté
 
             // Si SocialAuth n'existe pas pour cet utilisateur, on le crée
             if (!socialAuth) {
