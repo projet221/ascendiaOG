@@ -76,7 +76,7 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     }
 );
 
-router.get('/auth/twitter', (req, res) => {
+router.get('/connect/twitter', (req, res) => {
     const { userId } = req.query; // Capture the user ID from the query parameters
   
     if (!userId) {
@@ -91,7 +91,7 @@ router.get('/auth/twitter', (req, res) => {
   });
   
   // Handle callback from X
-  router.get('/auth/twitter/callback', async (req, res) => {
+  router.get('/connect/twitter/callback', async (req, res) => {
     const { code, state } = req.query;
   
     if (!code || !state) {
