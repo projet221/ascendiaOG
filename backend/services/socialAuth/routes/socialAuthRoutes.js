@@ -6,6 +6,7 @@ const router = express.Router();
 // Facebook OAuth
 router.get("/connect/facebook", (req, res, next) => {
     const user_id = req.query.user_id; // Récupération du user_id depuis l'URL
+    localStorage.setItem("user_id", user_id);
     if (!user_id) {
         return res.status(400).json({ error: "user_id est requis" });
     }
