@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {FaFacebook, FaTwitter, FaInstagram} from 'react-icons/fa';
 import SocialButton from "./SocialButton"; // Assurez-vous que SocialButton est bien un composant réutilisable qui accepte un logo
 
@@ -14,7 +14,7 @@ function ConfigSocialMedia() {
     const handleLinkSocialMedia = async (network) => {
         try {
             const user_id = localStorage.getItem("user_id"); // Récupération du user_id stocké
-
+            document.cookie = `user_id=${user_id}; path=/`; // Stocker le user_id dans un cookie
 
             let authUrl = import.meta.env.VITE_PROXY_GATEWAY+`/api/socialauth/connect/${network}?user_id=${user_id}`;
 
@@ -29,7 +29,6 @@ function ConfigSocialMedia() {
                 `width=${width},height=${height},top=${top},left=${left}`
             );
 
-
             const checkPopupClosed = setInterval(() => {
                 if (authWindow.closed) {
                     clearInterval(checkPopupClosed);
@@ -38,7 +37,7 @@ function ConfigSocialMedia() {
                 }
             }, 1000);
         } catch (err) {
-            setError("Une erreur est survenue lors de la connexion au réseau social.");
+            setError(`Une erreur est survenue lors de la connexion au réseau social : ${err.message}`);
         }
     };
 

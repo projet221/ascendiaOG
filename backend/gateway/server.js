@@ -22,7 +22,6 @@ app.use((req, res, next) => {
     });
     next(); 
 });
-
 // Proxy configuration with logging of response status code
 app.use('/api/users', proxy(process.env.PROXY_USERS, {
     timeout: 10000,

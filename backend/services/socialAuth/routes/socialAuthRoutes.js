@@ -16,11 +16,8 @@ router.get("/connect/facebook", passport.authenticate("facebook", {
 
 router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }),
     async (req, res) => {
-        console.log("req.user", req.user); // Ajoutez ce log pour vérifier le contenu de req.user
-
-        // Le code est récupéré directement depuis la query string
         const { code } = req.query;
-        const userId = req.query.user_id; // Récupérer le user_id depuis les paramètres de la requête
+        const userId = req.cookies.user_id; // Récupérer le user_id depuis le cookie
 
         if (!userId) {
             return res.status(400).json({ error: "user_id manquant !" });
@@ -31,36 +28,32 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
         }
 
         try {
-            // Échanger le code contre un access_token
             const response = await axios.get(`https://graph.facebook.com/v12.0/oauth/access_token`, {
                 params: {
-                    client_id: 'VOTRE_CLIENT_ID', // Remplacez par votre ID client Facebook
-                    client_secret: 'VOTRE_CLIENT_SECRET', // Remplacez par votre clé secrète
-                    redirect_uri: 'VOTRE_URL_DE_REDIRECTION', // L'URL de redirection que vous avez définie dans votre application Facebook
+                    client_id: process.env.FACEBOOK_CLIENT_ID,
+                    client_secret: process.env.FACEBOOK_CLIENT_SECRET,
+                    redirect_uri: process.env.PROXY_GATEWAY + "/api/socialauth/connect/facebook/callback",
                     code: code,
                 }
             });
 
             const { access_token } = response.data;
 
-            // Récupérer les informations de l'utilisateur avec l'access_token
+            /*
             const userInfoResponse = await axios.get(`https://graph.facebook.com/me`, {
                 params: {
                     access_token: access_token,
-                    fields: 'id,name,email', // Par exemple, récupérez l'id, le nom et l'email
+                    fields: 'id,name,email',
                 }
             });
-
-            console.log('Facebook User Info:', userInfoResponse.data);
-
-            // Enregistrer ou mettre à jour le token en base
+            */
             await SocialAuth.findOneAndUpdate(
                 { user: userId, provider: "facebook" },
                 { accessToken: access_token },
                 { upsert: true, new: true }
             );
 
-            res.send("<script>window.close();</script>"); // Ferme la popup après le succès
+            res.send("<script>window.close();</script>");
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: "Erreur lors de l'échange du code ou de l'enregistrement du token" });
