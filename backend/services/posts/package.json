@@ -1,14 +1,10 @@
 {
-  "name": "backend-ascendia",
+  "name": "backend-ascendia-api-posts",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node gateway/server.js",
-    "start:users": "node services/users/server.js",
-    "start:posts": "node services/posts/server.js",
-    "dev": "nodemon gateway/server.js",
-    "dev:users": "nodemon services/users/server.js",
-    "dev:posts": "nodemon services/posts/server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
