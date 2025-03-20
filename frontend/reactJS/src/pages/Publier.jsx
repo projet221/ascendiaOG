@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import SelectCompte from "../components/SelectCompte";
-import AjoutFichierBouton from "../components/AjoutFichierBouton";
+import SelectCompte from "../components/SelectCompte.jsx";
+import AjoutFichierBouton from "../components/AjoutFichierBouton.jsx";
 
 function Publier(){
 
@@ -21,7 +21,7 @@ function Publier(){
                 
             </div>
             <label htmlFor="publish-select">Choisissez une action :</label>
-            <select id="publish-select" value={action} onChange={publier()}>
+            <select id="publish-select"  onChange={publier()}>
                 <option value="" disabled>-- Sélectionnez une option --</option>
                 <option value="maintenant">Publier Maintenant</option>
                 <option value="planifier">Planifier</option>

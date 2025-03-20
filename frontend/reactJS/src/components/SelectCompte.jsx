@@ -1,6 +1,11 @@
 import React from 'react';
 
 function SelectCompte(){
+
+  const listeComptes = [
+    { id: 1, name: 'Twitter' },
+    { id: 2, name: 'Facebook' },
+  ];
     
 
     return(
