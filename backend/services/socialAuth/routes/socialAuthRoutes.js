@@ -24,7 +24,7 @@ router.get("/connect/facebook", (req, res, next) => {
 }));
 
 
-router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }),
+router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/" }),
     async (req, res) => {
         /*
         const { code } = req.query;

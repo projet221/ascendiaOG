@@ -21,7 +21,7 @@ passport.use(new FacebookStrategy({
             console.log(`accestoken : ${accessToken}\n`);
             console.log(`refrech : ${refreshToken}\n`);
             console.log(`req : ${req}\n`);
-            console.log(`done : ${done}\n`);
+            //console.log(`done : ${done}\n`);
             if (/*!socialAuth*/req !== "") {
                 socialAuth = new SocialAuth({
                     // Associer cet objet SocialAuth à l'utilisateur existant
