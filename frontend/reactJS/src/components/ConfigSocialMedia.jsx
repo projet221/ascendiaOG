@@ -14,7 +14,6 @@ function ConfigSocialMedia() {
     const handleLinkSocialMedia = async (network) => {
         try {
             const user_id = localStorage.getItem("user_id"); // Récupération du user_id stocké
-            document.cookie = `user_id=${user_id}; path=/`; // Stocker le user_id dans un cookie
 
             let authUrl = import.meta.env.VITE_PROXY_GATEWAY+`/api/socialauth/connect/${network}?user_id=${user_id}`;
 
@@ -26,7 +25,7 @@ function ConfigSocialMedia() {
             const authWindow = window.open(
                 authUrl,
                 "_blank",
-                `width=${width},height=${height},top=${top},left=${left}`
+                `width=${width},height=${height},top=${top},left=${left}`,
             );
 
             const checkPopupClosed = setInterval(() => {

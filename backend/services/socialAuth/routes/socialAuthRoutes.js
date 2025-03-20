@@ -4,7 +4,17 @@ const SocialAuth = require("../models/SocialAuth");
 const router = express.Router();
 const axios = require("axios");
 // Facebook OAuth
-router.get("/connect/facebook", passport.authenticate("facebook", {
+router.get("/connect/facebook", (req, res, next) => {
+    const user_id = req.query.user_id; // Récupération du user_id depuis l'URL
+    if (!user_id) {
+        return res.status(400).json({ error: "user_id est requis" });
+    }
+
+    // Stocker user_id dans la session pour l'utiliser après l'authentification
+    req.session.user_id = user_id;
+
+    next(); // Passer à Passport
+}, passport.authenticate("facebook", {
     scope: [
         "email", "public_profile", "pages_read_user_content", "read_insights", "pages_show_list",
         "business_management", "pages_read_engagement", "pages_manage_metadata", "pages_manage_posts",
