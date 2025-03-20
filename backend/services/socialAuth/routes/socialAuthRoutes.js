@@ -85,8 +85,8 @@ router.get('/connect/twitter', (req, res) => {
   
     // Include the user ID in the state parameter (for security)
     const state = Buffer.from(JSON.stringify({ userId })).toString('base64');
-  
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=tweet.read%20tweet.write%20users.read%20offline.access&state=${state}`;
+    const adCallback = process.env.PROXY_GATEAWAY+'/api/socialauth/connect/twitter/callback';
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.TWITTER_KEY}&redirect_uri=${adCallback}&scope=tweet.read%20tweet.write%20users.read%20offline.access&state=${state}`;
     res.redirect(authUrl);
   });
   
