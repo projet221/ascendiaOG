@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import PrivateRoute from "../components/PrivateRoute.jsx";
+import  {useState, useEffect} from 'react';
+//import PrivateRoute from "../components/PrivateRoute.jsx";
+import {axiosInstance} from "../utils/axios.jsx";
 
 const Dashboard = () => {
     const [username, setUsername] = useState("");
@@ -15,19 +16,18 @@ const Dashboard = () => {
             }
 
             try {
-                const response = await fetch("/api/users/" + localStorage.getItem("user_id"), {
-                    method: "GET",
+                const response = await axiosInstance.get(
+                    "/api/users/" + localStorage.getItem("user_id"),
+                    {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     }
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
 
-                const data = await response.json();
+
+                const data = response.data;
                 if (data.username) {
                     setUsername(data.username);
                 } else {
