@@ -4,7 +4,7 @@ const TwitterStrategy = require("passport-twitter").Strategy;
 //const SocialAuth = require("../models/SocialAuth");
 
 
-passport.use(
+passport.use("facebook",
     new FacebookStrategy(
         {
             clientID: process.env.FACEBOOK_CLIENT_ID,
@@ -20,8 +20,23 @@ passport.use(
     )
 );
 
-
-passport.use(new TwitterStrategy({
+passport.use("instagram",
+    new FacebookStrategy(
+        {
+            clientID: process.env.INSTAGRAM_CLIENT_ID, // Utilisez l'ID client Instagram
+            clientSecret: process.env.INSTAGRAM_CLIENT_SECRET, // Utilisez le secret client Instagram
+            callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/instagram/callback",
+            passReqToCallback: true,
+            session: false,
+        },
+        (req, accessToken, refreshToken, profile, done) => {
+            console.log("Access Token Instagram:", accessToken);
+            return done(null, { profile, accessToken });
+        }
+    )
+);
+passport.use("twitter",
+    new TwitterStrategy({
         consumerKey: process.env.TWITTER_KEY,
         consumerSecret: process.env.TWITTER_SECRET,
         callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/twitter/callback"

@@ -34,6 +34,34 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 });
 
+router.get("/connect/instagram", passport.authenticate("instagram", {
+    scope: [
+        "email",
+        "public_profile",
+        "pages_show_list",
+        "instagram_basic",
+        "instagram_content_publish",
+        "ads_management",
+        "instagram_manage_insights",
+        "pages_read_user_content",
+        "read_insights",
+        "business_management",
+        "pages_manage_posts",
+        "pages_manage_metadata"
+    ]
+}));
+
+router.get("/connect/instagram/callback", passport.authenticate("instagram", { failureRedirect: "/login", session: false }), (req, res) => {
+    if (!req.user || !req.user.accessToken) {
+        console.log("Erreur lors de la récupération de l'access token");
+    }
+
+    const instagramAccessToken = req.user.accessToken; // Le token récupéré depuis Instagram
+
+    // Rediriger vers le frontend avec le token dans l'URL
+    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=instagram&token=${instagramAccessToken}`);
+});
+
 router.get("/connect/twitter", passport.authenticate("twitter", {
         scope: [
             "tweet.read", "tweet.write", "users.read", "follows.read", "follows.write",
