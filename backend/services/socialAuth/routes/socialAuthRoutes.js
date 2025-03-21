@@ -44,7 +44,11 @@ router.get("/connect/twitter",
 router.get('/connect/twitter/callback', passport.authenticate("twitter", { failureRedirect: "/login",session: false }),
 (req, res) => {
     if (!req.user || !req.user.accessToken) {
-        console.log("erreur lors de la recuperation de l'access token");
+        console.log("----------------------------------------\n" +
+            "erreur lors de la recuperation de l'access token \n" +
+            `req.user : ${req.user} \n` +
+            `req.user.acctok : ${req.user.accessToken} \n` +
+            "----------------------------------------\n ");
     }
 
     const twitterAccessToken = req.user.accessToken;
