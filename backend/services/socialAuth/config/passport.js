@@ -1,10 +1,11 @@
 const passport = require("passport");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy;
+const InstagramStrategy = require("passport-instagram").Strategy;
 //const SocialAuth = require("../models/SocialAuth");
 
 
-passport.use("facebook",
+passport.use(
     new FacebookStrategy(
         {
             clientID: process.env.FACEBOOK_CLIENT_ID,
@@ -20,8 +21,8 @@ passport.use("facebook",
     )
 );
 
-passport.use("instagram",
-    new FacebookStrategy(
+passport.use(
+    new InstagramStrategy(
         {
             clientID: process.env.INSTAGRAM_CLIENT_ID, // Utilisez l'ID client Instagram
             clientSecret: process.env.INSTAGRAM_CLIENT_SECRET, // Utilisez le secret client Instagram
@@ -35,7 +36,7 @@ passport.use("instagram",
         }
     )
 );
-passport.use("twitter",
+passport.use(
     new TwitterStrategy({
         consumerKey: process.env.TWITTER_KEY,
         consumerSecret: process.env.TWITTER_SECRET,
