@@ -49,7 +49,8 @@ router.get("/connect/instagram", (req, res) => {
     res.redirect(instagramAuthUrl); // Effectuer la redirection vers l'URL Instagram
 });
 
-router.get("/connect/instagram/callback", passport.authenticate("instagram", { failureRedirect: "/login", session: false }), (req, res) => {
+router.get("/connect/instagram/callback", (req, res) => {
+    console.log(req);
     if (!req.user || !req.user.accessToken) {
         console.log("Erreur lors de la récupération de l'access token");
     }
