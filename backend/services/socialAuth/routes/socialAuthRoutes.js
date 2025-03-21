@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 //const SocialAuth = require("../models/SocialAuth");
+const socialAuthController = require("../controllers/socialAuthController");
 const router = express.Router();
 const axios = require("axios");
 // Facebook OAuth
@@ -44,7 +45,7 @@ router.get('/connect/twitter', (req, res) => {
   });
   
   // Handle callback from X
-  router.get('/connect/twitter/callback', async (req, res) => {
+router.get('/connect/twitter/callback', async (req, res) => {
     const { code, state } = req.query;
     console.log("dans la route connect twitter");
     if (!code || !state) {
@@ -90,4 +91,7 @@ router.get('/connect/twitter', (req, res) => {
       res.status(500).send('Authentication failed.');
     }
   });
+
+router.post('/save', socialAuthController.save );
+
 module.exports = router;
