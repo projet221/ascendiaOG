@@ -65,6 +65,18 @@ const socialAuthController = {
                 error: error.message
             });
         }
+    },
+
+    getSocialMediaByUserId : async (req, res) => {
+        try {
+            const socialAuth = await SocialAuth.find({user_id: req.params.user_id}).select('provider');
+            if (!socialAuth) {
+                return res.status(404).json({})
+            }
+            res.status(200).json(socialAuth);
+        } catch (err){
+            console.log(err)
+        }
     }
 };
 
