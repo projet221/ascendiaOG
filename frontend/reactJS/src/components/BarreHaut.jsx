@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 
 const BarreHaut = () => {
@@ -6,11 +5,14 @@ const BarreHaut = () => {
     <nav className="bg-white fixed w-full top-0 left-0 z-50 shadow">
       <div className="w-full flex h-16 items-center justify-between px-4">
         {/* Logo à gauche */}
-        <div className="flex items-center">
-          <h1 className="text-xl font-bold" style={{ color: '#FF0035' }}>
-            Ascendia
-          </h1>
-        </div>
+        <NavLink to={"/"}>
+          <div className="flex items-center">
+            <h1 className="text-xl font-bold" style={{ color: '#FF0035' }}>
+              Ascendia
+            </h1>
+          </div>
+        </NavLink>
+
 
         {/* Menu centré */}
         <div className="hidden sm:flex flex-1 justify-center">
