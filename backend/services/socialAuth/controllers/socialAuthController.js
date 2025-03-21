@@ -69,7 +69,8 @@ const socialAuthController = {
 
     getSocialMediaByUserId : async (req, res) => {
         try {
-            const socialAuth = await SocialAuth.find({user_id: req.params.user_id}).select('provider');
+            const socialAuth = await SocialAuth.find({user: req.params.user_id}).select('provider');
+            console.log(socialAuth);
             if (!socialAuth) {
                 return res.status(404).json({})
             }
