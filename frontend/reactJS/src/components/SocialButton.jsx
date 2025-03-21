@@ -39,7 +39,11 @@ function SocialButton({ network, logo, handleClick }) {
 
     return (
         connected ? (
-            <button disabled={true}>Connecté sur {network}</button>
+            <button
+                disabled={true}
+                className="w-full bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
+
+            >Connecté sur {network}</button>
         ) : (
             <button
                 onClick={handleClick}
