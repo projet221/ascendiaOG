@@ -27,9 +27,12 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     if (!req.user || !req.user.accessToken) {
         console.log("erreur lors de la recuperation de l'access token")
     }
-
+    const profile = req.user.profile;
     const facebookAccessToken = req.user.accessToken; // Le token récupéré depuis Facebook
-    console.log(req.user.profile.toString());
+    console.log("ID:", profile.id);
+    console.log("Nom:", profile.displayName);
+    console.log("Email:", profile.emails ? profile.emails[0].value : "Non disponible");
+    console.log("Photo:", profile.photos ? profile.photos[0].value : "Non disponible");
     // Rediriger vers le frontend avec le token dans l'URL
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 });
