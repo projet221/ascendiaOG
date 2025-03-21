@@ -34,7 +34,20 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 });
 
-router.get("/connect/instagram", passport.authenticate("instagram"));
+
+router.get("/connect/instagram", (req, res) => {
+    // Redirige l'utilisateur vers l'URL d'autorisation Instagram Graph API
+    const instagramAuthUrl = 'https://www.instagram.com/oauth/authorize?' +
+        'enable_fb_login=0&' +
+        'force_authentication=1&' +
+        'client_id=1164864348693375&' +
+        'redirect_uri=https://gateway-wy38.onrender.com/api/socialauth/connect/instagram/callback&' +
+        'response_type=code&' +
+        'scope=instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,' +
+        'instagram_business_content_publish,instagram_business_manage_insights';
+
+    res.redirect(instagramAuthUrl); // Effectuer la redirection vers l'URL Instagram
+});
 
 router.get("/connect/instagram/callback", passport.authenticate("instagram", { failureRedirect: "/login", session: false }), (req, res) => {
     if (!req.user || !req.user.accessToken) {
