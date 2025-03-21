@@ -29,19 +29,16 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
 }
 );
 
-router.get('/connect/twitter', (req, res) => {
-    const { userId } = req.query; // Capture the user ID from the query parameters
-  
-    if (!userId) {
-      return res.status(400).send('User ID is required.');
-    }
-  
-    // Include the user ID in the state parameter (for security)
-    const state = Buffer.from(JSON.stringify({ userId })).toString('base64');
-    const adCallback = process.env.PROXY_GATEWAY+'/api/socialauth/connect/twitter/callback';
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.TWITTER_KEY}&redirect_uri=${adCallback}&scope=tweet.read%20tweet.write%20users.read%20offline.access&state=${state}`;
-    res.redirect(authUrl);
-  });
+router.get("/connect/twitter",
+    passport.authenticate("twitter", {
+        scope: [
+            "tweet.read", "tweet.write", "users.read", "follows.read", "follows.write",
+            "offline.access", "like.read", "like.write", "list.read", "list.write",
+            "bookmark.read", "bookmark.write"
+        ]
+    })
+);
+
   
   // Handle callback from X
 router.get('/connect/twitter/callback', passport.authenticate("twitter", { failureRedirect: "/login",session: false }),
