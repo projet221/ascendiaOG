@@ -26,7 +26,7 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     const facebookAccessToken = req.user.accessToken; // Le token récupéré depuis Facebook
 
     // Rediriger vers le frontend avec le token dans l'URL
-    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?facebook_token=${facebookAccessToken}`);
+    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 }
 );
 

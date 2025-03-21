@@ -10,7 +10,7 @@ function Callback() {
     const getUrlParams = () => {
         const params = new URLSearchParams(location.search);  // Crée un objet URLSearchParams
         const network = params.get('network');  // Récupère le paramètre 'network'
-        const tokenaccess = params.get('facebook_token');  // Récupère le paramètre 'facebook_token' (tu peux l'adapter pour d'autres réseaux)
+        const tokenaccess = params.get('token');  // Récupère le paramètre 'facebook_token' (tu peux l'adapter pour d'autres réseaux)
         return { network, tokenaccess };
     };
 
