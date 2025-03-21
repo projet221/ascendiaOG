@@ -20,6 +20,6 @@ require("./config/passport"); // Charge la configuration de Passport
 // Routes
 app.use(socialAuthRoutes);
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT_SOCIALAUTH || 3002;
 
 app.listen(PORT);
