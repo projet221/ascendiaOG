@@ -4,10 +4,34 @@ const socialAuthController = {
     save: async (req, res) => {
         try {
             // Récupération des données du corps de la requête
-            const { user_id, network, tokenaccess } = req.body;
+            let { user_id, network, tokenaccess } = req.body;
 
-            // Vérification si un enregistrement de connexion sociale existe déjà pour l'utilisateur et le réseau
+            // Vérification si un enregistrement de connexion sociale existe déjà
             let socialAuth = await SocialAuth.findOne({ $and: [{ user: user_id }, { provider: network }] });
+
+            // Si le réseau est Facebook, on échange le token court pour un token long
+            if (network === "facebook") {
+                const exchangeForLongLivedToken = async (shortLivedToken) => {
+                    try {
+                        const response = await axios.get(`https://graph.facebook.com/v18.0/oauth/access_token`, {
+                            params: {
+                                grant_type: 'fb_exchange_token',
+                                client_id: process.env.FACEBOOK_CLIENT_ID,
+                                client_secret: process.env.FACEBOOK_CLIENT_SECRET,
+                                fb_exchange_token: shortLivedToken,
+                            },
+                        });
+
+                        return response.data.access_token; // Ceci est le token valable 60 jours
+                    } catch (error) {
+                        console.error("Erreur lors de l'échange du token :", error.response?.data || error.message);
+                        throw error;
+                    }
+                };
+
+                // ⬇️ Correction ici : attendre le token long avant de l'utiliser
+                tokenaccess = await exchangeForLongLivedToken(tokenaccess);
+            }
 
             if (socialAuth) {
                 // Si l'enregistrement existe déjà, retourne un message
@@ -16,7 +40,7 @@ const socialAuthController = {
                     message: "Cet utilisateur est déjà connecté à ce réseau social."
                 });
             } else {
-                // Si l'enregistrement n'existe pas, crée un nouveau document SocialAuth
+                // Création d'un nouvel enregistrement SocialAuth
                 socialAuth = new SocialAuth({
                     user: user_id, // L'ID de l'utilisateur
                     provider: network, // Le réseau social (ex: 'facebook', 'twitter')

@@ -24,13 +24,11 @@ passport.use(
 passport.use(new TwitterStrategy({
         consumerKey: process.env.TWITTER_KEY,
         consumerSecret: process.env.TWITTER_SECRET,
-        callbackURL: process.env.PROXY_GATEWAY + "/auth/twitter/callback"
+        callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/twitter/callback"
     },
-    function (token, tokenSecret, profile, cb) {
-        User.findOrCreate({twitterId: profile.id}, function (err, user) {
-            return cb(err, user);
-        });
-    }
+    (token, tokenSecret, profile, done) =>{
+    return done(null, token);
+}
 ));
 
 

@@ -3,7 +3,6 @@ const passport = require("passport");
 //const SocialAuth = require("../models/SocialAuth");
 const socialAuthController = require("../controllers/socialAuthController");
 const router = express.Router();
-const axios = require("axios");
 // Facebook OAuth
 
 router.get("/connect/facebook",
@@ -20,7 +19,7 @@ router.get("/connect/facebook",
 router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login",session: false }),
     (req, res) => {
     if (!req.user || !req.user.accessToken) {
-        console.log("erreur lors de la recuperation de l'acces token")
+        console.log("erreur lors de la recuperation de l'access token")
     }
 
     const facebookAccessToken = req.user.accessToken; // Le token récupéré depuis Facebook
@@ -45,52 +44,17 @@ router.get('/connect/twitter', (req, res) => {
   });
   
   // Handle callback from X
-router.get('/connect/twitter/callback', async (req, res) => {
-    const { code, state } = req.query;
-    console.log("dans la route connect twitter");
-    if (!code || !state) {
-      return res.status(400).send('Invalid request.');
+router.get('/connect/twitter/callback', passport.authenticate("twitter", { failureRedirect: "/login",session: false }),
+(req, res) => {
+    if (!req.user || !req.user.accessToken) {
+        console.log("erreur lors de la recuperation de l'access token");
     }
-    
-    try {
-      // Decode the state parameter to get the user ID
-      const decodedState = JSON.parse(Buffer.from(state, 'base64').toString());
-      const { userId } = decodedState;
-        console.log("demande du token twitter");
-      // Exchange code for access token
-      const tokenResponse = await axios.post(
-        'https://api.twitter.com/2/oauth2/token',
-        new URLSearchParams({
-          code,
-          grant_type: 'authorization_code',
-          client_id: process.env.TWITTER_KEY,
-          client_secret: process.env.TWITTER_SECRET,
-          redirect_uri: process.env.PROXY_GATEAWAY+'/api/socialauth/connect/twitter/callback',
-          //code_verifier: 'challenge', // Replace with your PKCE code verifier
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Basic ${Buffer.from(`${process.env.TWITTER_KEY}:${process.env.TWITTER_SECRET}`).toString('base64')}`,
-          },
-        }
-      );
-  
-      const { access_token, refresh_token } = tokenResponse.data;
-  
-      // Save the access token and refresh token to your database with the user ID
-      await SocialAuth.findOneAndUpdate(
-        { provider: "twitter",user:userId },
-        { accessToken: access_token, refreshToken: refresh_token  },
-        { upsert: true, new: true }
-    );
-  
-      res.send('Authentication successful! You can now post to X.');
-    } catch (error) {
-      console.error('Error exchanging code for token:', error.response?.data || error.message);
-      res.status(500).send('Authentication failed.');
-    }
-  });
+
+    const twitterAccessToken = req.user.accessToken;
+
+    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=twitter&token=${twitterAccessToken}`);
+}
+);
 
 router.post('/save', socialAuthController.save );
 
