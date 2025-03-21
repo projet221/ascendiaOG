@@ -26,7 +26,7 @@ function SocialButton({ network, logo, handleClick }) {
                 const data = response.data;
                 console.warn("Données reçues :", data);
 
-                if (data.includes(network)) {
+                if (data.some(item => item.provider === network)) {
                     setConnected(true);
                 }
             } catch (error) {
