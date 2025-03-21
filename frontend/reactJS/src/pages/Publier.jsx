@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import SelectCompte from "../components/SelectCompte.jsx";
 import AjoutFichierBouton from "../components/AjoutFichierBouton.jsx";
 import BarreHaut from "../components/BarreHaut.jsx";
+import SidebarPublication from "../components/SideBarPublication.jsx";
+
 
 function Publier(){
 
@@ -12,8 +14,10 @@ function Publier(){
     return (
         <div>
             <BarreHaut/>
+            <SidebarPublication/>
+
         
-                <div className="absolute left-0 top-11 w-1/2 h">
+                    <div className="ml-64 mt-16 p-6">
                
                     <div className="min-h-screen flex bg-gray-100">
                       <div className=" p-6">
@@ -28,8 +32,8 @@ function Publier(){
                        <AjoutFichierBouton/>
         
             
-                    <label htmlFor="publish-select">Choisissez une action :</label>
-                    <select id="publish-select" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md" onChange={publier()}>
+                    <label htmlFor="publish-select">Choisissez une action :  </label>
+                    <select id="publish-select"  className="bg-[#FF0035] hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md w-fit mt-4" onChange={publier}>
                         <option value="" disabled>-- Sélectionnez une option --</option>
                         <option value="maintenant">Publier Maintenant</option>
                         <option value="planifier">Planifier</option>

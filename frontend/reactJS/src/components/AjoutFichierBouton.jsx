@@ -12,7 +12,7 @@ const AjoutFichierBouton = ({ gestionFichier }) => {
   };
 
   return (
-    <div className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+    <div className="cursor-pointer px-4 py-2 bg-[#FF0035] text-white rounded-md hover:bg-red-700 w-fit">
       <input 
         type="file" 
         accept="image/*,video/*" 
@@ -21,11 +21,11 @@ const AjoutFichierBouton = ({ gestionFichier }) => {
         id="fileInput"
       />
       <label 
-        htmlFor="fileInput" 
-        className="cursor-pointer px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+       htmlFor="fileInput" 
+       className="cursor-pointer px-4 py-2 bg-[#FF0035] text-white rounded-md hover:bg-red-700 w-fit"
       >
-        Sélectionner un fichier
-      </label>
+      Sélectionner un fichier
+    </label>
       {fichierSelectionne && <p className="text-sm text-gray-700">{fichierSelectionne.name}</p>}
     </div>
   );
