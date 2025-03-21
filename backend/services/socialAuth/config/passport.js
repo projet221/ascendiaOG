@@ -11,6 +11,7 @@ passport.use(
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
             callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/facebook/callback",
             passReqToCallback: true,
+            session: false
         },
         (req, accessToken, refreshToken, profile, done) => {
             console.log("Access Token Facebook :", accessToken);

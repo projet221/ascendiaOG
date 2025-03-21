@@ -16,7 +16,7 @@ router.get("/connect/facebook",
     })
 );
 
-router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }),
+router.get("/connect/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login",session: false }),
     (req, res) => {
     if (!req.user || !req.user.accessToken) {
         console.log("erreur lors de la recuperation de l'acces token")
