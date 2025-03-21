@@ -43,15 +43,14 @@ router.get("/connect/twitter",
   // Handle callback from X
 router.get('/connect/twitter/callback', passport.authenticate("twitter", { failureRedirect: "/login",session: false }),
 (req, res) => {
-    if (!req.user || !req.user.accessToken) {
+    if (!req.user ) {
         console.log("----------------------------------------\n" +
             "erreur lors de la recuperation de l'access token \n" +
             `req.user : ${req.user} \n` +
-            `req.user.acctok : ${req.user.accessToken} \n` +
             "----------------------------------------\n ");
     }
 
-    const twitterAccessToken = req.user.accessToken;
+    const twitterAccessToken = req.user;
 
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=twitter&token=${twitterAccessToken}`);
 }
