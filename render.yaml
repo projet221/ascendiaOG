@@ -1,0 +1,36 @@
+# Exported from Render on 2025-03-23T16:00:05Z
+services:
+  - type: web
+    name: Users
+    runtime: node
+    repo: https://github.com/projet221/ascendiaOG
+    plan: free
+    envVars:
+      - fromGroup: VariablesCommunes
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: backend/services/users
+  - type: web
+    name: Socialauth
+    runtime: node
+    repo: https://github.com/projet221/ascendiaOG
+    plan: free
+    envVars:
+      - fromGroup: VariablesCommunes
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: backend/services/socialAuth/
+  - type: web
+    name: gateway
+    runtime: node
+    repo: https://github.com/projet221/ascendiaOG
+    plan: free
+    envVars:
+      - fromGroup: VariablesCommunes
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: backend/gateway
+version: "1"
