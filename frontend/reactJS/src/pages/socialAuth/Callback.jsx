@@ -5,10 +5,8 @@ function Callback() {
     const navigate = useNavigate();  // Utilisation du hook useNavigate
     const location = useLocation();  // Utilisation du hook useLocation pour accéder à l'URL
     const user_id = localStorage.getItem("user_id");
-    console.log(user_id);
     // Fonction pour récupérer les paramètres de l'URL
     const UrlParams = new URLSearchParams(location.search);
-    console.log(UrlParams);
     const callback = async () => {
         const urlParams = UrlParams;  // Récupère les valeurs depuis l'URL
 

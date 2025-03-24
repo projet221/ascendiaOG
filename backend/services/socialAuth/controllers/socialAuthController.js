@@ -3,6 +3,7 @@ const axios = require("axios");
 const socialAuthController = {
     save: async (req, res) => {
         try {
+            console.log(req.body);
             // Récupération des données du corps de la requête
             let {user_id}  = req.body;
             let {network, ...Tokens} = req.body.urlParams;
@@ -53,7 +54,6 @@ const socialAuthController = {
                     break;
                 }
                 case "twitter":{
-                    console.log(Tokens);
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
