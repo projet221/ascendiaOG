@@ -53,6 +53,7 @@ const socialAuthController = {
                     break;
                 }
                 case "twitter":{
+                    console.log(Tokens);
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
