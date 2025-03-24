@@ -3,10 +3,9 @@ const axios = require("axios");
 const socialAuthController = {
     save: async (req, res) => {
         try {
-            console.log(req.body);
             // Récupération des données du corps de la requête
             let {user_id}  = req.body;
-            let {network, Tokens} = req.body.urlParams;
+            let {network} = req.body.urlParams;
             // Vérification si un enregistrement de connexion sociale existe déjà
             let socialAuth = await SocialAuth.findOne({ $and: [{ user: user_id }, { provider: network }] });
 
@@ -44,7 +43,7 @@ const socialAuthController = {
                         }
                 };
                     // ⬇️ Correction ici : attendre le token long avant de l'utiliser
-                    let tokenaccess = await exchangeForLongLivedToken(Tokens.get(token));
+                    let tokenaccess = await exchangeForLongLivedToken(req.body.urlParams.token);
 
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
@@ -54,13 +53,11 @@ const socialAuthController = {
                     break;
                 }
                 case "twitter":{
-                    console.log(` cas twitter : ${Tokens}\n `);
-                    console.log(`token : ${Tokens.get(token)} \n`);
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
-                        accessToken: Tokens.get(token), // Le token d'accès de l'utilisateur
-                        secretToken: Tokens.get(tokenSecret)
+                        accessToken: req.body.urlParams.token, // Le token d'accès de l'utilisateur
+                        secretToken: req.body.urlParams.tokenSecret
                     });
                     break;
                 }
