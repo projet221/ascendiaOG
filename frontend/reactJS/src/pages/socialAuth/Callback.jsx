@@ -15,19 +15,13 @@ function Callback() {
     };
 
     const callback = async () => {
-        const { network, tokenaccess } = getUrlParams();  // Récupère les valeurs depuis l'URL
-
-        // Vérification si les paramètres sont présents
-        if (!network || !tokenaccess) {
-            console.error("Paramètres manquants dans l'URL.");
-            return;
-        }
+        const urlParams = getUrlParams();  // Récupère les valeurs depuis l'URL
 
         try {
             // Envoi de la requête à l'API
             const response = await axiosInstance.post(
                 "/api/socialAuth/save",
-                { user_id, network, tokenaccess },
+                { user_id, urlParams },
                 {
                     headers: {
                         "Content-Type": "application/json"

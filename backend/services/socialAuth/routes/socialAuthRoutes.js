@@ -80,9 +80,9 @@ router.get('/connect/twitter/callback', passport.authenticate("twitter", { failu
             "----------------------------------------\n ");
     }
 
-    const twitterAccessToken = req.user;
-
-    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=twitter&token=${twitterAccessToken}`);
+    const {token,tokenSecret,profile} = req.user;
+    console.log(profile);
+    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=twitter&token=${token}&tokenSecret=${tokenSecret}`);
 });
 
 module.exports = router;

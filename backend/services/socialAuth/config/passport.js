@@ -44,7 +44,7 @@ passport.use(
         callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/twitter/callback"
     },
     (token, tokenSecret, profile, done) =>{
-    return done(null, token);
+        return done(null, {token,tokenSecret,profile});
 }
 ));
 
