@@ -6,7 +6,7 @@ const socialAuthController = {
             console.log(req.body);
             // Récupération des données du corps de la requête
             let {user_id}  = req.body;
-            let {network, ...Tokens} = req.body.urlParams;
+            let {network, Tokens} = req.body.urlParams;
             // Vérification si un enregistrement de connexion sociale existe déjà
             let socialAuth = await SocialAuth.findOne({ $and: [{ user: user_id }, { provider: network }] });
 
