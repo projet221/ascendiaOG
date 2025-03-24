@@ -7,15 +7,9 @@ function Callback() {
     const user_id = localStorage.getItem("user_id");
 
     // Fonction pour récupérer les paramètres de l'URL
-    const getUrlParams = () => {
-          // Crée un objet URLSearchParams
-        //const network = params.get('network');  // Récupère le paramètre 'network'
-        //const tokenaccess = params.get('token');  // Récupère le paramètre 'facebook_token' (tu peux l'adapter pour d'autres réseaux)
-        return new URLSearchParams(location.search);
-    };
-
+    const UrlParams = new URLSearchParams(location.search);
     const callback = async () => {
-        const urlParams = getUrlParams();  // Récupère les valeurs depuis l'URL
+        const urlParams = UrlParams;  // Récupère les valeurs depuis l'URL
 
         try {
             // Envoi de la requête à l'API
