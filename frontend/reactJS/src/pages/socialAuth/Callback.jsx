@@ -1,45 +1,42 @@
-import {useLocation, useNavigate} from "react-router-dom";
-import {axiosInstance} from "../../utils/axios.jsx";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../utils/axios.jsx";
 
 function Callback() {
-    const navigate = useNavigate();  // Utilisation du hook useNavigate
-    const location = useLocation();  // Utilisation du hook useLocation pour accéder à l'URL
+    const navigate = useNavigate();
+    const location = useLocation();
     const user_id = localStorage.getItem("user_id");
-    // Fonction pour récupérer les paramètres de l'URL
-    const UrlParams = new URLSearchParams(location.search);
-    const callback = async () => {
-        const urlParams = UrlParams;  // Récupère les valeurs depuis l'URL
 
-        try {
-            // Envoi de la requête à l'API
-            const response = await axiosInstance.post(
-                "/api/socialAuth/save",
-                { user_id, urlParams },
-                {
-                    headers: {
-                        "Content-Type": "application/json"
+    useEffect(() => {
+        const handleCallback = async () => {
+            if (!user_id) {
+                console.error("Aucun user_id trouvé dans le localStorage.");
+                navigate("/login"); // Redirige si pas d'utilisateur
+                return;
+            }
+
+            const urlParams = Object.fromEntries(new URLSearchParams(location.search));
+
+            try {
+                const response = await axiosInstance.post(
+                    "/api/socialAuth/save",
+                    { user_id, urlParams },
+                    {
+                        headers: { "Content-Type": "application/json" }
                     }
-                }
-            );
+                );
 
-            const data = response.data;
-            console.log(data);  // Affiche la réponse dans la console
+                console.log("Réponse API:", response.data);
+                navigate("/Dashboard");
+            } catch (err) {
+                console.error("Erreur lors de l'appel API:", err);
+            }
+        };
 
-            // Redirige vers le tableau de bord
-            navigate("/Dashboard");
+        handleCallback();
+    }, [navigate, location.search, user_id]);
 
-        } catch (err) {
-            console.error("Erreur lors de l'appel API:", err);
-        }
-    };
-
-    return (
-        <div>
-            <button onClick={callback}>
-                Aller au tableau de bord
-            </button>
-        </div>
-    );
+    return <div>Redirection en cours...</div>;
 }
 
 export default Callback;
