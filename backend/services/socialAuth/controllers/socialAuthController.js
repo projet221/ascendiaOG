@@ -54,7 +54,8 @@ const socialAuthController = {
                     break;
                 }
                 case "twitter":{
-                    console.log(` cas twitter : ${Tokens}\n token : ${Tokens.get(token)} \n`);
+                    console.log(` cas twitter : ${Tokens}\n `);
+                    console.log(`token : ${Tokens.get(token)} \n`);
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
