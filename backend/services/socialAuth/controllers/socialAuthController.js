@@ -45,7 +45,7 @@ const socialAuthController = {
                         }
                 };
                     // ⬇️ Correction ici : attendre le token long avant de l'utiliser
-                    let tokenaccess = await exchangeForLongLivedToken(Tokens[token]);
+                    let tokenaccess = await exchangeForLongLivedToken(Tokens.get(token));
 
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
@@ -58,8 +58,8 @@ const socialAuthController = {
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
-                        accessToken: Tokens[token], // Le token d'accès de l'utilisateur
-                        secretToken: Tokens[tokenSecret]
+                        accessToken: Tokens.get(token), // Le token d'accès de l'utilisateur
+                        secretToken: Tokens.get(tokenSecret)
                     });
                     break;
                 }
