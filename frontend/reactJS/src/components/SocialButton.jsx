@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 function SocialButton({ network, logo, handleClick,connected }) {
-
+    console.log(connected);
     return (
         connected ? (
             <button
