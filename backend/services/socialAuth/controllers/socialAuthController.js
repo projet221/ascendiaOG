@@ -17,12 +17,6 @@ const socialAuthController = {
                 });
             } else {
                 // Création d'un nouvel enregistrement SocialAuth
-               /* socialAuth = new SocialAuth({
-                    user: user_id, // L'ID de l'utilisateur
-                    provider: network, // Le réseau social (ex: 'facebook', 'twitter')
-                    accessToken: tokenaccess // Le token d'accès de l'utilisateur
-                });*/
-            // Si le réseau est Facebook, on échange le token court pour un token long
             switch (network) {
                 case "facebook":{
                     const exchangeForLongLivedToken = async (shortLivedToken) => {
@@ -42,13 +36,23 @@ const socialAuthController = {
                             throw error;
                         }
                 };
-                    // ⬇️ Correction ici : attendre le token long avant de l'utiliser
                     let tokenaccess = await exchangeForLongLivedToken(req.body.urlParams.token);
+                    const pages_info = async (token) => {
+                        try {
+                            const response = await axios.get(`https://graph.facebook.com/v18.0/me/accounts?access_token=${token}`);
 
+                            return response.data.data.map(item => ({ name: item.name, id: item.id }));
+                        } catch (error) {
+                            console.error("Erreur lors de la récupération des pages:", error);
+                            return []; // Retourner un tableau vide en cas d'erreur
+                        }
+                    };
+                    let Pages = await pages_info(tokenaccess);
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
-                        accessToken: tokenaccess // Le token d'accès de l'utilisateur
+                        accessToken: tokenaccess, // Le token d'accès de l'utilisateur
+                        pages : Pages
                     });
                     break;
                 }

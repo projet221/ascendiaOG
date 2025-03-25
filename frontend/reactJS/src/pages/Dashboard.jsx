@@ -1,6 +1,8 @@
-import  {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 //import PrivateRoute from "../components/PrivateRoute.jsx";
 import {axiosInstance} from "../utils/axios.jsx";
+import BarreHaut from "../components/BarreHaut.jsx";
+import SidebarPublication from "../components/SideBarPublication.jsx";
 
 const Dashboard = () => {
     const [username, setUsername] = useState("");
@@ -49,11 +51,13 @@ const Dashboard = () => {
         window.location.reload();
     }
     return (
+        <div>
+            <BarreHaut />
+            <SidebarPublication />
 
-        <>
             Bonjour {username}
             <button onClick={deconnexion}>Déconnexion</button>
-        </>
+        </div>
     );
 };
 

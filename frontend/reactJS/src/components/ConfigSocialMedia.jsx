@@ -1,9 +1,15 @@
-import {useState} from "react";
-import {FaFacebook, FaTwitter, FaInstagram} from 'react-icons/fa';
-import SocialButton from "./SocialButton"; // Assurez-vous que SocialButton est bien un composant réutilisable qui accepte un logo
+import { useEffect, useState } from "react";
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
+import SocialButton from "./SocialButton";
+import { axiosInstance } from "../utils/axios.jsx";
 
 function ConfigSocialMedia() {
     const [error, setError] = useState(null);
+    const [socialConnections, setSocialConnections] = useState({
+        facebook: false,
+        twitter: false,
+        instagram: false,
+    });
 
     const deconnexion = () => {
         localStorage.removeItem("token");
@@ -13,7 +19,7 @@ function ConfigSocialMedia() {
 
     const handleLinkSocialMedia = async (network) => {
         try {
-            let authUrl = import.meta.env.VITE_PROXY_GATEWAY+`/api/socialauth/connect/${network}`;
+            let authUrl = import.meta.env.VITE_PROXY_GATEWAY + `/api/socialauth/connect/${network}`;
 
             const width = 600;
             const height = 700;
@@ -38,6 +44,42 @@ function ConfigSocialMedia() {
         }
     };
 
+    useEffect(() => {
+        const fetchSocial = async () => {
+            const token = localStorage.getItem("token");
+            const userId = localStorage.getItem("user_id");
+
+            if (!token || !userId) {
+                console.warn("Token ou user_id non trouvé, l'utilisateur n'est peut-être pas connecté.");
+                return;
+            }
+
+            try {
+                const response = await axiosInstance.get(`/api/socialAuth/${userId}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const data = response.data;
+                console.warn("Données reçues :", data);
+
+                // Mettre à jour l'état avec les connexions sociales
+                const connections = {
+                    facebook: data.includes('facebook'),
+                    twitter: data.includes('twitter'),
+                    instagram: data.includes('instagram'),
+                };
+                setSocialConnections(connections);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des informations utilisateur :", error);
+            }
+        };
+
+        fetchSocial();
+    }, []); // Ajout de [] pour exécuter l'effet au montage
+
     return (
         <div>
             <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Configurer vos réseaux sociaux</h2>
@@ -45,24 +87,28 @@ function ConfigSocialMedia() {
                 {/* Assurez-vous que le logo que vous passez est le bon icône */}
                 <SocialButton
                     handleClick={() => handleLinkSocialMedia('facebook')}
-                    logo={<FaFacebook size={20}/>}
+                    logo={<FaFacebook size={20} />}
                     network="facebook"
+                    connected={socialConnections.facebook} // Connexion dynamique
                 />
                 <SocialButton
                     handleClick={() => handleLinkSocialMedia('twitter')}
-                    logo={<FaTwitter size={30}/>}
+                    logo={<FaTwitter size={30} />}
                     network="twitter"
+                    connected={socialConnections.twitter} // Connexion dynamique
                 />
                 <SocialButton
                     handleClick={() => handleLinkSocialMedia('instagram')}
-                    logo={<FaInstagram size={30}/>}
+                    logo={<FaInstagram size={30} />}
                     network="instagram"
+                    connected={socialConnections.instagram} // Connexion dynamique
                 />
             </div>
             {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
             <button
                 className="w-full bg-gray-400 text-white py-3 mt-6 rounded hover:bg-red-600 transition"
-                onClick={deconnexion}>Déconnexion
+                onClick={deconnexion}>
+                Déconnexion
             </button>
         </div>
     );
