@@ -21,7 +21,7 @@ const postController = {
     createPost: async (req, res) => {
         try {
             const {userId, networks, message} = req.body;
-            const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/token/${userId}`);
+            const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
             
             const {access_token,access_secret} = response.data.filter(item => item.provider === "twitter")[0];
             const client = new TwitterApi({
