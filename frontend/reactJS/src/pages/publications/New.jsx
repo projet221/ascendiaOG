@@ -1,12 +1,40 @@
+import { useState } from "react";
 import SelectCompte from "../../components/SelectCompte.jsx";
 import AjoutFichierBouton from "../../components/AjoutFichierBouton.jsx";
 import BarreHaut from "../../components/BarreHaut.jsx";
 import SidebarPublication from "../../components/SideBarPublication.jsx";
+import axiosInstance from "../../axiosInstance";
+
 
 
 function New(){
-    function publier(){
 
+    const [message, setMessage] = useState("");
+    const [userId,setUserId] = useState(sessionStorage.getItem("user_id"));
+    const [networks, setNetworks] = useState([]);
+    
+    const handleMessageChange = (e) => {
+        setMessage(e.target.value);
+    };
+
+    async function publier(){
+        e.preventDefault();
+        try {
+            const response = await axiosInstance.post(
+                "/api/posts",
+                {userId ,networks ,message},
+                {
+                    headers: {
+                        "Content-Type": "application/json",},
+                }
+            );
+
+            const data = await response.data;
+        
+            window.location.reload();
+        } catch (err) {
+            setError(err.message);
+        }
     }
 
     return (
@@ -18,12 +46,15 @@ function New(){
             <div className="ml-64 mt-16 p-6">
                 <div className="min-h-screen flex bg-gray-100">
                     <div className=" p-6">
-                        <SelectCompte/>
+                        <SelectCompte networks={networks}
+                        setNetworks = {setNetworks}/>
                         <label htmlFor="message" className="block text-gray-700 mb-2">Votre message :</label>
                         <textarea
                             id="message"
                             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                             rows="4"
+                            value={message}
+                            onChange={handleMessageChange}
                         ></textarea>
                         <AjoutFichierBouton />
                         <label htmlFor="publish-select">Choisissez une action :  </label>
@@ -33,7 +64,7 @@ function New(){
                             <option value="planifier">Planifier</option>
                             <option value="brouillon">Enregistrer en brouillon</option>
                         </select>
-                    </div>
+                    </div> 
                 </div>
             </div>
             <div className="absolute right-0 top-0 w-1/2 h">
