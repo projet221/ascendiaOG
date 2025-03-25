@@ -7,7 +7,7 @@ import axiosInstance from "../utils/axios";
 
 
 
-function New(){
+function Publier(){
 
     const [message, setMessage] = useState("");
     const [userId,setUserId] = useState(sessionStorage.getItem("user_id"));
@@ -78,5 +78,5 @@ function New(){
         </div>
 
     );
-}
-export default New;
+};
+export default Publier;
