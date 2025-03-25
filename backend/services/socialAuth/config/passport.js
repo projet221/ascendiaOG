@@ -30,6 +30,7 @@ passport.use(
             callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/instagram/callback",
             passReqToCallback: true,
             session: false,
+            scope:["instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,instagram_business_content_publish,instagram_business_manage_insights"]
         },
         (req, accessToken, refreshToken, profile, done) => {
             console.log("Access Token Instagram:", accessToken);
