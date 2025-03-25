@@ -10,6 +10,7 @@ function ConfigSocialMedia() {
         twitter: false,
         instagram: false,
     });
+    const [loading, setLoading] = useState(true);  // Nouvel état pour le chargement
 
     const deconnexion = () => {
         localStorage.removeItem("token");
@@ -70,15 +71,22 @@ function ConfigSocialMedia() {
                 twitter: data.includes('twitter'),
                 instagram: data.includes('instagram'),
             };
-            setSocialConnections(connections); // Mettre à jour l'état
-        } catch (error) {
-            console.error("Erreur lors de la récupération des informations utilisateur :", error);
+
+            setSocialConnections(connections); // Mettre à jour l'état des connexions
+            setLoading(false); // Fin du chargement
+        } catch (err) {
+            setError(`Erreur lors de la récupération des données utilisateur : ${err}`);
+            setLoading(false); // Fin du chargement même en cas d'erreur
         }
     };
 
     useEffect(() => {
         fetchSocial(); // Appeler la fonction pour charger les connexions sociales au montage
     }, []); // Exécuter cette logique au montage du composant
+
+    if (loading) {
+        return <div className="text-center">Chargement...</div>; // Afficher un message de chargement pendant que les données sont récupérées
+    }
 
     return (
         <div>
