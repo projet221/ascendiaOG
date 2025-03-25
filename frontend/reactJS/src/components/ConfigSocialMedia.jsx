@@ -35,8 +35,8 @@ function ConfigSocialMedia() {
             const checkPopupClosed = setInterval(() => {
                 if (authWindow.closed) {
                     clearInterval(checkPopupClosed);
-                    console.log("Fenêtre d'authentification fermée. Rafraîchissement...");
-                    window.location.reload();
+                    console.log("Fenêtre d'authentification fermée. Mise à jour des connexions...");
+                    fetchSocial(); // Appel de la fonction pour actualiser les connexions après la fermeture du popup
                 }
             }, 1000);
         } catch (err) {
@@ -44,41 +44,41 @@ function ConfigSocialMedia() {
         }
     };
 
+    const fetchSocial = async () => {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("user_id");
+
+        if (!token || !userId) {
+            console.warn("Token ou user_id non trouvé, l'utilisateur n'est peut-être pas connecté.");
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.get(`/api/socialAuth/${userId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = response.data;
+            console.warn("Données reçues :", data);
+
+            // Mettre à jour l'état avec les connexions sociales
+            const connections = {
+                facebook: data.includes('facebook'),
+                twitter: data.includes('twitter'),
+                instagram: data.includes('instagram'),
+            };
+            setSocialConnections(connections); // Mettre à jour l'état
+        } catch (error) {
+            console.error("Erreur lors de la récupération des informations utilisateur :", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchSocial = async () => {
-            const token = localStorage.getItem("token");
-            const userId = localStorage.getItem("user_id");
-
-            if (!token || !userId) {
-                console.warn("Token ou user_id non trouvé, l'utilisateur n'est peut-être pas connecté.");
-                return;
-            }
-
-            try {
-                const response = await axiosInstance.get(`/api/socialAuth/${userId}`, {
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                const data = response.data;
-                console.warn("Données reçues :", data);
-
-                // Mettre à jour l'état avec les connexions sociales
-                const connections = {
-                    facebook: data.includes('facebook'),
-                    twitter: data.includes('twitter'),
-                    instagram: data.includes('instagram'),
-                };
-                setSocialConnections(connections);
-            } catch (error) {
-                console.error("Erreur lors de la récupération des informations utilisateur :", error);
-            }
-        };
-
-        fetchSocial();
-    }, []); // Ajout de [] pour exécuter l'effet au montage
+        fetchSocial(); // Appeler la fonction pour charger les connexions sociales au montage
+    }, []); // Exécuter cette logique au montage du composant
 
     return (
         <div>
