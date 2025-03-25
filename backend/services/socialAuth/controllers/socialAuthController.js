@@ -18,6 +18,14 @@ const socialAuthController = {
             } else {
                 // Création d'un nouvel enregistrement SocialAuth
             switch (network) {
+                case "instagram":{
+                    socialAuth = new SocialAuth({
+                        user: user_id, // L'ID de l'utilisateur
+                        provider: network, // Le réseau social (ex: 'facebook', 'twitter')
+                        accessToken: req.body.urlParams.token, // Le token d'accès de l'utilisateur
+                    });
+                    break;
+                }
                 case "facebook":{
                     const exchangeForLongLivedToken = async (shortLivedToken) => {
                         try {

@@ -29,12 +29,12 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     if (!req.user || !req.user.accessToken) {
         console.log("erreur lors de la recuperation de l'access token")
     }
-    const profile = req.user.profile;
+    //const profile = req.user.profile;
     const facebookAccessToken = req.user.accessToken; // Le token récupéré depuis Facebook
-    console.log("ID:", profile.id);
-    console.log("Nom:", profile.displayName);
-    console.log("Email:", profile.emails ? profile.emails[0].value : "Non disponible");
-    console.log("Photo:", profile.photos ? profile.photos[0].value : "Non disponible");
+    //console.log("ID:", profile.id);
+    //console.log("Nom:", profile.displayName);
+    //console.log("Email:", profile.emails ? profile.emails[0].value : "Non disponible");
+    //console.log("Photo:", profile.photos ? profile.photos[0].value : "Non disponible");
     // Rediriger vers le frontend avec le token dans l'URL
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 });
@@ -42,22 +42,7 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
 // Route pour commencer l'authentification via Instagram
 router.get("/connect/instagram", passport.authenticate("instagram"));
 
-/*router.get("/connect/instagram", (req, res) => {
-    // Redirige l'utilisateur vers l'URL d'autorisation Instagram Graph API
-    const instagramAuthUrl = 'https://www.instagram.com/oauth/authorize?' +
-        'enable_fb_login=0&' +
-        'force_authentication=1&' +
-        'client_id=1164864348693375&' +
-        'redirect_uri=https://gateway-wy38.onrender.com/api/socialauth/connect/instagram/callback&' +
-        'response_type=code&' +
-        'scope=instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,' +
-        'instagram_business_content_publish,instagram_business_manage_insights';
-
-    res.redirect(instagramAuthUrl); // Effectuer la redirection vers l'URL Instagram
-});*/
-
 router.get("/connect/instagram/callback", (req, res) => {
-    console.log(req.query);
     const { code } = req.query;
 
     if (!code) {
@@ -65,7 +50,6 @@ router.get("/connect/instagram/callback", (req, res) => {
     }
 
     const tokenRequestUrl = `https://api.instagram.com/oauth/access_token`;
-
     const requestBody = {
         client_id: process.env.INSTAGRAM_CLIENT_ID,
         client_secret: process.env.INSTAGRAM_CLIENT_SECRET,
@@ -74,32 +58,28 @@ router.get("/connect/instagram/callback", (req, res) => {
         code: code,
     };
 
-    // Faire la requête POST pour échanger le code contre un access token
     axios.post(tokenRequestUrl, new URLSearchParams(requestBody))
-    .then((response) => {
-        const { access_token, user_id } = response.data;
+    .then(() => {
 
-        console.log('Access Token:', access_token);
-        console.log('User ID:', user_id);
+        const longTermTokenRequestUrl = `https://graph.instagram.com/access_token?grant_type=authorization_code&client_id=${process.env.INSTAGRAM_CLIENT_ID}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&redirect_uri=${process.env.PROXY_GATEWAY}/api/socialauth/connect/instagram/callback&code=${code}`;
 
-        // Tu peux maintenant utiliser l'access token pour récupérer des informations supplémentaires, par exemple
-        // Rediriger vers le frontend avec le token
-        res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=instagram&token=${access_token}`);
+        // Faire la requête pour obtenir un token long terme
+        axios.get(longTermTokenRequestUrl)
+        .then((longTermResponse) => {
+            const longTermToken = longTermResponse.data.access_token;
+
+            // Rediriger vers le frontend avec le token long terme
+            res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=instagram&token=${longTermToken}`);
+        })
+        .catch((longTermError) => {
+            console.error("Erreur lors de l'échange pour le token long terme :", longTermError.response ? longTermError.response.data : longTermError.message);
+            res.status(500).send("Erreur lors de l'obtention du token long terme.");
+        });
     })
     .catch((error) => {
-        console.error("Erreur lors de l'échange du code :", error.response ? error.response.data : error.message);
+        console.error("Erreur lors de l'échange du code d'autorisation :", error.response ? error.response.data : error.message);
         res.status(500).send("Erreur lors de l'échange du code d'autorisation.");
     });
-    /*
-    if (!req.user || !req.user.accessToken) {
-        console.log("Erreur lors de la récupération de l'access token");
-    }
-
-    const instagramAccessToken = req.user.accessToken; // Le token récupéré depuis Instagram
-
-    // Rediriger vers le frontend avec le token dans l'URL
-    res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=instagram&token=${instagramAccessToken}`);
-    */
 });
 
 router.get("/connect/twitter", passport.authenticate("twitter", {
@@ -118,8 +98,7 @@ router.get('/connect/twitter/callback', passport.authenticate("twitter", { failu
             "----------------------------------------\n ");
     }
 
-    const {token,tokenSecret,profile} = req.user;
-    console.log(profile);
+    const {token,tokenSecret} = req.user;
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=twitter&token=${token}&tokenSecret=${tokenSecret}`);
 });
 
