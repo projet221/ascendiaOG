@@ -21,7 +21,9 @@
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-twitter": "^1.0.4",
-    "twitter-api-v2": "^1.20.2"
+    "twitter-api-v2": "^1.20.2",
+    "request":"^2.88.2",
+    "fs":"⁰.0.1-security"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
