@@ -13,4 +13,10 @@ const SocialAuth = new mongoose.Schema({
     createdAt: {type: Date, default: Date.now}
 });
 
+// Ajout de la validation conditionnelle pour 'pages'
+SocialAuth.path('pages').validate(function(value) {
+    return value === undefined || value.length > 0;
+}, 'Pages array cannot be empty.');
+
+
 module.exports = mongoose.model("SocialAuth", SocialAuth);
