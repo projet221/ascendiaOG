@@ -25,12 +25,12 @@ const postController = {
             console.log(response.data);
             console.log("userid:"+userId+", message:"+message);
             const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
-            console.log("access token twitter"+access_token,"access token secret"+access_secret);
+            console.log("access token twitter"+accessToken,"access token secret"+secretToken);
             const client = new TwitterApi({
             appKey: process.env.TWITTER_KEY,
             appSecret: process.env.TWITTER_SECRET,
-            accessToken: access_token,
-            accessSecret: access_secret,
+            accessToken: accessToken,
+            accessSecret: secretToken,
             });
 
             const bearer = new TwitterApi(process.env.TWITTER_BEARER);
