@@ -55,7 +55,7 @@ router.get("/connect/instagram", passport.authenticate("instagram"));
 });*/
 
 router.get("/connect/instagram/callback", (req, res) => {
-    console.log(req);
+    console.log(req.query);
     if (!req.user || !req.user.accessToken) {
         console.log("Erreur lors de la récupération de l'access token");
     }
