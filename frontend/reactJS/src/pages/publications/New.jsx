@@ -3,7 +3,7 @@ import SelectCompte from "../../components/SelectCompte.jsx";
 import AjoutFichierBouton from "../../components/AjoutFichierBouton.jsx";
 import BarreHaut from "../../components/BarreHaut.jsx";
 import SidebarPublication from "../../components/SideBarPublication.jsx";
-import axiosInstance from "../../utils/axios";
+import {axiosInstance} from "../../utils/axios";
 
 
 
