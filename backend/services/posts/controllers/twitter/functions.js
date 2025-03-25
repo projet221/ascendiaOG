@@ -29,6 +29,8 @@ const tweetWithImage = async (imagepath,text,twitterClient) => {
       console.error('Erreur lors de l\'envoi du tweet:', e);
     }
   };
+
+  module.exports(tweetWithImage);
   
   
 
