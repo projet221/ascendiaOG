@@ -24,7 +24,7 @@ const postController = {
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
             console.log(response.data);
             console.log("userid:"+userId+", message:"+message);
-            const {access_token,access_secret} = response.data.filter(item => item.provider === "twitter")[0];
+            const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
             console.log("access token twitter"+access_token,"access token secret"+access_secret);
             const client = new TwitterApi({
             appKey: process.env.TWITTER_KEY,
