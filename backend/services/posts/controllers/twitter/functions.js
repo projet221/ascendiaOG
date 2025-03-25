@@ -30,4 +30,4 @@ const tweetWithImage = async (imagePath, text, twitterClient) => {
 };
 
 // Exporter la fonction correctement
-module.exports = tweetWithImage;
+module.exports = {tweetWithImage};
