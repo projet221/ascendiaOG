@@ -37,8 +37,10 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 });
 
+// Route pour commencer l'authentification via Instagram
+router.get("/connect/instagram", passport.authenticate("instagram"));
 
-router.get("/connect/instagram", (req, res) => {
+/*router.get("/connect/instagram", (req, res) => {
     // Redirige l'utilisateur vers l'URL d'autorisation Instagram Graph API
     const instagramAuthUrl = 'https://www.instagram.com/oauth/authorize?' +
         'enable_fb_login=0&' +
@@ -50,7 +52,7 @@ router.get("/connect/instagram", (req, res) => {
         'instagram_business_content_publish,instagram_business_manage_insights';
 
     res.redirect(instagramAuthUrl); // Effectuer la redirection vers l'URL Instagram
-});
+});*/
 
 router.get("/connect/instagram/callback", (req, res) => {
     console.log(req);
