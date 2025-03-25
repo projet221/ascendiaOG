@@ -1,4 +1,7 @@
 const Post = require('../models/Post');
+const { TwitterApi } = require("twitter-api-v2");
+const { tweetWithImage } = require('./twitter');
+const { download } = require("./utilities");
 
 const postController = {
     // Récupérer toutes les publications
@@ -16,9 +19,25 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         try {
-            const post = new Post(req.body);
-            await post.save();
-            res.status(201).json(post);
+            const {userId, networks, message} = req.body;
+            const response = await axios.get(`/api/socialauth/token/${userId}`);
+            
+            const {access_token,access_secret} = response.data.filter(item => item.provider === "twitter")[0];
+            const client = new TwitterApi({
+            appKey: process.env.TWITTER_KEY,
+            appSecret: process.env.TWITTER_SECRET,
+            accessToken: access_token,
+            accessSecret: access_secret,
+            });
+
+            const bearer = new TwitterApi(process.env.TWITTER_BEARER);
+
+            const twitterClient = client.readWrite;
+            const twitterBearer = bearer.readOnly;
+
+            
+            tweetWithImage(NULL,message,twitterClient);
+            res.status(201).json("publication réussie");
         } catch (error) {
             res.status(400).json({ error: error.message });
         }

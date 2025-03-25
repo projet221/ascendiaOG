@@ -40,10 +40,21 @@ app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {
     }
 }));
 
+
+// Health check endpoint
+app.use('/api/posts', proxy(process.env.PROXY_POSTS, {
+    timeout: 10000,
+    userResDecorator: (proxyRes, proxyResData) => {
+        console.log(`Réponse du proxy vers le backend: ${proxyRes.statusCode}`);
+        return proxyResData; // Pass the response data forward
+    }
+}));
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK' });
 });
+
 
 // Start the server
 app.listen(PORT, () => {

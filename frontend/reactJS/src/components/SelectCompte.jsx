@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { axiosInstance } from "../utils/axios.jsx";
 
-function SelectCompte() {
+function SelectCompte({networks,setNetworks}) {
     const [selectedIds, setSelectedIds] = useState([]);
     const [listeComptes, setListeComptes] = useState([]);
-
+    
     useEffect(() => {
         const fetchSocial = async () => {
             const token = localStorage.getItem("token");
@@ -38,15 +38,24 @@ function SelectCompte() {
                 console.error("Erreur lors de la récupération des informations utilisateur :", error);
             }
         };
-
         fetchSocial();
     }, []);
+
+    useEffect(()=>{
+        const selectedNetworks = listeComptes
+        .filter(compte => selectedIds.includes(compte.id))  // Récupère les comptes sélectionnés
+        .map(compte => compte.name); 
+        setNetworks(selectedNetworks);
+    },[selectedIds]);
+
 
     const toggleSelect = (id) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
         );
+
     };
+
 
     return (
         <div>
