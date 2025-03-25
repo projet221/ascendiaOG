@@ -7,7 +7,7 @@ import { axiosInstance } from "../utils/axios";
 
 function Publier() {
     const [message, setMessage] = useState("");
-    const [userId, setUserId] = useState(sessionStorage.getItem("user_id"));
+    const [userId, setUserId] = useState(localStorage.getItem("user_id"));
     const [networks, setNetworks] = useState([]);
     const [action, setAction] = useState(""); // État pour gérer l'action choisie
 
