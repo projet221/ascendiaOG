@@ -37,7 +37,7 @@ const postController = {
             const twitterBearer = bearer.readOnly;
 
             
-            tweetWithImage(NULL,message,twitterClient);
+            tweetWithImage(null,message,twitterClient);
             res.status(201).json("publication réussie");
         } catch (error) {
             res.status(400).json({ error: error.message });
