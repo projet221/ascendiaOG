@@ -95,9 +95,21 @@ const socialAuthController = {
         });
     }},
 
-    getSocialMediaByUserId : async (req, res) => {
+    getSocialMediaProviderByUserId : async (req, res) => {
         try {
             const socialAuth = await SocialAuth.find({user: req.params.user_id}).select('provider');
+            console.log(socialAuth);
+            if (!socialAuth) {
+                return res.status(404).json({})
+            }
+            res.status(200).json(socialAuth);
+        } catch (err){
+            console.log(err)
+        }
+    },
+    getSocialMediaByUserId : async (req, res) => {
+        try {
+            const socialAuth = await SocialAuth.find({user: req.params.user_id});
             console.log(socialAuth);
             if (!socialAuth) {
                 return res.status(404).json({})

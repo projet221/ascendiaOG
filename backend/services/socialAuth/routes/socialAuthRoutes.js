@@ -10,9 +10,9 @@ const axios = require("axios");
 
 router.post('/save', socialAuthController.save );
 
-router.get("/:user_id", socialAuthController.getSocialMediaByUserId )
+router.get("/:user_id", socialAuthController.getSocialMediaProviderByUserId )
 
-
+router.get("/tokens/:user_id", socialAuthController.getSocialMediaByUserId );
 
 
 //Routes de connexions aux réseaux sociaux
@@ -39,7 +39,6 @@ router.get("/connect/facebook/callback", passport.authenticate("facebook", { fai
     res.redirect(process.env.FRONTEND_URL + `/socialauth/callback?network=facebook&token=${facebookAccessToken}`);
 });
 
-// Route pour commencer l'authentification via Instagram
 router.get("/connect/instagram", passport.authenticate("instagram"));
 
 router.get("/connect/instagram/callback", (req, res) => {
