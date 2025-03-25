@@ -15,7 +15,7 @@ const SidebarPublication = () => {
           Nouvelle Publication
         </NavLink>
         <NavLink
-          to="/mes-publications"
+          to="/all"
           className={({ isActive }) =>
             `text-[#FF0035] px-4 py-2 rounded-md border-b-4 text-base font-medium ${
               isActive ? "border-[#FF0035]" : "border-transparent hover:border-[#FF0035]"

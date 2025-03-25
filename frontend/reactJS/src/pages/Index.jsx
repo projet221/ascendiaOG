@@ -3,6 +3,7 @@ import Register from "../components/Register.jsx";
 import {useState} from "react";
 import BarreHaut from "../components/BarreHaut.jsx";
 import ConfigSocialMedia from "../components/ConfigSocialMedia.jsx";
+import Publier from "./Publier.jsx" ;
 
 const Index = () => {
     // État local pour gérer la connexion
@@ -24,10 +25,14 @@ const Index = () => {
             </div>
             :
             
-            
+            <div>
+                           {/* <Publier/>*/}
+
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="grid item-center bg-white p-8 rounded-lg shadow-md ">
-                {/*<Publier/>*/}
+            <Publier/>
+
+                 <div className="grid item-center bg-white p-8 rounded-lg shadow-md ">
+               <Publier/>
                       
                    {connexion ? <Login/> : <Register/>}
                     <button className="text-center mt-6" onClick={toggleConnexion}>
@@ -35,6 +40,8 @@ const Index = () => {
                     </button>                                                            
             
                 </div>
+                
+            </div>
             </div>
     );
 };
