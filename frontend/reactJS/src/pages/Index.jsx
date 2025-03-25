@@ -1,7 +1,8 @@
 import Login from "../components/Login.jsx";
 import Register from "../components/Register.jsx";
 import {useState} from "react";
-import Dashboard from "./Dashboard.jsx";
+import BarreHaut from "../components/BarreHaut.jsx";
+import ConfigSocialMedia from "../components/ConfigSocialMedia.jsx";
 
 const Index = () => {
     // État local pour gérer la connexion
@@ -16,9 +17,9 @@ const Index = () => {
     return (
         token ?
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                
                 <div className="grid item-center bg-white p-8 rounded-lg shadow-md w-96">
-                    <Dashboard />
+                    < BarreHaut />
+                    <ConfigSocialMedia />
                 </div>
             </div>
             :
