@@ -10,7 +10,7 @@ import {axiosInstance} from "../../utils/axios";
 function New(){
 
     const [message, setMessage] = useState("");
-    const [userId,setUserId] = useState(sessionStorage.getItem("user_id"));
+    const [userId,setUserId] = useState(localStorage.getItem("user_id"));
     const [networks, setNetworks] = useState([]);
     
     const handleMessageChange = (e) => {
