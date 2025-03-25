@@ -25,8 +25,8 @@ passport.use(
 passport.use(
     new InstagramStrategy(
         {
-            clientID: process.env.INSTAGRAM_CLIENT_ID, // Utilisez l'ID client Instagram
-            //clientSecret: process.env.INSTAGRAM_CLIENT_SECRET, // Utilisez le secret client Instagram
+            clientID: process.env.FACEBOOK_CLIENT_ID, // Utilisez l'ID client Instagram
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET, // Utilisez le secret client Instagram
             callbackURL: process.env.PROXY_GATEWAY + "/api/socialauth/connect/instagram/callback",
             passReqToCallback: true,
             session: false,
