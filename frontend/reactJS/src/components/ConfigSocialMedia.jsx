@@ -71,7 +71,7 @@ function ConfigSocialMedia() {
                 twitter: data.includes('twitter'),
                 instagram: data.includes('instagram'),
             };
-
+            console.log(connections);
             setSocialConnections(connections); // Mettre à jour l'état des connexions
             setLoading(false); // Fin du chargement
         } catch (err) {
