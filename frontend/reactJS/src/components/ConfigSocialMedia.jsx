@@ -36,7 +36,6 @@ function ConfigSocialMedia() {
             const checkPopupClosed = setInterval(() => {
                 if (authWindow.closed) {
                     clearInterval(checkPopupClosed);
-                    console.log("Fenêtre d'authentification fermée. Mise à jour des connexions...");
                     fetchSocial(); // Appel de la fonction pour actualiser les connexions après la fermeture du popup
                 }
             }, 1000);
@@ -63,15 +62,13 @@ function ConfigSocialMedia() {
             });
 
             const data = response.data;
-            console.warn("Données reçues :", data);
 
             // Mettre à jour l'état avec les connexions sociales
             const connections = {
-                facebook: data.includes('facebook'),
-                twitter: data.includes('twitter'),
-                instagram: data.includes('instagram'),
+                facebook: data.some(item => item.provider === 'facebook'),
+                twitter: data.some(item => item.provider === 'twitter'),
+                instagram: data.some(item => item.provider === 'instagram'),
             };
-            console.log(connections,data);
             setSocialConnections(connections); // Mettre à jour l'état des connexions
             setLoading(false); // Fin du chargement
         } catch (err) {
