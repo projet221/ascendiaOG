@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { axiosInstance } from "../../utils/axios.jsx";
 
 function Callback() {
-    const navigate = useNavigate();
     const location = useLocation();
     const user_id = localStorage.getItem("user_id");
 
@@ -11,7 +10,7 @@ function Callback() {
         const handleCallback = async () => {
             if (!user_id) {
                 console.error("Aucun user_id trouvé dans le localStorage.");
-                navigate("/login"); // Redirige si pas d'utilisateur
+                window.close(); // Ferme la fenêtre si aucun user_id trouvé
                 return;
             }
 
@@ -27,14 +26,18 @@ function Callback() {
                 );
 
                 console.log("Réponse API:", response.data);
-                navigate("/Dashboard");
+
+                // Fermer la fenêtre après le traitement
+                window.close();
             } catch (err) {
                 console.error("Erreur lors de l'appel API:", err);
+                // Ferme la fenêtre même en cas d'erreur
+                window.close();
             }
         };
 
         handleCallback();
-    }, [navigate, location.search, user_id]);
+    }, [location.search, user_id]);
 
     return <div>Redirection en cours...</div>;
 }
