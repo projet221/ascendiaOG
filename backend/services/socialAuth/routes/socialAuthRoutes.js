@@ -49,6 +49,7 @@ router.get("/connect/instagram/callback", (req, res) => {
         return res.status(400).send("Code d'autorisation manquant");
     }
 
+    // Étape 1 : Échanger le code d'autorisation contre un token court terme
     const tokenRequestUrl = `https://api.instagram.com/oauth/access_token`;
     const requestBody = {
         client_id: process.env.INSTAGRAM_CLIENT_ID,
@@ -58,12 +59,15 @@ router.get("/connect/instagram/callback", (req, res) => {
         code: code,
     };
 
+    // Requête pour obtenir un token court terme
     axios.post(tokenRequestUrl, new URLSearchParams(requestBody))
-    .then(() => {
+    .then((response) => {
+        const { access_token: shortTermToken } = response.data;
 
-        const longTermTokenRequestUrl = `https://graph.instagram.com/access_token?grant_type=authorization_code&client_id=${process.env.INSTAGRAM_CLIENT_ID}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&redirect_uri=${process.env.PROXY_GATEWAY}/api/socialauth/connect/instagram/callback&code=${code}`;
+        // Étape 2 : Échanger le token court terme contre un token long terme
+        const longTermTokenRequestUrl = `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_id=${process.env.INSTAGRAM_CLIENT_ID}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&redirect_uri=${process.env.PROXY_GATEWAY}/api/socialauth/connect/instagram/callback&access_token=${shortTermToken}`;
 
-        // Faire la requête pour obtenir un token long terme
+        // Requête pour obtenir un token long terme
         axios.get(longTermTokenRequestUrl)
         .then((longTermResponse) => {
             const longTermToken = longTermResponse.data.access_token;
