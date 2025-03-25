@@ -32,7 +32,6 @@ passport.use(
             session: false,
             scope :
                 [
-                    'instagram_basic', // Accès de base aux informations publiques du profil Instagram.
                     'instagram_manage_insights', // Permet d'accéder aux insights d'Instagram (statistiques de l'utilisateur).
                     'instagram_content_publish', // Permet de publier des contenus sur le compte Instagram.
                     'instagram_manage_comments', // Permet de gérer les commentaires sur le contenu d'Instagram.
