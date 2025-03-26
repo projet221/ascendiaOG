@@ -42,9 +42,9 @@ const postController = {
 
                 const twitterClient = client.readWrite;
                 const twitterBearer = bearer.readOnly;
-                if(image){
-                    const filepath = URL.createObjectURL(fichier);
-                    await tweetWithImage(filepath,message,twitterClient);
+                if(fichier){
+                    //const filepath = URL.createObjectURL(fichier);
+                    await tweetWithImage(fichier,message,twitterClient);
                 }
                
         }
