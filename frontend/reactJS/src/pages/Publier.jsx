@@ -66,7 +66,7 @@ function Publier() {
                             value={message}
                             onChange={handleMessageChange}
                         ></textarea>
-                        <AjoutFichierBouton setFichier={setFichier}/>
+                        <AjoutFichierBouton gestionFichier={setFichier}/>
                         <label htmlFor="publish-select">Choisissez une action :</label>
                         <select
                             id="publish-select"
