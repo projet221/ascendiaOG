@@ -28,6 +28,8 @@ function Publier() {
             let filepath = null;
             if(fichier){
                 filepath =  URL.createObjectURL(fichier);
+                console.log("le fichier dans publier",fichier);
+                console.log("son url", filepath);
             }
             const response = await axiosInstance.post(
                 "/api/posts",
@@ -46,6 +48,9 @@ function Publier() {
             console.error("Erreur lors de la publication :", err.message);
         }
     };
+    useEffect(()=>{
+        console.log("le fichier",fichier);
+    },[fichier])
 
     return (
         <div>
