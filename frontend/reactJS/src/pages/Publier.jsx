@@ -25,7 +25,7 @@ function Publier() {
             return;
         }
         try {
-            filepath;
+            let filepath = null;
             if(fichier){
                 filepath =  URL.createObjectURL(fichier);
             }
