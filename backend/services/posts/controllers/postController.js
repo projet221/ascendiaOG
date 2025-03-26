@@ -24,7 +24,7 @@ const postController = {
             const {userId, networks, message, fichier} = req.body;
             //demande de token associé à un user id
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
-            console.log(response.data);
+            //console.log(response.data);
             console.log("userid:"+userId+", message:"+message + " "+networks + " "+typeof(networks) +" " +networks.includes("twitter"));
             //si twitter fait parti des choix frontend
             if(networks.includes("twitter")){
@@ -42,10 +42,10 @@ const postController = {
 
                 const twitterClient = client.readWrite;
                 const twitterBearer = bearer.readOnly;
-                if(fichier){
+                
                     //const filepath = URL.createObjectURL(fichier);
                     await tweetWithImage(fichier,message,twitterClient);
-                }
+                
                
         }
         
