@@ -27,13 +27,14 @@ function Publier() {
         try {
             let filepath = null;
             if(fichier){
+                const fileBuffer = await fichier.arrayBuffer();
                 filepath =  URL.createObjectURL(fichier);
                 console.log("le fichier dans publier",fichier);
-                console.log("son url", filepath);
+                console.log("son url", fileBuffer);
             }
             const response = await axiosInstance.post(
                 "/api/posts",
-                { userId, networks, message ,filepath},
+                { userId, networks, message ,fileBuffer},
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -42,7 +43,9 @@ function Publier() {
             );
 
             const data = await response.data;
+            if(response.data){
             console.log("Post publié avec succès :", data);
+            }
             //window.location.reload();
         } catch (err) {
             console.error("Erreur lors de la publication :", err.message);

@@ -1,22 +1,38 @@
 require("dotenv").config({ path: __dirname + "/.env" });
 const { download } = require("./utilities");
 
-const tweetWithImage = async (imagePath, text, twitterClient) => {
-  try {
-    // Vérifier si un chemin d'image est fourni et si l'image existe
-    if (imagePath) {
-      
-      const mediaId = await twitterClient.v2.uploadMediaFromUrl(imagePath);
+  const tweetWithImage = async (fileBuffer, text, twitterClient) => {
+    try {
+      // Vérifier si un chemin d'image est fourni et si l'image existe
+      if (fileBuffer) {
+        const tweetContent = text;
+          try {
+              const mediaId = await twitterClient.v1.uploadMedia(Buffer.from(fileBuffer), {
+                mimeType: fichier.type}
+              );
+
+              await twitterClient.v2.tweet({
+                  text: tweetContent,
+                  media: {
+                      media_ids: [mediaId]
+                  }
+              });
+          } catch (e) {
+              console.log(e)
+          
+      }
+
+      /*const mediaData = await twitterClient.v1.uploadMedia(imagePath, { type: 'image/jpeg' });
       
       // Publier le tweet avec l'image
       const tweetContent = text;
       const tweet = await twitterClient.v2.tweet({
         status: tweetContent,
-        media_ids: [mediaId]  // Lier l'image téléchargée au tweet
+        media_ids: [mediaData.media_id_string]  // Lier l'image téléchargée au tweet
       });
 
       console.log('Tweet envoyé avec succès avec l\'image:', tweet);
-    } else {
+    */} else {
       // Si aucune image n'est fournie, tweeter uniquement le texte
       try {
         const tweet = await twitterClient.v2.tweet(text);
