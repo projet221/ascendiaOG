@@ -43,7 +43,7 @@ function Publier() {
 
             const data = await response.data;
             console.log("Post publié avec succès :", data);
-            window.location.reload();
+            //window.location.reload();
         } catch (err) {
             console.error("Erreur lors de la publication :", err.message);
         }
