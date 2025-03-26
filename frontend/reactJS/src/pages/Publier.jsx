@@ -25,9 +25,13 @@ function Publier() {
             return;
         }
         try {
+            filepath;
+            if(fichier){
+                filepath =  URL.createObjectURL(fichier);
+            }
             const response = await axiosInstance.post(
                 "/api/posts",
-                { userId, networks, message ,fichier},
+                { userId, networks, message ,filepath},
                 {
                     headers: {
                         "Content-Type": "application/json",
