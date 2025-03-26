@@ -50,7 +50,7 @@ function Publier() {
     };
     useEffect(()=>{
         console.log("le fichier",fichier);
-    },[fichier])
+    },[fichier]);
 
     return (
         <div>
