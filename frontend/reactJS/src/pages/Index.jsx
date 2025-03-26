@@ -29,10 +29,10 @@ const Index = () => {
                            {/* <Publier/>*/}
 
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <Publier/>
+            {/*<Publier/>*/}
 
                  <div className="grid item-center bg-white p-8 rounded-lg shadow-md ">
-               <Publier/>
+               {/*<Publier/>*/}
                       
                    {connexion ? <Login/> : <Register/>}
                     <button className="text-center mt-6" onClick={toggleConnexion}>
