@@ -10,7 +10,7 @@ function Publier() {
     const [userId, setUserId] = useState(localStorage.getItem("user_id"));
     const [networks, setNetworks] = useState([]);
     const [action, setAction] = useState(""); // État pour gérer l'action choisie
-
+    const [fichier,setFichier] = useState(null);
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     };
@@ -27,7 +27,7 @@ function Publier() {
         try {
             const response = await axiosInstance.post(
                 "/api/posts",
-                { userId, networks, message },
+                { userId, networks, message ,fichier},
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ function Publier() {
                             value={message}
                             onChange={handleMessageChange}
                         ></textarea>
-                        <AjoutFichierBouton />
+                        <AjoutFichierBouton setFichier={setFichier}/>
                         <label htmlFor="publish-select">Choisissez une action :</label>
                         <select
                             id="publish-select"

@@ -20,26 +20,36 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         try {
-            const {userId, networks, message} = req.body;
+            
+            const {userId, networks, message, fichier} = req.body;
+            //demande de token associé à un user id
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
             console.log(response.data);
             console.log("userid:"+userId+", message:"+message);
-            const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
-            console.log("access token twitter"+accessToken,"access token secret"+secretToken);
-            const client = new TwitterApi({
-            appKey: process.env.TWITTER_KEY,
-            appSecret: process.env.TWITTER_SECRET,
-            accessToken: accessToken,
-            accessSecret: secretToken,
-            });
+            //si twitter fait parti des choix frontend
+            if(networks.includes("twitter")){
+                
+                const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
+                console.log("access token twitter"+accessToken,"access token secret"+secretToken);
+                const client = new TwitterApi({
+                appKey: process.env.TWITTER_KEY,
+                appSecret: process.env.TWITTER_SECRET,
+                accessToken: accessToken,
+                accessSecret: secretToken,
+                });
 
-            const bearer = new TwitterApi(process.env.TWITTER_BEARER);
+                const bearer = new TwitterApi(process.env.TWITTER_BEARER);
 
-            const twitterClient = client.readWrite;
-            const twitterBearer = bearer.readOnly;
+                const twitterClient = client.readWrite;
+                const twitterBearer = bearer.readOnly;
+                if(image){
+                    const filepath = URL.createObjectURL(fichier);
+                    await tweetWithImage(filepath,message,twitterClient);
+                }
+               
+        }
+        
 
-            
-            tweetWithImage(null,message,twitterClient);
             res.status(201).json("publication réussie");
         } catch (error) {
             res.status(400).json({ error: error.message });
