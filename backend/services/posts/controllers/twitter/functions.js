@@ -5,13 +5,14 @@ const tweetWithImage = async (imagePath, text, twitterClient) => {
   try {
     // Vérifier si un chemin d'image est fourni et si l'image existe
     if (imagePath) {
-      const mediaData = await twitterClient.v1.uploadMedia(imagePath, { type: 'image/jpeg' });
+      
+      const mediaId = await twitterClient.v2.uploadMediaFromUrl(imagePath);
       
       // Publier le tweet avec l'image
       const tweetContent = text;
       const tweet = await twitterClient.v2.tweet({
         status: tweetContent,
-        media_ids: [mediaData.media_id_string]  // Lier l'image téléchargée au tweet
+        media_ids: [mediaId]  // Lier l'image téléchargée au tweet
       });
 
       console.log('Tweet envoyé avec succès avec l\'image:', tweet);
