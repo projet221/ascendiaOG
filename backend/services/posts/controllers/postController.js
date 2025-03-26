@@ -21,7 +21,7 @@ const postController = {
     createPost: async (req, res) => {
         try {
             
-            const {userId, networks, message, fichier} = req.body;
+            const {userId, networks, message, filepath} = req.body;
             //demande de token associé à un user id
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
             //console.log(response.data);
@@ -44,8 +44,8 @@ const postController = {
                 const twitterBearer = bearer.readOnly;
                 
                     //const filepath = URL.createObjectURL(fichier);
-                    console.log("le fichier en url :" + fichier);
-                    await tweetWithImage(fichier,message,twitterClient);
+                    console.log("le fichier en url :" + filepath);
+                    await tweetWithImage(filepath,message,twitterClient);
                 
                
         }

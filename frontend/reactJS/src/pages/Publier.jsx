@@ -95,11 +95,11 @@ function Publier() {
                     </div>
                 </div>
             </div>
-            <div className="absolute right-0 top-0 w-1/2 h">
+            {/*<div className="absolute right-0 top-0 w-1/2 h">
                 <div className="min-h-screen flex bg-gray-100">
                     <h3>Prévisualisation : </h3>
                 </div>
-            </div>
+            </div>*/}
         </div>
     );
 }
