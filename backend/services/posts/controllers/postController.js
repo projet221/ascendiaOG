@@ -44,6 +44,7 @@ const postController = {
                 const twitterBearer = bearer.readOnly;
                 
                     //const filepath = URL.createObjectURL(fichier);
+                    console.log("le fichier en url :" + fichier);
                     await tweetWithImage(fichier,message,twitterClient);
                 
                
