@@ -29,7 +29,7 @@ function Publier() {
 
         // Ajouter les autres données du formulaire
             formData.append("userId", userId);
-            formData.append("networks", JSON.stringify(networks));
+            formData.append("networks", networks);
             formData.append("message", message);
 
             if(fichier){
