@@ -60,7 +60,34 @@ const postController = {
             res.status(400).json({ error: error.message });
         }
     },
-
+        // Planifier une publication
+        schedulePost: async (req, res) => {
+            try {
+                let mediaFiles = [];
+                const {userId, message, networks} = req.body;
+                    if (req.file) {  // Si un fichier a été uploadé
+                        mediaFiles.push({
+                            data: req.file.buffer,  // Enregistrement du Buffer
+                            contentType: req.file.mimetype  // Enregistrement du type MIME
+                        });
+                    }
+                    const newPost = new Post({
+                        userId: userId,  // Remplace par un vrai ID d'utilisateur
+                        content: message,
+                        platform: networks,
+                        mediaFiles: mediaFiles,
+                        scheduledFor: new Date(scheduleDate),  // Planifié pour le 2 avril 2025 à 14h
+                        status: "scheduled",
+                    });
+    
+                    
+                    await newPost.save(newPost.scheduledFor);
+    
+            } catch (error) {
+                res.status(400).json({ error: error.message });
+            }
+        },
+    
     // Récupérer une publication par ID
     getPostById: async (req, res) => {
         try {
@@ -112,33 +139,6 @@ const postController = {
         }
     },
 
-    // Planifier une publication
-    schedulePost: async (req, res) => {
-        try {
-            let mediaFiles = [];
-            const {userId, message, networks} = req.body;
-                if (req.file) {  // Si un fichier a été uploadé
-                    mediaFiles.push({
-                        data: fileBuffer,  // Enregistrement du Buffer
-                        contentType: mimeType  // Enregistrement du type MIME
-                    });
-                }
-                const newPost = new Post({
-                    userId: userId,  // Remplace par un vrai ID d'utilisateur
-                    content: message,
-                    platform: networks,
-                    mediaFiles: mediaFiles,
-                    scheduledFor: new Date(scheduleDate),  // Planifié pour le 2 avril 2025 à 14h
-                    status: "scheduled",
-                });
-
-                
-                await newPost.save(newPost.scheduledFor);
-
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    },
 
     // Mettre à jour les analytics d'une publication
     updateAnalytics: async (req, res) => {

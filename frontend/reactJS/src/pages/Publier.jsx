@@ -88,7 +88,7 @@ function Publier() {
                 alert("Veuillez choisir une date de planification");
                 return;
             }
-            formData.append("scheduleDate",new Date(scheduleDate));
+            formData.append("scheduleDate",scheduleDate);
 
             console.log("le formdata file",formData.get('file') );
             const response = await axiosInstance.post(
