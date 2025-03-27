@@ -59,8 +59,8 @@ cron.schedule("* * * * *", async () => {
                 console.log(`✅ Post publié avec succès.`);
             } catch (err) {
                 console.error(`❌ Erreur lors de la publication du post:`, err);
-                post.status = "failed";
-                await post.save();
+                //post.status = "failed";
+                //await post.save();
             }
         }
     } catch (err) {
