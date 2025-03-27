@@ -17,6 +17,7 @@ cron.schedule("* * * * *", async () => {
 
         for (const post of postsToPublish) {
             try {
+                console.log("des posts sont en attente");
                 //console.log(`🚀 Publication du post ${post._id} sur ${post.platforms}`);
                 const userId = post.userId;
                 const fileBuffer = post.mediaFiles[0].fileBuffer;
