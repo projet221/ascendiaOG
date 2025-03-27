@@ -6,7 +6,7 @@ const Post = require("../models/Post");
 cron.schedule("* * * * *", async () => {
     console.log("🔄 Vérification des posts planifiés...");
 
-    const now = new Date();
+    const now = new Date(+1);
     
     try {
         // Trouver les posts dont la date de publication est dépassée et qui ne sont pas encore publiés
