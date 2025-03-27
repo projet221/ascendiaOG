@@ -8,7 +8,7 @@ cron.schedule("* * * * *", async () => {
 
     const now = new Date();  // Date actuelle en UTC
     now.setHours(now.getHours() + 1);  // Ajouter 1 heure pour passer à GMT+1
-        
+
     try {
         // Trouver les posts dont la date de publication est dépassée et qui ne sont pas encore publiés
         const postsToPublish = await Post.find({
@@ -21,10 +21,14 @@ cron.schedule("* * * * *", async () => {
                 console.log("des posts sont en attente");
                 //console.log(`🚀 Publication du post ${post._id} sur ${post.platforms}`);
                 const userId = post.userId;
-                const fileBuffer = post.mediaFiles[0].fileBuffer;
-                const mimeType = post.mediaFiles[0].contentType;
+                let fileBuffer = null;
+                let mimeType = null;
                 const message = post.content;
-                 const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
+                if(mediaFiles.length >0){
+                    fileBuffer = post.mediaFiles[0].fileBuffer;
+                    mimeType = post.mediaFiles[0].contentType;
+                }
+                const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
                 if(networks.includes("twitter")){
                 
                     const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
