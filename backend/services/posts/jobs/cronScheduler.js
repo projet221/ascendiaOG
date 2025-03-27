@@ -50,9 +50,9 @@ cron.schedule("* * * * *", async () => {
                 post.publishedAt = new Date();
                 await post.save();
 
-                console.log(`✅ Post ${post._id} publié avec succès.`);
+                console.log(`✅ Post publié avec succès.`);
             } catch (err) {
-                console.error(`❌ Erreur lors de la publication du post ${post._id}:`, err);
+                console.error(`❌ Erreur lors de la publication du post:`, err);
                 post.status = "failed";
                 await post.save();
             }
