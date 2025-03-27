@@ -1,6 +1,8 @@
 const cron = require("node-cron");
 const Post = require("../models/Post");
 const axios = require("axios");
+const { TwitterApi } = require("twitter-api-v2");
+const { tweetWithImage} = require("../controllers/twitter/functions");
   // Service qui publie le post
 
 // Tâche cron exécutée toutes les minutes
@@ -30,7 +32,7 @@ cron.schedule("* * * * *", async () => {
                 }
                 console.log(`Url a la quelle on fait la requete : ${process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`} `);
                 const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
-                if(networks.includes("twitter")){
+                if(post.platform.includes("twitter")){
                 
                     const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
                     console.log("access token twitter"+accessToken,"access token secret"+secretToken);
