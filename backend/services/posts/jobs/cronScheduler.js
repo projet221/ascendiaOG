@@ -27,7 +27,7 @@ cron.schedule("* * * * *", async () => {
                 let mimeType = null;
                 const message = post.content;
                 if(post.mediaFiles && post.mediaFiles.length >0){
-                    fileBuffer = post.mediaFiles[0].fileBuffer;
+                    fileBuffer = post.mediaFiles[0].data;
                     mimeType = post.mediaFiles[0].contentType;
                 }
                 console.log(`Url a la quelle on fait la requete : ${process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`} `);
