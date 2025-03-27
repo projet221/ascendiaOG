@@ -12,7 +12,7 @@ function Publier() {
     const [action, setAction] = useState(""); // État pour gérer l'action choisie
     const [fichier,setFichier] = useState(null);
     const [scheduleDate, setScheduleDate] = useState("");
-    
+
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     };
@@ -33,7 +33,7 @@ function Publier() {
             formData.append("userId", userId);
             formData.append("networks", networks);
             formData.append("message", message);
-
+            
             if(fichier){
                 formData.append("file", fichier);
             }
