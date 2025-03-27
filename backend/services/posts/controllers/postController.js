@@ -88,7 +88,8 @@ const postController = {
                     .catch(err => {
                         console.log('Erreur lors de l\'enregistrement du post:', err);
                     });
-    
+                    res.status(200).json({ message: "Post publié avec succès" });
+
             } catch (error) {
                 res.status(400).json({ error: error.message });
             }
