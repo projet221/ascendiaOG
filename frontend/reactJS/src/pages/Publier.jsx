@@ -43,7 +43,7 @@ function Publier() {
             formData.append("userId", userId);
             formData.append("networks", networks);
             formData.append("message", message);
-            formData.append("scheduleDate",scheduleDate);
+            
             if(fichier){
                 formData.append("file", fichier);
             }
@@ -66,6 +66,7 @@ function Publier() {
             console.error("Erreur lors de la publication :", err.message);
         }
     };
+
     const planifierPublication = async () => {
         if (!message || !networks.length) {
             alert("Veuillez remplir tous les champs");
@@ -83,6 +84,12 @@ function Publier() {
                 formData.append("file", fichier);
             }
             
+            if((scheduleDate === "" || new Date(scheduleDate)<new Date())){
+                alert("Veuillez choisir une date de planification");
+                return;
+            }
+            formData.append("scheduleDate",new Date(scheduleDate));
+
             console.log("le formdata file",formData.get('file') );
             const response = await axiosInstance.post(
                 "/api/posts/schedule",
@@ -94,11 +101,11 @@ function Publier() {
 
             const data = await response.data;
             if(response.data){
-            console.log("Post publié avec succès :", data);
+            console.log("Post planifié avec succès :", data);
             }
             window.location.reload();
         } catch (err) {
-            console.error("Erreur lors de la publication :", err.message);
+            console.error("Erreur lors de la planification :", err.message);
         }
     };
     useEffect(()=>{
