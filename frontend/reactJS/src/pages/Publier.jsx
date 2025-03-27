@@ -26,8 +26,9 @@ function Publier() {
         }
         try {
             let filepath = null;
+            let fileBuffer;
             if(fichier){
-                const fileBuffer = await fichier.arrayBuffer();
+                fileBuffer = await fichier.arrayBuffer();
                 filepath =  URL.createObjectURL(fichier);
                 console.log("le fichier dans publier",fichier);
                 console.log("son url", fileBuffer);
