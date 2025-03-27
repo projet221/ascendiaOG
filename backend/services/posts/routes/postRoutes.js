@@ -5,7 +5,7 @@ const postController = require('../controllers/postController');
 
 router.get('/', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
-router.put('/schedule', postController.schedulePost);
+router.post('/schedule',upload.single('file'), postController.schedulePost);
 router.get('/:id', postController.getPostById);
 router.put('/:id', postController.updatePost);
 router.delete('/:id', postController.deletePost);
