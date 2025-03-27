@@ -16,7 +16,6 @@ cron.schedule("* * * * *", async () => {
             scheduledFor: { $lte: now },
             status: "scheduled",
         });
-        console.log(" voici les posts :",postsToPublish,"\n ajd : ",now,);
         for (const post of postsToPublish) {
             try {
                 console.log("des posts sont en attente");
@@ -29,6 +28,7 @@ cron.schedule("* * * * *", async () => {
                     fileBuffer = post.mediaFiles[0].fileBuffer;
                     mimeType = post.mediaFiles[0].contentType;
                 }
+                console.log(`Url a la quelle on fait la requete : ${process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`} `);
                 const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
                 if(networks.includes("twitter")){
                 
@@ -47,7 +47,7 @@ cron.schedule("* * * * *", async () => {
                     //const twitterBearer = bearer.readOnly;
     
                         //const filepath = URL.createObjectURL(fichier);
-                        console.log("le fichier en buffer :",fileBuffer);
+                        //console.log("le fichier en buffer :",fileBuffer);
                         await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
     
                         }
