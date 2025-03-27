@@ -40,9 +40,6 @@ function Publier() {
                 "/api/posts",
                 formData,
                 {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
                 }
             );
 

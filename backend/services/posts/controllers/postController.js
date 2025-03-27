@@ -21,7 +21,7 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         try {
-            
+            console.log("file recu",req.file);
             const { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.type : null;
