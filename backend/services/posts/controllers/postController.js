@@ -3,6 +3,7 @@ const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const { download } = require("./twitter/utilities");
 const axios = require("axios");
+const upload = require('../middlewares/upload'); 
 
 const postController = {
     // Récupérer toutes les publications
@@ -21,7 +22,10 @@ const postController = {
     createPost: async (req, res) => {
         try {
             
-            const {userId, networks, message, fileBuffer} = req.body;
+            const { userId, networks, message } = req.body;
+            const fileBuffer = req.file ? req.file.buffer : null;
+            const mimeType = req.file ? req.file.type : null;
+
             //demande de token associé à un user id
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
             //console.log(response.data);
@@ -45,13 +49,13 @@ const postController = {
                 
                     //const filepath = URL.createObjectURL(fichier);
                     console.log("le fichier en buffer :",fileBuffer);
-                    await tweetWithImage(fileBuffer,message,twitterClient);
+                    await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
                 
                
         }
         
 
-            res.status(201).json("publication réussie");
+            res.status(200).json({ message: "Post publié avec succès" });
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
