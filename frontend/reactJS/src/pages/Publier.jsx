@@ -11,6 +11,8 @@ function Publier() {
     const [networks, setNetworks] = useState([]);
     const [action, setAction] = useState(""); // État pour gérer l'action choisie
     const [fichier,setFichier] = useState(null);
+    const [scheduleDate, setScheduleDate] = useState("");
+    
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     };
