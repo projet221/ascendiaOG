@@ -33,9 +33,12 @@ function Publier() {
             formData.append("userId", userId);
             formData.append("networks", networks);
             formData.append("message", message);
-            
+
             if(fichier){
                 formData.append("file", fichier);
+            }
+            if(scheduleDate!="" && new Date(scheduleDate).getTime()>Date.now()){
+                formData.append("scheduleDate",scheduleDate);
             }
             console.log("le formdata file",formData.get('file') );
             const response = await axiosInstance.post(

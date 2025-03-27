@@ -23,12 +23,34 @@ const postController = {
             const { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
-
+            const scheduleDate = req.scheduleDate;
             //demande de token associé à un user id
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
             //console.log(response.data);
             console.log("userid:"+userId+", message:"+message + " "+networks + " "+typeof(networks) +" " +networks.includes("twitter"));
             //si twitter fait parti des choix frontend
+
+            if(scheduleDate){ //si scheduleDate est défini on planifie
+                let mediaFiles = [];
+
+                if (req.file) {  // Si un fichier a été uploadé
+                    mediaFiles.push({
+                        data: fileBuffer,  // Enregistrement du Buffer
+                        contentType: mimeType  // Enregistrement du type MIME
+                    });
+                }
+                const newPost = new Post({
+                    userId: userId,  // Remplace par un vrai ID d'utilisateur
+                    content: message,
+                    platform: networks,
+                    mediaFiles: mediaFiles,
+                    scheduledFor: new Date(scheduleDate),  // Planifié pour le 2 avril 2025 à 14h
+                    status: "scheduled",
+                });
+
+                await newPost.save();
+                
+            } else {
             if(networks.includes("twitter")){
 
                 const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
@@ -49,7 +71,7 @@ const postController = {
                     console.log("le fichier en buffer :",fileBuffer);
                     await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
 
-
+            }
         }
 
 

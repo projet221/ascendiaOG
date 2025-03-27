@@ -12,14 +12,18 @@ const postSchema = new mongoose.Schema({
         trim: true,
         maxlength: 2000
     },
-    platform: {
+    platform: [{
         type: String,
         enum: ['twitter', 'facebook', 'instagram', 'linkedin'],
         required: true
-    },
+    }],
     mediaUrls: [{
         type: String,
         trim: true
+    }],
+    mediaFiles: [{
+        data: Buffer,  // Stocke le fichier sous forme de buffer
+        contentType: String  // Stocke le type MIME (ex: image/png, video/mp4)
     }],
     scheduledFor: {
         type: Date
