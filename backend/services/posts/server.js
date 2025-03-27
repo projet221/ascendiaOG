@@ -19,7 +19,7 @@ connectDB();
 // Routes
 app.use(postRoutes);
 app.use(cors());
-app.use(express.json());
+//app.use(express.json());
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
