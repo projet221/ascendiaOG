@@ -24,7 +24,7 @@ cron.schedule("* * * * *", async () => {
                 let fileBuffer = null;
                 let mimeType = null;
                 const message = post.content;
-                if(mediaFiles && mediaFiles.length >0){
+                if(post.mediaFiles && post.mediaFiles.length >0){
                     fileBuffer = post.mediaFiles[0].fileBuffer;
                     mimeType = post.mediaFiles[0].contentType;
                 }
