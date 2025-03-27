@@ -19,9 +19,9 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         try {
-            console.log("file recu",req); // ça plante
+            console.log("file recu",req.file); // ça plante
             const { userId, networks, message } = req.body;
-            //const fileBuffer = req.file ? req.file.buffer : null;
+            const fileBuffer = req.file ? req.file.buffer : null;
             //const mimeType = req.file ? req.file.mimeType : null;
 
             //demande de token associé à un user id
@@ -30,7 +30,7 @@ const postController = {
             console.log("userid:"+userId+", message:"+message + " "+networks + " "+typeof(networks) +" " +networks.includes("twitter"));
             //si twitter fait parti des choix frontend
             if(networks.includes("twitter")){
-                
+
                 const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
                 console.log("access token twitter"+accessToken,"access token secret"+secretToken);
                 const client = new TwitterApi({
@@ -40,18 +40,18 @@ const postController = {
                 accessSecret: secretToken,
                 });
 
-                const bearer = new TwitterApi(process.env.TWITTER_BEARER);
+                //const bearer = new TwitterApi(process.env.TWITTER_BEARER);
 
                 const twitterClient = client.readWrite;
-                const twitterBearer = bearer.readOnly;
-                
+                //const twitterBearer = bearer.readOnly;
+
                     //const filepath = URL.createObjectURL(fichier);
                     console.log("le fichier en buffer :",fileBuffer);
                     await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
-                
-               
+
+
         }
-        
+
 
             res.status(200).json({ message: "Post publié avec succès" });
         } catch (error) {
