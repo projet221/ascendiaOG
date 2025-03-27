@@ -146,7 +146,7 @@ function Publier() {
                             className="border p-2 rounded-md"
                         />
                         <button
-                            onClick={handleActionChange} // Appeler publier au clic
+                            onClick={handlePublish} // Appeler publier au clic
                             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
                         >
                             Publier
