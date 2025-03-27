@@ -30,27 +30,7 @@ const postController = {
             console.log("userid:"+userId+", message:"+message + " "+networks + " "+typeof(networks) +" " +networks.includes("twitter"));
             //si twitter fait parti des choix frontend
 
-            if(scheduleDate){ //si scheduleDate est défini on planifie
-                let mediaFiles = [];
-
-                if (req.file) {  // Si un fichier a été uploadé
-                    mediaFiles.push({
-                        data: fileBuffer,  // Enregistrement du Buffer
-                        contentType: mimeType  // Enregistrement du type MIME
-                    });
-                }
-                const newPost = new Post({
-                    userId: userId,  // Remplace par un vrai ID d'utilisateur
-                    content: message,
-                    platform: networks,
-                    mediaFiles: mediaFiles,
-                    scheduledFor: new Date(scheduleDate),  // Planifié pour le 2 avril 2025 à 14h
-                    status: "scheduled",
-                });
-
-                await newPost.save();
-                
-            } else {
+            
             if(networks.includes("twitter")){
 
                 const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
@@ -71,7 +51,7 @@ const postController = {
                     console.log("le fichier en buffer :",fileBuffer);
                     await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
 
-            }
+            
         }
 
 
@@ -135,19 +115,25 @@ const postController = {
     // Planifier une publication
     schedulePost: async (req, res) => {
         try {
-            const post = await Post.findByIdAndUpdate(
-                req.params.id,
-                {
-                    $set: {
-                        scheduledFor: req.body.scheduledFor,
-                        status: 'scheduled'
-                    }
-                },
-                { new: true, runValidators: true }
-            );
+            let mediaFiles = [];
+            const {userId, message, networks} = req.body;
+                if (req.file) {  // Si un fichier a été uploadé
+                    mediaFiles.push({
+                        data: fileBuffer,  // Enregistrement du Buffer
+                        contentType: mimeType  // Enregistrement du type MIME
+                    });
+                }
+                const newPost = new Post({
+                    userId: userId,  // Remplace par un vrai ID d'utilisateur
+                    content: message,
+                    platform: networks,
+                    mediaFiles: mediaFiles,
+                    scheduledFor: new Date(scheduleDate),  // Planifié pour le 2 avril 2025 à 14h
+                    status: "scheduled",
+                });
 
-            if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
-            res.json(post);
+                await newPost.save();
+
         } catch (error) {
             res.status(400).json({ error: error.message });
         }

@@ -20,8 +20,53 @@ function Publier() {
     const handleActionChange = (e) => {
         setAction(e.target.value); // Mettre à jour l'action choisie
     };
+    const handlePublish = () => {
+        if (action === "maintenant") {
+            publierMaintenant();
+        } else if (action === "planifier") {
+            planifierPublication();
+        } else if (action === "brouillon") {
+            //enregistrerBrouillon();
+        } else {
+            alert("Veuillez sélectionner une action !");
+        }
+    };
+    const publierMaintenant = async () => {
+        if (!message || !networks.length) {
+            alert("Veuillez remplir tous les champs");
+            return;
+        }
+        try {
+            const formData = new FormData();
 
-    const publier = async () => {
+        // Ajouter les autres données du formulaire
+            formData.append("userId", userId);
+            formData.append("networks", networks);
+            formData.append("message", message);
+            formData.append("scheduleDate",scheduleDate);
+            if(fichier){
+                formData.append("file", fichier);
+            }
+            
+            console.log("le formdata file",formData.get('file') );
+            const response = await axiosInstance.post(
+                "/api/posts",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                  }
+            );
+
+            const data = await response.data;
+            if(response.data){
+            console.log("Post publié avec succès :", data);
+            }
+            window.location.reload();
+        } catch (err) {
+            console.error("Erreur lors de la publication :", err.message);
+        }
+    };
+    const planifierPublication = async () => {
         if (!message || !networks.length) {
             alert("Veuillez remplir tous les champs");
             return;
@@ -37,12 +82,10 @@ function Publier() {
             if(fichier){
                 formData.append("file", fichier);
             }
-            if(scheduleDate!="" && new Date(scheduleDate).getTime()>Date.now()){
-                formData.append("scheduleDate",scheduleDate);
-            }
+            
             console.log("le formdata file",formData.get('file') );
             const response = await axiosInstance.post(
-                "/api/posts",
+                "/api/posts/schedule",
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -53,7 +96,7 @@ function Publier() {
             if(response.data){
             console.log("Post publié avec succès :", data);
             }
-            //window.location.reload();
+            window.location.reload();
         } catch (err) {
             console.error("Erreur lors de la publication :", err.message);
         }
@@ -103,7 +146,7 @@ function Publier() {
                             className="border p-2 rounded-md"
                         />
                         <button
-                            onClick={publier} // Appeler publier au clic
+                            onClick={handleActionChange} // Appeler publier au clic
                             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
                         >
                             Publier
