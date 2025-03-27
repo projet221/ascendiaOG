@@ -1,11 +1,12 @@
 require("dotenv").config({ path: __dirname + "/.env" });
-const { download } = require("./utilities");
+//const { download } = require("./utilities");
 
   const tweetWithImage = async (fileBuffer,mimeType, text, twitterClient) => {
     try {
       // Vérifier si un chemin d'image est fourni et si l'image existe
       if (fileBuffer) {
         const tweetContent = text;
+        console.log(mimeType);
           try {
               const mediaId = await twitterClient.v1.uploadMedia(Buffer.from(fileBuffer), {
                 mimeType: mimeType}
