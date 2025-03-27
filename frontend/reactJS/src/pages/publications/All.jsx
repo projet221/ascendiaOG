@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import SelectUnCompte from "../components/SelectUnCompte.jsx";
-import AjoutFichierBouton from "../components/AjoutFichierBouton.jsx";
-import BarreHaut from "../components/BarreHaut.jsx";
-import SidebarPublication from "../components/SideBarPublication.jsx";
+import SelectUnCompte from "../../components/SelectUnCompte.jsx";
+import BarreHaut from "../../components/BarreHaut.jsx";
+import SidebarPublication from "../../components/SideBarPublication.jsx";
 
 
 function Publier(){

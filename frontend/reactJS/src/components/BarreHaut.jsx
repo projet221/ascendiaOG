@@ -1,6 +1,14 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const BarreHaut = () => {
+  
+  const [menuOuvert, setMenuOuvert] = useState(false);
+  
+    const changeMenu = () => {
+      setMenuOuvert(!menuOuvert);
+    };
+ 
   return (
     <nav className="bg-white fixed w-full top-0 left-0 z-50 shadow">
       <div className="w-full flex h-16 items-center justify-between px-4">
@@ -19,7 +27,7 @@ const BarreHaut = () => {
           <div className="flex space-x-6">
             {[
               { label: "Dashboard", to: "/dashboard" },
-              { label: "Publications", to: "/publications" },
+              { label: "Publications", to: "/publications/all" },
               { label: "Planification", to: "/planification" },
               { label: "Statistiques", to: "/statistiques" },
             ].map(({ label, to }) => (
@@ -69,25 +77,55 @@ const BarreHaut = () => {
           </NavLink>
 
           {/* Bouton Profil (icône user) */}
-          <button
-            className="p-2 rounded-full border"
-            style={{ borderColor: "#FF0035", color: "#FF0035" }}
-            title="Profil"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
+          <div className="relative">
+            <button
+              onClick={changeMenu}
+              className="p-2 rounded-full border"
+              style={{ borderColor: "#FF0035", color: "#FF0035" }}
+              title="Profil"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5.121 17.804A9.004 9.004 0 0112 15c2.003 0 3.847.66 5.258 1.763M15 10a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5.121 17.804A9.004 9.004 0 0112 15c2.003 0 3.847.66 5.258 1.763M15 10a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+
+            {/* Menu déroulant */}
+            {menuOuvert && (
+              <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md z-50">
+                <NavLink
+                  to="/mon-compte"
+                  onClick={() => setMenuOuvert(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Mon compte
+                </NavLink>
+                <NavLink
+                  to="/parametres"
+                  onClick={() => setMenuOuvert(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Paramètres
+                </NavLink>
+                <NavLink
+                  to="/deconnexion"
+                  onClick={() => setMenuOuvert(false)}
+                  className="block px-4 py-2 text-sm text-red-500 hover:bg-red-100"
+                >
+                  Déconnexion
+                </NavLink>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

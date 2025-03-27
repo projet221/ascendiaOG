@@ -59,7 +59,7 @@ function SelectCompte({networks,setNetworks}) {
 
     return (
         <div>
-            <label htmlFor="account-select" className="block text-gray-700 mb-2">Sélectionnez des comptes :</label>
+            <label htmlFor="account-select" className="block text-gray-700 text-lg mb-2">Sélectionnez des comptes :</label>
             <div className="flex space-x-4">
                 {listeComptes.map((compte) => (
                     <div

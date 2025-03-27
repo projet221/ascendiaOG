@@ -26,10 +26,10 @@ const Index = () => {
             :
             
             <div>
-                           {/* <Publier/>*/}
+                            {/*<Publier/>*/}
 
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            {/*<Publier/>*/}
+            <Publier/>*
 
                  <div className="grid item-center bg-white p-8 rounded-lg shadow-md ">
                {/*<Publier/>*/}
