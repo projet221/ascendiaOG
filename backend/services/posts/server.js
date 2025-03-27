@@ -17,9 +17,10 @@ const PORT = 3002;
 connectDB();
 
 // Routes
-app.use(postRoutes);
 app.use(cors());
-//app.use(express.json());
+
+app.use(postRoutes);
+app.use(express.json());
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);

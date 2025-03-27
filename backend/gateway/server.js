@@ -11,8 +11,15 @@ const PORT = process.env.PORT_GATEWAY || 3000;
 // Middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
 
+app.use('/api/posts', proxy(process.env.PROXY_POSTS, {
+    timeout: 10000,
+    userResDecorator: (proxyRes, proxyResData) => {
+        console.log(`Réponse du proxy vers le backend: ${proxyRes.statusCode}`);
+        return proxyResData; // Pass the response data forward
+    }
+}));
+app.use(express.json());
 app.use((req, res, next) => {
     console.log('Requête reçue :', {
         method: req.method, 
@@ -42,13 +49,7 @@ app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {
 
 
 // Health check endpoint
-app.use('/api/posts', proxy(process.env.PROXY_POSTS, {
-    timeout: 10000,
-    userResDecorator: (proxyRes, proxyResData) => {
-        console.log(`Réponse du proxy vers le backend: ${proxyRes.statusCode}`);
-        return proxyResData; // Pass the response data forward
-    }
-}));
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
