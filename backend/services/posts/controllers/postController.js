@@ -64,7 +64,7 @@ const postController = {
         schedulePost: async (req, res) => {
             try {
                 let mediaFiles = [];
-                const {userId, message, networks} = req.body;
+                const {userId, message, networks,scheduleDate} = req.body;
                     if (req.file) {  // Si un fichier a été uploadé
                         mediaFiles.push({
                             data: req.file.buffer,  // Enregistrement du Buffer
