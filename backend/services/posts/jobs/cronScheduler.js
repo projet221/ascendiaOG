@@ -1,30 +1,38 @@
 const cron = require("node-cron");
 const Post = require("../models/Post");
+const axios = require("axios");
+const { TwitterApi } = require("twitter-api-v2");
+const { tweetWithImage} = require("../controllers/twitter/functions");
   // Service qui publie le post
 
 // Tâche cron exécutée toutes les minutes
 cron.schedule("* * * * *", async () => {
     console.log("🔄 Vérification des posts planifiés...");
 
-    const now = new Date();
-    
+    const now = new Date();  // Date actuelle en UTC
+    now.setHours(now.getHours() + 1);  // Ajouter 1 heure pour passer à GMT+1
+
     try {
         // Trouver les posts dont la date de publication est dépassée et qui ne sont pas encore publiés
         const postsToPublish = await Post.find({
             scheduledFor: { $lte: now },
             status: "scheduled",
         });
-
         for (const post of postsToPublish) {
             try {
                 console.log("des posts sont en attente");
                 //console.log(`🚀 Publication du post ${post._id} sur ${post.platforms}`);
                 const userId = post.userId;
-                const fileBuffer = post.mediaFiles[0].fileBuffer;
-                const mimeType = post.mediaFiles[0].contentType;
+                let fileBuffer = null;
+                let mimeType = null;
                 const message = post.content;
-                 const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
-                if(networks.includes("twitter")){
+                if(post.mediaFiles && post.mediaFiles.length >0){
+                    fileBuffer = post.mediaFiles[0].data;
+                    mimeType = post.mediaFiles[0].contentType;
+                }
+                console.log(`Url a la quelle on fait la requete : ${process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`} `);
+                const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
+                if(post.platform.includes("twitter")){
                 
                     const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
                     console.log("access token twitter"+accessToken,"access token secret"+secretToken);
@@ -41,7 +49,7 @@ cron.schedule("* * * * *", async () => {
                     //const twitterBearer = bearer.readOnly;
     
                         //const filepath = URL.createObjectURL(fichier);
-                        console.log("le fichier en buffer :",fileBuffer);
+                        //console.log("le fichier en buffer :",fileBuffer);
                         await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
     
                         }
@@ -54,8 +62,8 @@ cron.schedule("* * * * *", async () => {
                 console.log(`✅ Post publié avec succès.`);
             } catch (err) {
                 console.error(`❌ Erreur lors de la publication du post:`, err);
-                post.status = "failed";
-                await post.save();
+                //post.status = "failed";
+                //await post.save();
             }
         }
     } catch (err) {
