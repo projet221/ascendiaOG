@@ -22,7 +22,7 @@ const postController = {
             console.log("file recu",req.file); // ça plante
             const { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
-            const mimeType = req.file ? req.file.mimeType : null;
+            const mimeType = req.file ? req.file.mimetype : null;
 
             //demande de token associé à un user id
             const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
