@@ -39,8 +39,6 @@ function Publier() {
             const response = await axiosInstance.post(
                 "/api/posts",
                 formData,
-                {
-                }
             );
 
             const data = await response.data;
