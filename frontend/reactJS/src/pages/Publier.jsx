@@ -35,7 +35,7 @@ function Publier() {
             if(fichier){
                 formData.append("file", fichier);
             }
-            console.log("le formdata file",formData );
+            console.log("le formdata file",formData.get('file') );
             const response = await axiosInstance.post(
                 "/api/posts",
                 formData,
