@@ -39,6 +39,9 @@ function Publier() {
             const response = await axiosInstance.post(
                 "/api/posts",
                 formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                  }
             );
 
             const data = await response.data;
