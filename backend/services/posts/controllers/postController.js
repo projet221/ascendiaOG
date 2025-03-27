@@ -132,7 +132,7 @@ const postController = {
                     status: "scheduled",
                 });
 
-                console.log()
+                
                 await newPost.save(newPost.scheduledFor);
 
         } catch (error) {
