@@ -91,6 +91,12 @@ function Publier() {
                             <option value="planifier">Planifier</option>
                             <option value="brouillon">Enregistrer en brouillon</option>
                         </select>
+                        <input
+                            type="datetime-local"
+                            value={scheduleDate}
+                            onChange={(e) => setScheduleDate(e.target.value)}
+                            className="border p-2 rounded-md"
+                        />
                         <button
                             onClick={publier} // Appeler publier au clic
                             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
