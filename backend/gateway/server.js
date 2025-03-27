@@ -30,7 +30,7 @@ app.use('/api/users', proxy(process.env.PROXY_USERS, {
         return proxyResData; // Pass the response data forward
     }
 }));
-
+//apres si on tweet sans image ça marche quand meme normalement
 // Proxy configuration with logging of response status code
 app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {
     timeout: 10000,

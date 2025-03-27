@@ -2,7 +2,6 @@ const Post = require('../models/Post');
 const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
-const upload = require('../middlewares/upload'); 
 
 const postController = {
     // Récupérer toutes les publications
