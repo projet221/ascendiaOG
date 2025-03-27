@@ -1,5 +1,6 @@
 const cron = require("node-cron");
 const Post = require("../models/Post");
+const axios = require("axios");
   // Service qui publie le post
 
 // Tâche cron exécutée toutes les minutes
