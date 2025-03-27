@@ -25,20 +25,23 @@ function Publier() {
             return;
         }
         try {
-            let filepath = null;
-            let fileBuffer;
+            const formData = new FormData();
+
+        // Ajouter les autres données du formulaire
+            formData.append("userId", userId);
+            formData.append("networks", JSON.stringify(networks));
+            formData.append("message", message);
+
             if(fichier){
-                fileBuffer = await fichier.arrayBuffer();
-                filepath =  URL.createObjectURL(fichier);
-                console.log("le fichier dans publier",fichier);
-                console.log("son url", fileBuffer);
+                formData.append("file", fichier);
             }
+            console.log("le formdata file",formData.file);
             const response = await axiosInstance.post(
                 "/api/posts",
-                { userId, networks, message ,fileBuffer},
+                formData,
                 {
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "multipart/form-data",
                     },
                 }
             );
