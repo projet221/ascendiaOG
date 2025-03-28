@@ -1,75 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
 
 const Calendar = ({ events }) => {
-  const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
+  const [hoveredDate, setHoveredDate] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const calendarRef = useRef(null);
 
-  const handleMouseMove = (event) => {
-    setTooltip((prev) => ({
-      ...prev,
-      x: event.clientX + 10, // Décalage de 10px pour éviter de cacher la souris
-      y: event.clientY + 10,
-    }));
-  };
-
-  const handleMouseEnter = (event, date) => {
-    const { clientX, clientY } = event;
-    setTooltip({
-      visible: true,
-      text: date.toLocaleDateString("fr-FR"),
-      x: clientX + 10,
-      y: clientY + 10,
+  const handleDateMouseEnter = (cellInfo, event) => {
+    const formattedDate = cellInfo.date.toLocaleDateString("fr-FR");
+    setHoveredDate(formattedDate);
+    
+    // Position tooltip near the cursor
+    setTooltipPosition({
+      x: event.clientX,
+      y: event.clientY
     });
-
-    document.addEventListener("mousemove", handleMouseMove);
   };
 
-  const handleMouseLeave = () => {
-    setTooltip({ visible: false, text: "", x: 0, y: 0 });
-    document.removeEventListener("mousemove", handleMouseMove);
+  const handleDateMouseLeave = () => {
+    setHoveredDate(null);
   };
 
   return (
     <div className="fc-calendar">
-      {/* Tooltip pour afficher la date au survol */}
-      {tooltip.visible && (
-        <div
+      {/* Tooltip for date */}
+      {hoveredDate && (
+        <div 
           id="tooltip-date"
-          style={{ top: tooltip.y, left: tooltip.x }}
-          className="absolute"
+          style={{
+            left: `${tooltipPosition.x}px`, 
+            top: `${tooltipPosition.y}px`,
+            opacity: 1
+          }}
         >
-          {tooltip.text}
+          {hoveredDate}
         </div>
       )}
-
+      
       <FullCalendar
+        ref={calendarRef}
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale={frLocale}
         events={events}
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "",
+        dayCellDidMount={(cellInfo) => {
+          const cell = cellInfo.el;
+          
+          cell.addEventListener("mouseenter", (event) => {
+            handleDateMouseEnter(cellInfo, event);
+          });
+          
+          cell.addEventListener("mouseleave", () => {
+            handleDateMouseLeave();
+          });
         }}
-        height="auto"
-        dayMaxEvents={3}
-        eventDisplay="block"
         eventContent={(eventInfo) => (
           <div className="fc-event-content">
-            <div className="fc-event-title">{eventInfo.event.title}</div>
-            <div className="fc-event-networks">
-              {eventInfo.event.extendedProps?.networks}
+            <div className="fc-event-title">
+              {eventInfo.event.title}
             </div>
+            {eventInfo.event.extendedProps?.networks && (
+              <div className="fc-event-networks">
+                {eventInfo.event.extendedProps.networks}
+              </div>
+            )}
           </div>
         )}
-        dayCellDidMount={(cellInfo) => {
-          cellInfo.el.addEventListener("mouseenter", (event) => handleMouseEnter(event, cellInfo.date));
-          cellInfo.el.addEventListener("mouseleave", handleMouseLeave);
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: ''
         }}
+        height="auto"
       />
     </div>
   );
