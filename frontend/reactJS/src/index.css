@@ -7,7 +7,6 @@
   @apply w-full bg-white p-4 rounded-lg shadow relative;
 }
 
-/* Barre d'outils */
 .fc .fc-toolbar {
   @apply flex flex-col md:flex-row gap-2 mb-4;
 }
@@ -20,17 +19,44 @@
   @apply bg-[#FF0035] hover:bg-[#d9002c] text-white py-1 px-3 rounded text-sm;
 }
 
-/* Style des jours */
 .fc .fc-daygrid-day {
   @apply relative min-h-[80px] transition-colors duration-200;
 }
 
-/* Changement de couleur au survol */
 .fc .fc-daygrid-day:hover {
-  @apply bg-blue-300 cursor-pointer; /* Fond bleu plus foncé au survol */
+  @apply bg-blue-200; /* Fond bleu clair au survol */
 }
 
-/* Tooltip flottant (date affichée à côté de la souris) */
-#tooltip-date {
-  @apply fixed bg-blue-600 text-white text-xs px-3 py-1 rounded shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none;
+.fc .fc-daygrid-day::after {
+  content: attr(data-date); /* Affiche la date */
+  @apply absolute top-2 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs px-2 py-1 rounded shadow-md opacity-0 transition-opacity;
+}
+
+.fc .fc-daygrid-day:hover::after {
+  @apply opacity-100; /* Rendre visible au survol */
+}
+
+.fc .fc-daygrid-day-number {
+  @apply text-sm p-1;
+}
+
+.fc-event {
+  @apply m-0.5 p-1 rounded border-none;
+  background-color: var(--fc-event-bg-color);
+}
+
+.fc-event-content {
+  @apply p-0.5;
+}
+
+.fc-event-title {
+  @apply text-xs font-medium truncate;
+}
+
+.fc-event-networks {
+  @apply text-[0.65rem] text-gray-600 truncate;
+}
+
+.fc .fc-daygrid-day-frame {
+  @apply p-1;
 }
