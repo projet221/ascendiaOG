@@ -7,39 +7,35 @@
   @apply w-full bg-white p-4 rounded-lg shadow relative;
 }
 
+/* Barre d'outils */
 .fc .fc-toolbar {
   @apply flex flex-col md:flex-row gap-2 mb-4;
 }
 
 .fc .fc-toolbar-title {
-  @apply text-lg font-semibold;
+  @apply text-lg font-semibold text-center;
 }
 
 .fc .fc-button {
   @apply bg-[#FF0035] hover:bg-[#d9002c] text-white py-1 px-3 rounded text-sm;
 }
 
+/* Style des jours */
 .fc .fc-daygrid-day {
   @apply relative min-h-[80px] transition-colors duration-200;
 }
 
+/* Changement de couleur au survol */
 .fc .fc-daygrid-day:hover {
-  @apply bg-blue-200; /* Fond bleu clair au survol */
+  @apply bg-blue-400 cursor-pointer; /* Fond bleu plus foncé au survol */
 }
 
-.fc .fc-daygrid-day::after {
-  content: attr(data-date); /* Affiche la date */
-  @apply absolute top-2 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs px-2 py-1 rounded shadow-md opacity-0 transition-opacity;
-}
-
-.fc .fc-daygrid-day:hover::after {
-  @apply opacity-100; /* Rendre visible au survol */
-}
-
+/* Numéro des jours */
 .fc .fc-daygrid-day-number {
   @apply text-sm p-1;
 }
 
+/* Style des événements */
 .fc-event {
   @apply m-0.5 p-1 rounded border-none;
   background-color: var(--fc-event-bg-color);
@@ -59,4 +55,49 @@
 
 .fc .fc-daygrid-day-frame {
   @apply p-1;
+}
+
+/* Tooltip flottant (date affichée dans un rectangle bleu) */
+#tooltip-date {
+  @apply fixed bg-blue-600 text-white text-sm px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none;
+  transform: translate(-50%, -50%);
+}
+
+/* Suppression des flèches des input number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Animations */
+.bg-animated {
+  background: linear-gradient(-45deg, #FF0035, #ff6b81, #fcb045, #fd1d1d);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    @apply gap-1;
+  }
+  
+  .fc .fc-toolbar-title {
+    @apply text-base;
+  }
+  
+  .fc .fc-daygrid-day {
+    @apply min-h-[60px];
+  }
 }
