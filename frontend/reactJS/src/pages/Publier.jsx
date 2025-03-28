@@ -1,145 +1,200 @@
 import { useState, useEffect, useRef } from "react";
 import { EyeOff } from 'lucide-react';
-import SelectCompte from "../components/SelectCompte";
-import AjoutFichierBouton from "../components/AjoutFichierBouton";
-import BarreHaut from "../components/BarreHaut";
-import SidebarPublication from "../components/SideBarPublication";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import frLocale from "@fullcalendar/core/locales/fr";
+
+import SelectCompte from "../components/SelectCompte.jsx";
+import AjoutFichierBouton from "../components/AjoutFichierBouton.jsx";
+import BarreHaut from "../components/BarreHaut.jsx";
+import SidebarPublication from "../components/SideBarPublication.jsx";
 import { axiosInstance } from "../utils/axios";
-import Previsualisation from "../components/Previsualisation";
-import Calendar from "../components/Calendrier";
+import Previsualisation from "../components/Previsualisation.jsx";
 
 function Publier() {
-  const [message, setMessage] = useState("");
-  const [userId] = useState(localStorage.getItem("user_id"));
-  const [networks, setNetworks] = useState([]);
-  const [action, setAction] = useState("");
-  const [fichier, setFichier] = useState(null);
-  const [scheduleDate, setScheduleDate] = useState("");
-  const [events, setEvents] = useState([]);
-  const dateInputRef = useRef(null);
+    const [message, setMessage] = useState("");
+    const [userId, setUserId] = useState(localStorage.getItem("user_id"));
+    const [networks, setNetworks] = useState([]);
+    const [action, setAction] = useState("");
+    const [fichier, setFichier] = useState(null);
+    const [scheduleDate, setScheduleDate] = useState("");
+    const dateInputRef = useRef(null);
+    const [events, setEvents] = useState([]); // Stocke les événements du calendrier
+    const [hoverDate, setHoverDate] = useState(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    // Charger les événements existants
-    const loadEvents = async () => {
-      try {
-        const response = await axiosInstance.get("/api/events");
-        setEvents(response.data);
-      } catch (error) {
-        console.error("Erreur chargement événements:", error);
-      }
-    };
-    loadEvents();
-  }, []);
-
-  const handlePublish = () => {
-    if (!message || !networks.length) {
-      alert("Message et réseaux requis");
-      return;
-    }
-
-    const newEvent = {
-      title: message.length > 15 ? `${message.substring(0, 15)}...` : message,
-      date: action === "planifier" ? scheduleDate.split('T')[0] : new Date().toISOString().split('T')[0],
-      extendedProps: {
-        description: message,
-        networks: networks.join(", "),
-        type: action === "planifier" ? "planifié" : "publié"
-      },
-      backgroundColor: action === "planifier" ? "#3b82f6" : "#10b981"
+    // Fonction pour ajouter un événement dans le calendrier
+    const ajouterEvenementCalendrier = (date, message) => {
+        const nouvelEvenement = {
+            title: "📅 Publication",
+            start: date,
+            extendedProps: { message },
+        };
+        setEvents((prevEvents) => [...prevEvents, nouvelEvenement]);
     };
 
-    setEvents([...events, newEvent]);
-    resetForm();
-  };
+    const handleMessageChange = (e) => {
+        setMessage(e.target.value);
+    };
 
-  const resetForm = () => {
-    setMessage("");
-    setFichier(null);
-    setAction("");
-    setScheduleDate("");
-  };
+    const handleActionChange = (e) => {
+        setAction(e.target.value);
+    };
 
-  return (
-    <div className="bg-gray-50 min-h-screen">
-      <BarreHaut />
-      <SidebarPublication />
+    const handlePublish = async () => {
+        if (action === "maintenant") {
+            await publierMaintenant();
+            ajouterEvenementCalendrier(new Date(), message);
+        } else if (action === "planifier") {
+            await planifierPublication();
+            ajouterEvenementCalendrier(new Date(scheduleDate), message);
+        } else {
+            alert("Veuillez sélectionner une action !");
+        }
+    };
 
-      <div className="ml-64 pt-16">
-        <div className="flex">
-          {/* Partie gauche */}
-          <div className="w-2/3 p-6">
-            <SelectCompte networks={networks} setNetworks={setNetworks} />
-            
-            <div className="mt-4 relative">
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="w-full border rounded-lg p-4 min-h-[200px]"
-                placeholder="Votre message..."
-              />
-              <AjoutFichierBouton className="absolute bottom-3 right-3" gestionFichier={setFichier} />
+    const publierMaintenant = async () => {
+        if (!message || !networks.length) {
+            alert("Veuillez remplir tous les champs");
+            return;
+        }
+        try {
+            const formData = new FormData();
+            formData.append("userId", userId);
+            formData.append("networks", networks);
+            formData.append("message", message);
+            if (fichier) {
+                formData.append("file", fichier);
+            }
+            await axiosInstance.post("/api/posts", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            window.location.reload();
+        } catch (err) {
+            console.error("Erreur lors de la publication :", err.message);
+        }
+    };
+
+    const planifierPublication = async () => {
+        if (!message || !networks.length || !scheduleDate) {
+            alert("Veuillez remplir tous les champs");
+            return;
+        }
+        try {
+            const formData = new FormData();
+            formData.append("userId", userId);
+            formData.append("networks", networks);
+            formData.append("message", message);
+            formData.append("scheduleDate", scheduleDate);
+            if (fichier) {
+                formData.append("file", fichier);
+            }
+            await axiosInstance.post("/api/posts/schedule", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            window.location.reload();
+        } catch (err) {
+            console.error("Erreur lors de la planification :", err.message);
+        }
+    };
+
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, []);
+
+    // Suivi de la souris
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
+        };
+        document.addEventListener("mousemove", handleMouseMove);
+        return () => document.removeEventListener("mousemove", handleMouseMove);
+    }, []);
+
+    return (
+        <div>
+            <BarreHaut />
+            <SidebarPublication />
+
+            <div className="ml-64 mt-16 flex">
+                <div className="w-2/3 p-6">
+                    <SelectCompte networks={networks} setNetworks={setNetworks} />
+                    <textarea
+                        className="w-full border border-gray-300 rounded-md p-4"
+                        value={message}
+                        onChange={handleMessageChange}
+                        placeholder="Écrivez votre message..."
+                    />
+                    <AjoutFichierBouton gestionFichier={setFichier} />
+
+                    <select className="mt-4 p-2 border rounded-md" value={action} onChange={handleActionChange}>
+                        <option value="">-- Sélectionnez une option --</option>
+                        <option value="maintenant">Publier Maintenant</option>
+                        <option value="planifier">Planifier</option>
+                    </select>
+
+                    {action === "planifier" && (
+                        <input
+                            type="datetime-local"
+                            className="mt-4 p-2 border rounded-md"
+                            value={scheduleDate}
+                            onChange={(e) => setScheduleDate(e.target.value)}
+                        />
+                    )}
+
+                    <button onClick={handlePublish} className="mt-4 bg-red-500 text-white py-2 px-6 rounded">
+                        Publier
+                    </button>
+
+                    {/* CALENDRIER */}
+                    <FullCalendar
+                        plugins={[dayGridPlugin, interactionPlugin]}
+                        initialView="dayGridMonth"
+                        locale={frLocale}
+                        events={events}
+                        dayCellClassNames={({ date }) => (hoverDate === date.toISOString().split("T")[0] ? "bg-blue-200" : "")}
+                        dayCellMouseEnter={(e) => setHoverDate(e.date.toISOString().split("T")[0])}
+                        dayCellMouseLeave={() => setHoverDate(null)}
+                    />
+                </div>
+
+                <div className="w-1/3 fixed right-0 top-16 h-screen overflow-y-auto p-6 border-l bg-white">
+                    <h2 className="text-xl font-semibold mb-4">Prévisualisation</h2>
+                    {networks.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                            <EyeOff className="w-12 h-12 mb-4 text-gray-300" />
+                            <p className="text-lg font-medium">Rien à voir pour l'instant...</p>
+                        </div>
+                    ) : (
+                        networks.map((account, index) => (
+                            <Previsualisation
+                                key={index}
+                                platform={account.platform || account}
+                                text={message}
+                                image={fichier ? URL.createObjectURL(fichier) : null}
+                                username={account.username || "JohnDoe"}
+                                profilePic={account.profilePic || "/default-avatar.png"}
+                            />
+                        ))
+                    )}
+                </div>
+
+                {/* Boîte de date qui suit la souris */}
+                {hoverDate && (
+                    <div
+                        className="absolute bg-blue-500 text-white px-3 py-1 rounded-md shadow-lg"
+                        style={{ left: mousePosition.x + 10, top: mousePosition.y + 10 }}
+                    >
+                        {hoverDate}
+                    </div>
+                )}
             </div>
-
-            <div className="mt-4 space-y-4">
-              <select
-                value={action}
-                onChange={(e) => setAction(e.target.value)}
-                className="bg-[#FF0035] text-white p-2 rounded"
-              >
-                <option value="">-- Choisir --</option>
-                <option value="maintenant">Publier maintenant</option>
-                <option value="planifier">Planifier</option>
-              </select>
-
-              {action === "planifier" && (
-                <input
-                  type="datetime-local"
-                  ref={dateInputRef}
-                  value={scheduleDate}
-                  onChange={(e) => setScheduleDate(e.target.value)}
-                  min={new Date().toISOString().slice(0, 16)}
-                  className="border p-2 rounded"
-                />
-              )}
-
-              <button
-                onClick={handlePublish}
-                className="bg-[#FF0035] text-white py-2 px-6 rounded-lg"
-              >
-                {action === "planifier" ? "Planifier" : "Publier"}
-              </button>
-            </div>
-          </div>
-
-          {/* Partie droite - Prévisualisation */}
-          <div className="w-1/3 p-6 border-l bg-white">
-            <h2 className="text-xl font-bold mb-4">Prévisualisation</h2>
-            {networks.length > 0 ? (
-              networks.map((network, i) => (
-                <Previsualisation
-                  key={i}
-                  platform={network.platform}
-                  text={message}
-                  image={fichier}
-                />
-              ))
-            ) : (
-              <div className="text-center text-gray-400 py-10">
-                <EyeOff className="mx-auto mb-2" />
-                <p>Sélectionnez des réseaux</p>
-              </div>
-            )}
-          </div>
         </div>
-
-        {/* Calendrier */}
-        <div className="p-6">
-          <h2 className="text-xl font-bold mb-4">Calendrier</h2>
-          <Calendar events={events} />
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default Publier;

@@ -7,18 +7,29 @@ import frLocale from "@fullcalendar/core/locales/fr";
 const Calendar = ({ events }) => {
   const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
 
+  const handleMouseMove = (event) => {
+    setTooltip((prev) => ({
+      ...prev,
+      x: event.clientX + 10, // Décalage de 10px pour éviter de cacher la souris
+      y: event.clientY + 10,
+    }));
+  };
+
   const handleMouseEnter = (event, date) => {
     const { clientX, clientY } = event;
     setTooltip({
       visible: true,
       text: date.toLocaleDateString("fr-FR"),
-      x: clientX + 10, // Décalage léger pour éviter que la souris ne cache le tooltip
+      x: clientX + 10,
       y: clientY + 10,
     });
+
+    document.addEventListener("mousemove", handleMouseMove);
   };
 
   const handleMouseLeave = () => {
     setTooltip({ visible: false, text: "", x: 0, y: 0 });
+    document.removeEventListener("mousemove", handleMouseMove);
   };
 
   return (
