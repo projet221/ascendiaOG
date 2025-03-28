@@ -1,4 +1,3 @@
-
 import {useState} from "react";
 import BarreHaut from "../components/BarreHaut.jsx";
 import ConfigSocialMedia from "../components/ConfigSocialMedia.jsx";
