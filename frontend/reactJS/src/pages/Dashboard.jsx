@@ -54,7 +54,11 @@ const Dashboard = () => {
     return (
         <div>
             <BarreHaut />
-            <ConfigSocialMedia/>
+            <div className="flex items-center justify-center flex-grow px-4 py-12">
+                <div className="bg-white text-black p-8 rounded-lg shadow-md w-full max-w-md z-10">
+                    <ConfigSocialMedia/>
+                </div>
+            </div>
 
             Bonjour {username}
             <button onClick={deconnexion}>Déconnexion</button>
