@@ -5,44 +5,17 @@ import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
 
 const Calendar = ({ events }) => {
-  const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
-  
-  const handleMouseMove = (event) => {
-    setTooltip((prev) => ({
-      ...prev,
-      x: event.clientX + 10,
-      y: event.clientY + 10,
-    }));
-  };
-  
-  const handleMouseEnter = (event, date) => {
-    const { clientX, clientY } = event;
-    setTooltip({
-      visible: true,
-      text: date.toLocaleDateString("fr-FR"),
-      x: clientX + 10,
-      y: clientY + 10,
-    });
-    document.addEventListener("mousemove", handleMouseMove);
-  };
-  
-  const handleMouseLeave = () => {
-    setTooltip({ visible: false, text: "", x: 0, y: 0 });
-    document.removeEventListener("mousemove", handleMouseMove);
-  };
-  
+  const [hoveredDate, setHoveredDate] = useState(null);
+
   return (
-    <div className="fc-calendar">
-      {tooltip.visible && (
-        <div
-          id="tooltip-date"
-          style={{ top: tooltip.y, left: tooltip.x }}
-          className="absolute"
-        >
-          {tooltip.text}
+    <div className="fc-calendar relative">
+      {/* Affichage de la date au centre haut */}
+      {hoveredDate && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1 rounded shadow-md text-sm">
+          {hoveredDate}
         </div>
       )}
-      
+
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -65,8 +38,12 @@ const Calendar = ({ events }) => {
           </div>
         )}
         dayCellDidMount={(cellInfo) => {
-          cellInfo.el.addEventListener("mouseenter", (event) => handleMouseEnter(event, cellInfo.date));
-          cellInfo.el.addEventListener("mouseleave", handleMouseLeave);
+          cellInfo.el.addEventListener("mouseenter", () => {
+            setHoveredDate(cellInfo.date.toLocaleDateString("fr-FR"));
+          });
+          cellInfo.el.addEventListener("mouseleave", () => {
+            setHoveredDate(null);
+          });
         }}
       />
     </div>
