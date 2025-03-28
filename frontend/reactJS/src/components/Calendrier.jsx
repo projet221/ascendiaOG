@@ -6,15 +6,15 @@ import frLocale from "@fullcalendar/core/locales/fr";
 
 const Calendar = ({ events }) => {
   const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
-
+  
   const handleMouseMove = (event) => {
     setTooltip((prev) => ({
       ...prev,
-      x: event.clientX + 10, // Décalage de 10px pour éviter de cacher la souris
+      x: event.clientX + 10,
       y: event.clientY + 10,
     }));
   };
-
+  
   const handleMouseEnter = (event, date) => {
     const { clientX, clientY } = event;
     setTooltip({
@@ -23,18 +23,16 @@ const Calendar = ({ events }) => {
       x: clientX + 10,
       y: clientY + 10,
     });
-
     document.addEventListener("mousemove", handleMouseMove);
   };
-
+  
   const handleMouseLeave = () => {
     setTooltip({ visible: false, text: "", x: 0, y: 0 });
     document.removeEventListener("mousemove", handleMouseMove);
   };
-
+  
   return (
     <div className="fc-calendar">
-      {/* Tooltip pour afficher la date au survol */}
       {tooltip.visible && (
         <div
           id="tooltip-date"
@@ -44,7 +42,7 @@ const Calendar = ({ events }) => {
           {tooltip.text}
         </div>
       )}
-
+      
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
