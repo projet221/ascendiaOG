@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 
 const AccueilInvite = () => {
     return (
+        <div>
+            aa
         <motion.div
             className="text-center p-8 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg shadow-lg"
             initial={{ opacity: 0, y: -20 }}
@@ -27,6 +29,7 @@ const AccueilInvite = () => {
                 </motion.button>
             </div>
         </motion.div>
+        </div>
     );
 };
 
