@@ -1,51 +1,45 @@
 import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import frLocale from "@fullcalendar/core/locales/fr";
+import BarreHaut from "../components/BarreHaut"; // Assurez-vous d'importer votre barre de navigation
 
-const Calendar = ({ events }) => {
+const Calendar = () => {
   const [hoveredDate, setHoveredDate] = useState(null);
 
+  const handleMouseOver = (date) => {
+    setHoveredDate(date);
+  };
+
+  const handleMouseOut = () => {
+    setHoveredDate(null);
+  };
+
   return (
-    <div className="fc-calendar relative">
-      {/* Affichage de la date au centre haut */}
+    <div>
+      <BarreHaut /> {/* Ajoutez votre barre de navigation */}
+      <div className="pt-20 p-4"> {/* Ajustez le padding-top pour éviter de cacher le contenu sous la barre de navigation */}
+        <FullCalendar
+          height="auto" // Définit la hauteur automatique pour occuper tout l'espace
+          plugins={[dayGridPlugin]}
+          initialView="dayGridMonth"
+          events={[
+            { title: "Exemple d'événement", date: "2025-03-30" },
+            { title: "Réunion", date: "2025-03-31" },
+          ]}
+          dayCellClassNames="day-cell"
+          dayCellDidMount={(info) => {
+            const dayCell = info.el;
+            dayCell.addEventListener("mouseover", () => handleMouseOver(info.date));
+            dayCell.addEventListener("mouseout", handleMouseOut);
+          }}
+        />
+      </div>
+      
       {hoveredDate && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1 rounded shadow-md text-sm">
-          {hoveredDate}
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 p-2 bg-blue-500 text-white rounded-md">
+          {hoveredDate.toLocaleDateString()}
         </div>
       )}
-
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        locale={frLocale}
-        events={events}
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "",
-        }}
-        height="auto"
-        dayMaxEvents={3}
-        eventDisplay="block"
-        eventContent={(eventInfo) => (
-          <div className="fc-event-content">
-            <div className="fc-event-title">{eventInfo.event.title}</div>
-            <div className="fc-event-networks">
-              {eventInfo.event.extendedProps?.networks}
-            </div>
-          </div>
-        )}
-        dayCellDidMount={(cellInfo) => {
-          cellInfo.el.addEventListener("mouseenter", () => {
-            setHoveredDate(cellInfo.date.toLocaleDateString("fr-FR"));
-          });
-          cellInfo.el.addEventListener("mouseleave", () => {
-            setHoveredDate(null);
-          });
-        }}
-      />
     </div>
   );
 };
