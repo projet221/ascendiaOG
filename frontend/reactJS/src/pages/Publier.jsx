@@ -7,7 +7,7 @@ import BarreHaut from "../components/BarreHaut.jsx";
 import SidebarPublication from "../components/SideBarPublication.jsx";
 import { axiosInstance } from "../utils/axios";
 import Previsualisation from "../components/Previsualisation.jsx";
-import Calendar from "../components/Calendrier.jsx"; 
+import Calendar from "../components/Calendrier.jsx";
 
 function Publier() {
   const [message, setMessage] = useState("");
@@ -102,12 +102,12 @@ function Publier() {
       const data = await response.data;
       if (response.data) {
         console.log("Post planifié avec succès :", data);
-        // Ajouter l'événement au calendrier avec la date planifiée
+        
         setEvents((prevEvents) => [
           ...prevEvents,
           {
             title: message,
-            date: scheduleDate.split("T")[0], // Extraire la date uniquement
+            date: scheduleDate.split("T")[0], 
             description: message,
             userId: userId,
             networks: networks,
@@ -228,7 +228,7 @@ function Publier() {
         </div>
       </div>
 
-      {/* Affichage du calendrier */}
+      {}
       <div className="mt-10">
         <Calendar events={events} />
       </div>
