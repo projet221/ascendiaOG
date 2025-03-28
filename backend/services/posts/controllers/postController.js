@@ -164,13 +164,6 @@ const postController = {
     }
 };
 
-exports.getTwitterPosts = async (req, res) => {
-  try {
-    const posts = await Post.find({ platform: 'twitter' }).sort({ createdAt: -1 });
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 };
 
 module.exports = postController;

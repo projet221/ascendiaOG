@@ -12,7 +12,7 @@ router.delete('/:id', postController.deletePost);
 router.get('/api/users/:userId/posts', postController.getUserPosts);
 //router.put('/:id/schedule', postController.schedulePost);
 router.put('/:id/analytics', postController.updateAnalytics);
-router.get('/twitter', auth, postController.getTwitterPosts);
+
 
 
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre

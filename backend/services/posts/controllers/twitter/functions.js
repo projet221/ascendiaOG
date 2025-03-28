@@ -45,18 +45,6 @@ require("dotenv").config({ path: __dirname + "/.env" });
   } catch (e) {
     console.error('Erreur lors de l\'envoi du tweet:', e);
   }
-  };
-const getTwitterPosts = async (userId) => {
-  try {
-    const tweets = await client.v2.userTimeline(userId, {
-      expansions: ['attachments.media_keys'],
-      'media.fields': ['url', 'preview_image_url']
-    });
-    return tweets;
-  } catch (error) {
-    console.error('Error fetching Twitter posts:', error);
-    throw error;
-  }
 };
 
 // Exporter la fonction correctement
