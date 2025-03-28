@@ -28,7 +28,7 @@ const BarreHaut = () => {
             {[
               { label: "Dashboard", to: "/dashboard" },
               { label: "Publications", to: "/publications/all" },
-              { label: "Planification", to: "/planification" },
+              { label: "Planificationn", to: "/planification" },
               { label: "Statistiques", to: "/statistiques" },
             ].map(({ label, to }) => (
               <NavLink
