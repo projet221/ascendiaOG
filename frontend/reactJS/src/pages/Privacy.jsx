@@ -59,7 +59,6 @@ const Privacy = () => {
             <p>Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter à : projetl3ter@gmail.com</p>
 
             <p>Cette politique de confidentialité est conforme aux exigences des API des réseaux sociaux et aux réglementations en vigueur (RGPD, CCPA, etc.).</p>
-            <p hidden>tiktok-developers-site-verification=vd6iWnc8uSZ9A68Sm5HnaLfuAZ3DVKBp</p>
         </div>
     );
 };
