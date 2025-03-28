@@ -9,11 +9,13 @@ const Calendar = ({ events }) => {
 
   return (
     <div className="fc-calendar relative">
+      {/* Affichage de la date au centre haut */}
       {hoveredDate && (
-        <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded shadow-md">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1 rounded shadow-md text-sm">
           {hoveredDate}
         </div>
       )}
+
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -35,22 +37,15 @@ const Calendar = ({ events }) => {
             </div>
           </div>
         )}
-        dayCellContent={(cellInfo) => (
-          <div
-            className="day-cell relative p-2 transition-colors duration-200"
-            onMouseEnter={() => setHoveredDate(cellInfo.date.toLocaleDateString("fr-FR"))}
-            onMouseLeave={() => setHoveredDate(null)}
-          >
-            {cellInfo.dayNumberText}
-          </div>
-        )}
+        dayCellDidMount={(cellInfo) => {
+          cellInfo.el.addEventListener("mouseenter", () => {
+            setHoveredDate(cellInfo.date.toLocaleDateString("fr-FR"));
+          });
+          cellInfo.el.addEventListener("mouseleave", () => {
+            setHoveredDate(null);
+          });
+        }}
       />
-      <style jsx>{`
-        .day-cell:hover {
-          background-color: rgba(0, 0, 255, 0.2);
-          cursor: pointer;
-        }
-      `}</style>
     </div>
   );
 };

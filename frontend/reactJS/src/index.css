@@ -4,9 +4,10 @@
 
 /* FullCalendar Overrides */
 .fc-calendar {
-  @apply w-full bg-white p-4 rounded-lg shadow;
+  @apply w-full bg-white p-4 rounded-lg shadow relative;
 }
 
+/* Barre d'outils */
 .fc .fc-toolbar {
   @apply flex flex-col md:flex-row gap-2 mb-4;
 }
@@ -19,14 +20,33 @@
   @apply bg-[#FF0035] hover:bg-[#d9002c] text-white py-1 px-3 rounded text-sm;
 }
 
+/* Style des jours */
 .fc .fc-daygrid-day {
-  @apply min-h-[80px] hover:bg-blue-50 transition-colors;
+  @apply relative min-h-[80px] transition-colors duration-200;
 }
 
+/* Changement de couleur au survol */
+.fc .fc-daygrid-day:hover {
+  @apply bg-blue-200 cursor-pointer; /* Fond bleu clair au survol */
+}
+
+/* Affichage de la date au survol en haut du calendrier */
+.fc-calendar::before {
+  content: attr(data-hovered-date);
+  @apply absolute top-0 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1 rounded shadow-md text-sm opacity-0 transition-opacity duration-200;
+}
+
+/* Rendre visible la date au survol */
+.fc-calendar[data-show-hover="true"]::before {
+  @apply opacity-100;
+}
+
+/* Numéro du jour */
 .fc .fc-daygrid-day-number {
   @apply text-sm p-1;
 }
 
+/* Style des événements */
 .fc-event {
   @apply m-0.5 p-1 rounded border-none;
   background-color: var(--fc-event-bg-color);
