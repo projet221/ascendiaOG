@@ -1,5 +1,7 @@
 import InputField from "../components/InputField";
 import { useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 import { axiosInstance } from "../utils/axios.jsx";
 import "./../index.css";
 
@@ -9,6 +11,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleRegistration = async (e) => {
     e.preventDefault();
@@ -28,7 +31,7 @@ function Register() {
       const user_id = data.user._id;
       localStorage.setItem("token", token);
       localStorage.setItem("user_id", user_id);
-      window.location.reload();
+      navigate("/dashboard"); // ✅ Redirection après inscription
     } catch (err) {
       setError(err.message);
     }
@@ -47,6 +50,15 @@ function Register() {
           ))}
         </div>
       </div>
+
+      {/* Flèche retour */}
+      <NavLink
+        to="/"
+        className="absolute top-6 left-6 z-20 w-12 h-12 flex items-center justify-center rounded-full border-2 border-white text-white text-2xl hover:bg-white hover:text-[#FF0035] transition"
+        title="Retour à l'accueil"
+      >
+        <FaArrowLeft />
+      </NavLink>
 
       {/* Formulaire d'inscription */}
       <div className="flex items-center justify-center flex-grow px-4 py-12">

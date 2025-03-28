@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom"; // <== ajout
+import { FaArrowLeft } from "react-icons/fa";
+
 import InputField from "../components/InputField.jsx";
 import { axiosInstance } from "../utils/axios.jsx";
 import "./../index.css";
@@ -7,6 +10,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // <== hook pour redirection
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,7 +30,8 @@ function Login() {
       const user_id = data.user._id;
       localStorage.setItem("token", token);
       localStorage.setItem("user_id", user_id);
-      window.location.reload();
+
+      navigate("/dashboard"); 
     } catch (err) {
       setError(err.message);
     }
@@ -45,6 +50,15 @@ function Login() {
           ))}
         </div>
       </div>
+
+      {/* Flèche retour */}
+      <NavLink
+  to="/"
+  className="absolute top-6 left-6 z-20 w-12 h-12 flex items-center justify-center rounded-full border-2 border-white text-white text-2xl hover:bg-white hover:text-[#FF0035] transition"
+  title="Retour à l'accueil"
+>
+  <FaArrowLeft />
+</NavLink>
 
       {/* Formulaire de connexion */}
       <div className="flex items-center justify-center flex-grow px-4 py-12">
