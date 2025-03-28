@@ -27,82 +27,10 @@
 
 /* Changement de couleur au survol */
 .fc .fc-daygrid-day:hover {
-  @apply bg-blue-200 cursor-pointer; /* Fond bleu clair au survol */
+  @apply bg-blue-300 cursor-pointer; /* Fond bleu plus foncé au survol */
 }
 
-/* Affichage de la date au survol en haut du calendrier */
-.fc-calendar::before {
-  content: attr(data-hovered-date);
-  @apply absolute top-0 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1 rounded shadow-md text-sm opacity-0 transition-opacity duration-200;
-}
-
-/* Rendre visible la date au survol */
-.fc-calendar[data-show-hover="true"]::before {
-  @apply opacity-100;
-}
-
-/* Numéro du jour */
-.fc .fc-daygrid-day-number {
-  @apply text-sm p-1;
-}
-
-/* Style des événements */
-.fc-event {
-  @apply m-0.5 p-1 rounded border-none;
-  background-color: var(--fc-event-bg-color);
-}
-
-.fc-event-content {
-  @apply p-0.5;
-}
-
-.fc-event-title {
-  @apply text-xs font-medium truncate;
-}
-
-.fc-event-networks {
-  @apply text-[0.65rem] text-gray-600 truncate;
-}
-
-.fc .fc-daygrid-day-frame {
-  @apply p-1;
-}
-
-/* Input number - remove arrows */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-/* Animations */
-.bg-animated {
-  background: linear-gradient(-45deg, #FF0035, #ff6b81, #fcb045, #fd1d1d);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
-}
-
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .fc .fc-toolbar {
-    @apply gap-1;
-  }
-  
-  .fc .fc-toolbar-title {
-    @apply text-base;
-  }
-  
-  .fc .fc-daygrid-day {
-    @apply min-h-[60px];
-  }
+/* Tooltip flottant (date affichée à côté de la souris) */
+#tooltip-date {
+  @apply fixed bg-blue-600 text-white text-xs px-3 py-1 rounded shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none;
 }

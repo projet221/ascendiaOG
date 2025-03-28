@@ -5,14 +5,32 @@ import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
 
 const Calendar = ({ events }) => {
-  const [hoveredDate, setHoveredDate] = useState(null);
+  const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
+
+  const handleMouseEnter = (event, date) => {
+    const { clientX, clientY } = event;
+    setTooltip({
+      visible: true,
+      text: date.toLocaleDateString("fr-FR"),
+      x: clientX + 10, // Décalage léger pour éviter que la souris ne cache le tooltip
+      y: clientY + 10,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTooltip({ visible: false, text: "", x: 0, y: 0 });
+  };
 
   return (
-    <div className="fc-calendar relative">
-      {/* Affichage de la date au centre haut */}
-      {hoveredDate && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1 rounded shadow-md text-sm">
-          {hoveredDate}
+    <div className="fc-calendar">
+      {/* Tooltip pour afficher la date au survol */}
+      {tooltip.visible && (
+        <div
+          id="tooltip-date"
+          style={{ top: tooltip.y, left: tooltip.x }}
+          className="absolute"
+        >
+          {tooltip.text}
         </div>
       )}
 
@@ -38,12 +56,8 @@ const Calendar = ({ events }) => {
           </div>
         )}
         dayCellDidMount={(cellInfo) => {
-          cellInfo.el.addEventListener("mouseenter", () => {
-            setHoveredDate(cellInfo.date.toLocaleDateString("fr-FR"));
-          });
-          cellInfo.el.addEventListener("mouseleave", () => {
-            setHoveredDate(null);
-          });
+          cellInfo.el.addEventListener("mouseenter", (event) => handleMouseEnter(event, cellInfo.date));
+          cellInfo.el.addEventListener("mouseleave", handleMouseLeave);
         }}
       />
     </div>
