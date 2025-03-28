@@ -53,7 +53,7 @@ const BarreHaut = () => {
         <div className="flex items-center gap-3">
           {/* Bouton Publier */}
           <NavLink
-            to="/publier"
+            to="/publications/new"
             className="p-2 rounded-md"
             style={{
               backgroundColor: "#FF0035",

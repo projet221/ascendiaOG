@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 import {axiosInstance} from "../utils/axios.jsx";
 import BarreHaut from "../components/BarreHaut.jsx";
 import SidebarPublication from "../components/SideBarPublication.jsx";
+import ConfigSocialMedia from '../components/ConfigSocialMedia.jsx';
 
 const Dashboard = () => {
     const [username, setUsername] = useState("");
@@ -53,7 +54,7 @@ const Dashboard = () => {
     return (
         <div>
             <BarreHaut />
-            <SidebarPublication />
+            <ConfigSocialMedia/>
 
             Bonjour {username}
             <button onClick={deconnexion}>Déconnexion</button>

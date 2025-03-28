@@ -1,4 +1,6 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect, useRef} from "react";
+import { EyeOff } from 'lucide-react';
+
 import SelectCompte from "../../components/SelectCompte.jsx";
 import AjoutFichierBouton from "../../components/AjoutFichierBouton.jsx";
 import BarreHaut from "../../components/BarreHaut.jsx";
@@ -211,16 +213,24 @@ function New() {
         </div>
         <div className="w-1/3 fixed right-0 top-16 h-screen overflow-y-auto p-6 border-l bg-white">
     <h2 className="text-xl font-semibold mb-4">Prévisualisation</h2>
-    {networks.map((account, index) => (
-  <Previsualisation
-    key={index}
-    platform={account.platform}
-    text={message}
-    image={fichier ? URL.createObjectURL(fichier) : null}
-    username={account.username}
-    profilePic={account.profilePic}
-  />
-))}
+    {networks.length === 0 ? (
+  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+    <EyeOff className="w-12 h-12 mb-4 text-gray-300" />
+    <p className="text-lg font-medium">Rien à voir pour l'instant...</p>
+    <p className="text-sm">Sélectionnez un compte pour voir l’aperçu</p>
+  </div>
+) : (
+  networks.map((account, index) => (
+    <Previsualisation
+      key={index}
+      platform={account.platform || account} // si tu n'as pas encore mis d'objet
+      text={message}
+      image={fichier ? URL.createObjectURL(fichier) : null}
+      username={account.username || "JohnDoe"}
+      profilePic={account.profilePic || "/default-avatar.png"}
+    />
+  ))
+)}
        
         </div>
         </div>
