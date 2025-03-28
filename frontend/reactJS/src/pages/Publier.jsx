@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { EyeOff } from 'lucide-react';
-import SelectCompte from "../components/SelectCompte.jsx";
-import AjoutFichierBouton from "../components/AjoutFichierBouton.jsx";
-import BarreHaut from "../components/BarreHaut.jsx";
-import SidebarPublication from "../components/SideBarPublication.jsx";
+import SelectCompte from "../components/SelectCompte";
+import AjoutFichierBouton from "../components/AjoutFichierBouton";
+import BarreHaut from "../components/BarreHaut";
+import SidebarPublication from "../components/SideBarPublication";
 import { axiosInstance } from "../utils/axios";
-import Previsualisation from "../components/Previsualisation.jsx";
-import Calendar from "../components/Calendrier.jsx";
+import Previsualisation from "../components/Previsualisation";
+import Calendar from "../components/Calendrier";
 
 function Publier() {
   const [message, setMessage] = useState("");
-  const [userId, setUserId] = useState(localStorage.getItem("user_id"));
+  const [userId] = useState(localStorage.getItem("user_id"));
   const [networks, setNetworks] = useState([]);
   const [action, setAction] = useState("");
   const [fichier, setFichier] = useState(null);
@@ -18,111 +18,38 @@ function Publier() {
   const [events, setEvents] = useState([]);
   const dateInputRef = useRef(null);
 
-  // Charger les événements existants au montage du composant
   useEffect(() => {
-    const fetchEvents = async () => {
+    // Charger les événements existants
+    const loadEvents = async () => {
       try {
-        const response = await axiosInstance.get("/api/posts/events");
+        const response = await axiosInstance.get("/api/events");
         setEvents(response.data);
       } catch (error) {
-        console.error("Erreur lors du chargement des événements:", error);
+        console.error("Erreur chargement événements:", error);
       }
     };
-    fetchEvents();
+    loadEvents();
   }, []);
 
-  const handleMessageChange = (e) => setMessage(e.target.value);
-  const handleActionChange = (e) => setAction(e.target.value);
-  
   const handlePublish = () => {
-    if (action === "maintenant") {
-      publierMaintenant();
-    } else if (action === "planifier") {
-      planifierPublication();
-    } else if (action === "brouillon") {
-      enregistrerBrouillon();
-    } else {
-      alert("Veuillez sélectionner une action !");
-    }
-  };
-
-  const publierMaintenant = async () => {
     if (!message || !networks.length) {
-      alert("Veuillez remplir tous les champs");
+      alert("Message et réseaux requis");
       return;
     }
-    try {
-      const formData = new FormData();
-      formData.append("userId", userId);
-      formData.append("networks", JSON.stringify(networks));
-      formData.append("message", message);
 
-      if (fichier) {
-        formData.append("file", fichier);
-      }
+    const newEvent = {
+      title: message.length > 15 ? `${message.substring(0, 15)}...` : message,
+      date: action === "planifier" ? scheduleDate.split('T')[0] : new Date().toISOString().split('T')[0],
+      extendedProps: {
+        description: message,
+        networks: networks.join(", "),
+        type: action === "planifier" ? "planifié" : "publié"
+      },
+      backgroundColor: action === "planifier" ? "#3b82f6" : "#10b981"
+    };
 
-      const response = await axiosInstance.post("/api/posts", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (response.data) {
-        const newEvent = {
-          title: message.substring(0, 20) + (message.length > 20 ? "..." : ""),
-          date: new Date().toISOString().split('T')[0],
-          extendedProps: {
-            description: message,
-            networks: networks.join(", "),
-            type: "publication"
-          }
-        };
-        setEvents(prev => [...prev, newEvent]);
-        alert("Publication réussie !");
-        resetForm();
-      }
-    } catch (err) {
-      console.error("Erreur lors de la publication :", err);
-      alert("Erreur lors de la publication");
-    }
-  };
-
-  const planifierPublication = async () => {
-    if (!message || !networks.length || !scheduleDate) {
-      alert("Veuillez remplir tous les champs");
-      return;
-    }
-    try {
-      const formData = new FormData();
-      formData.append("userId", userId);
-      formData.append("networks", JSON.stringify(networks));
-      formData.append("message", message);
-      formData.append("scheduleDate", scheduleDate);
-
-      if (fichier) {
-        formData.append("file", fichier);
-      }
-
-      const response = await axiosInstance.post("/api/posts/schedule", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (response.data) {
-        const newEvent = {
-          title: message.substring(0, 20) + (message.length > 20 ? "..." : ""),
-          date: scheduleDate.split('T')[0],
-          extendedProps: {
-            description: message,
-            networks: networks.join(", "),
-            type: "planifié"
-          }
-        };
-        setEvents(prev => [...prev, newEvent]);
-        alert("Publication planifiée avec succès !");
-        resetForm();
-      }
-    } catch (err) {
-      console.error("Erreur lors de la planification :", err);
-      alert("Erreur lors de la planification");
-    }
+    setEvents([...events, newEvent]);
+    resetForm();
   };
 
   const resetForm = () => {
@@ -132,120 +59,82 @@ function Publier() {
     setScheduleDate("");
   };
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
-
-  useEffect(() => {
-    if (action === "planifier" && dateInputRef.current) {
-      setTimeout(() => {
-        try {
-          dateInputRef.current.showPicker();
-        } catch (e) {
-          console.warn("Impossible d'ouvrir le sélecteur de date", e);
-        }
-      }, 100);
-    }
-  }, [action]);
-
   return (
-    <div>
+    <div className="bg-gray-50 min-h-screen">
       <BarreHaut />
       <SidebarPublication />
 
-      <div className="ml-64 mt-16">
-        <div className="h-screen flex bg-gray-100 overflow-hidden">
-          <div className="min-h-screen flex bg-gray-100">
-            <div className="p-6">
-              <SelectCompte networks={networks} setNetworks={setNetworks} />
-              <div className="relative mb-6">
-                <label htmlFor="message" className="block text-gray-700 mb-2">
-                  Votre message :
-                </label>
-                <textarea
-                  id="message"
-                  className="w-full border border-gray-300 rounded-md p-4 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden"
-                  style={{ minHeight: "300px", minWidth: "500px" }}
-                  value={message}
-                  onChange={handleMessageChange}
-                  placeholder="Écrivez votre message ici..."
-                ></textarea>
+      <div className="ml-64 pt-16">
+        <div className="flex">
+          {/* Partie gauche */}
+          <div className="w-2/3 p-6">
+            <SelectCompte networks={networks} setNetworks={setNetworks} />
+            
+            <div className="mt-4 relative">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full border rounded-lg p-4 min-h-[200px]"
+                placeholder="Votre message..."
+              />
+              <AjoutFichierBouton className="absolute bottom-3 right-3" gestionFichier={setFichier} />
+            </div>
 
-                <div className="absolute bottom-2 right-3">
-                  <AjoutFichierBouton gestionFichier={setFichier} />
-                </div>
-              </div>
-
-              <label htmlFor="publish-select">Choisissez une action : </label>
+            <div className="mt-4 space-y-4">
               <select
-                id="publish-select"
-                className="bg-[#FF0035] hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md w-fit mt-4"
                 value={action}
-                onChange={handleActionChange}
+                onChange={(e) => setAction(e.target.value)}
+                className="bg-[#FF0035] text-white p-2 rounded"
               >
-                <option value="" disabled>
-                  -- Sélectionnez une option --
-                </option>
-                <option value="maintenant">Publier Maintenant</option>
+                <option value="">-- Choisir --</option>
+                <option value="maintenant">Publier maintenant</option>
                 <option value="planifier">Planifier</option>
-                <option value="brouillon">Enregistrer en brouillon</option>
               </select>
-              
+
               {action === "planifier" && (
-                <div className="mt-4">
-                  <label className="block text-gray-700 mb-2" htmlFor="schedule-date">
-                    Choisissez la date de planification :
-                  </label>
-                  <input
-                    id="schedule-date"
-                    type="datetime-local"
-                    ref={dateInputRef}
-                    value={scheduleDate}
-                    min={new Date().toISOString().slice(0, 16)}
-                    onChange={(e) => setScheduleDate(e.target.value)}
-                    className="border p-2 rounded-md"
-                  />
-                </div>
+                <input
+                  type="datetime-local"
+                  ref={dateInputRef}
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
+                  className="border p-2 rounded"
+                />
               )}
-              
+
               <button
                 onClick={handlePublish}
-                className="mt-6 ml-4 bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow"
-                disabled={!message || !networks.length}
+                className="bg-[#FF0035] text-white py-2 px-6 rounded-lg"
               >
                 {action === "planifier" ? "Planifier" : "Publier"}
               </button>
             </div>
           </div>
 
-          <div className="w-1/3 fixed right-0 top-16 h-screen overflow-y-auto p-6 border-l bg-white">
-            <h2 className="text-xl font-semibold mb-4">Prévisualisation</h2>
-            {networks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <EyeOff className="w-12 h-12 mb-4 text-gray-300" />
-                <p className="text-lg font-medium">Rien à voir pour l'instant...</p>
-                <p className="text-sm">Sélectionnez un compte pour voir l'aperçu</p>
-              </div>
-            ) : (
-              networks.map((account, index) => (
+          {/* Partie droite - Prévisualisation */}
+          <div className="w-1/3 p-6 border-l bg-white">
+            <h2 className="text-xl font-bold mb-4">Prévisualisation</h2>
+            {networks.length > 0 ? (
+              networks.map((network, i) => (
                 <Previsualisation
-                  key={index}
-                  platform={account.platform || account}
+                  key={i}
+                  platform={network.platform}
                   text={message}
-                  image={fichier ? URL.createObjectURL(fichier) : null}
-                  username={account.username || "JohnDoe"}
-                  profilePic={account.profilePic || "/default-avatar.png"}
+                  image={fichier}
                 />
               ))
+            ) : (
+              <div className="text-center text-gray-400 py-10">
+                <EyeOff className="mx-auto mb-2" />
+                <p>Sélectionnez des réseaux</p>
+              </div>
             )}
           </div>
         </div>
 
-        <div className="mt-10 ml-64 w-[calc(100%-16rem)] p-6">
-          <h2 className="text-xl font-semibold mb-4">Calendrier des publications</h2>
+        {/* Calendrier */}
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-4">Calendrier</h2>
           <Calendar events={events} />
         </div>
       </div>
