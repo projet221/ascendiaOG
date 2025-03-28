@@ -52,17 +52,26 @@ const Dashboard = () => {
         window.location.reload();
     }
     return (
-        <div>
-            <BarreHaut />
-            <div className="flex items-center justify-center flex-grow px-4 py-12">
-                <div className="bg-white text-black p-8 rounded-lg shadow-md w-full max-w-md z-10">
-                    <ConfigSocialMedia/>
-                </div>
-            </div>
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+    <BarreHaut />
 
-            Bonjour {username}
-            <button onClick={deconnexion}>Déconnexion</button>
-        </div>
+    <div className="flex flex-col items-center justify-center flex-grow px-4 py-12">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        Bonjour {username}
+      </h2>
+
+      <div className="bg-white text-black p-8 rounded-lg shadow-md w-full max-w-md z-10">
+        <ConfigSocialMedia />
+      </div>
+
+      <button
+        onClick={deconnexion}
+        className="mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+      >
+        Déconnexion
+      </button>
+    </div>
+  </div>
     );
 };
 
