@@ -7,7 +7,7 @@ import BarreHaut from "../components/BarreHaut.jsx";
 import SidebarPublication from "../components/SideBarPublication.jsx";
 import { axiosInstance } from "../utils/axios";
 import Previsualisation from "../components/Previsualisation.jsx";
-import Calendar from "../components/Calendar"; // Assurez-vous d'importer le calendrier
+import Calendar from "../components/Calendrier.jsx"; 
 
 function Publier() {
   const [message, setMessage] = useState("");
