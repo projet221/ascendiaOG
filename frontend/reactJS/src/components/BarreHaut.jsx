@@ -8,6 +8,12 @@ const BarreHaut = () => {
     const changeMenu = () => {
       setMenuOuvert(!menuOuvert);
     };
+
+    const deconnexion = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_id");
+      window.location.reload();
+    }
  
   return (
     <nav className="bg-white fixed w-full top-0 left-0 z-50 shadow">
@@ -117,8 +123,7 @@ const BarreHaut = () => {
                   Paramètres
                 </NavLink>
                 <NavLink
-                  to="/deconnexion"
-                  onClick={() => setMenuOuvert(false)}
+                  onClick={deconnexion}
                   className="block px-4 py-2 text-sm text-red-500 hover:bg-red-100"
                 >
                   Déconnexion
