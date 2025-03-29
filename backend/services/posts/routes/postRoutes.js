@@ -12,16 +12,7 @@ router.delete('/:id', postController.deletePost);
 router.get('/api/users/:userId/posts', postController.getUserPosts);
 //router.put('/:id/schedule', postController.schedulePost);
 router.put('/:id/analytics', postController.updateAnalytics);
-router.get('/tweets/:userId', async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const tweets = await getAllTweets(userId);
-    res.json(tweets); // Retourne les tweets sous forme de réponse JSON
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la récupération des tweets' });
-  }
-});
+router.get('/tweets/:userId', postController.getUserTweets);
 
 
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre
