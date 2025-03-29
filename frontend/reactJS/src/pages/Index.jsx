@@ -1,20 +1,14 @@
-import { useNavigate } from "react-router-dom"; // Ajout de l'import
+import { Navigate } from "react-router-dom";
 import HomePage from "./HomePage.jsx";
 
 const Index = () => {
-
     const token = localStorage.getItem("token");
-    const navigate = useNavigate(); // Correction ici
 
     if (token) {
-        navigate("/dashboard");
+        return <Navigate to="/dashboard" />;
     }
 
-    return (
-        <div>
-            <HomePage />
-        </div>
-    );
+    return <HomePage />;
 };
 
 export default Index;
