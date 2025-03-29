@@ -45,7 +45,32 @@ require("dotenv").config({ path: __dirname + "/.env" });
   } catch (e) {
     console.error('Erreur lors de l\'envoi du tweet:', e);
   }
+  };
+
+const getUserId = async (username) => {
+  try {
+    const user = await twitterClient.v2.userByUsername(username);
+    return user.data.id;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'ID utilisateur:", error);
+    return null;
+  }
+};
+
+const getAllTweets = async (userId) => {
+  try {
+    // Récupère les 100 derniers tweets de l'utilisateur
+    const tweets = await twitterClient.v2.userTimeline(userId, {
+      max_results: 100, // Tu peux augmenter ce nombre si nécessaire
+      "tweet.fields": "created_at,public_metrics,text" // Tu peux ajouter des champs supplémentaires selon ce que tu veux récupérer
+    });
+    return tweets.data || [];
+  } catch (error) {
+    console.error("Erreur lors de la récupération des tweets:", error);
+    return [];
+  }
 };
 
 // Exporter la fonction correctement
 module.exports = {tweetWithImage};
+module.exports = { getAllTweets };

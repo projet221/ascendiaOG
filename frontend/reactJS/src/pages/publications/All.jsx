@@ -1,51 +1,68 @@
-import React, {useState} from "react";
-import SelectUnCompte from "../../components/SelectUnCompte.jsx";
-import BarreHaut from "../../components/BarreHaut.jsx";
-import SidebarPublication from "../../components/SideBarPublication.jsx";
+import { useState, useEffect } from "react";
+import { axiosInstance } from "../../utils/axios";
+import SidebarPublication from "../../components/SideBarPublication.jsx"; 
+import Previsualisation from "../../components/Previsualisation.jsx"; // Si tu veux une prévisualisation
+import BarreHaut from "../../components/BarreHaut.jsx"; // Barre haute, peut-être pour l'authentification ou autre
+import AjoutFichierBouton from "../../components/AjoutFichierBouton.jsx"; // Pour ajouter un fichier, si nécessaire
+import SelectCompte from "../../components/SelectCompte.jsx"; // Si tu veux permettre de sélectionner un compte
 
-
-function Publier(){
-
-
-    const [posts, setPosts] = useState([]);
+const All = () => {
+  const [tweets, setTweets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
-    function publier(){
-
-    }
-    return (
-        <div>
-            <BarreHaut/>
-            <SidebarPublication/>
-
+  useEffect(() => {
+    const fetchTweets = async () => {
+      try {
         
-                    <div className="ml-64 mt-16 p-6">
-               
-                    <div className="min-h-screen flex bg-gray-100">
-                      <div className=" p-6">
-                        <SelectUnCompte/>
-                        
-                       
-    <div>
-      <h1>Liste des Posts</h1>
-      {posts.map(post => (
-        <div key={post.id} className="p-4 mb-4 border rounded-lg shadow">
-          <h2 className="text-xl font-bold">{post.title}</h2>
-          <p>{post.body}</p>
-        </div>
-      ))}
+        const response = await axiosInstance.get('/posts'); // L'URL correcte pour ton API backend
+        setTweets(response.data); // Assure-toi que tes données sont dans le format attendu
+      } catch (err) {
+        setError('Erreur lors de la récupération des publications.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTweets();
+  }, []);
+
+  return (
+    <div className="flex">
+      <SidebarPublication /> {/* Sidebar pour la navigation */}
+      <div className="flex-1 ml-64 p-6">
+        <BarreHaut /> {/* Barre haute pour affichage général ou actions */}
+        
+        {loading ? (
+          <p>Chargement des publications...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-center mb-4" style={{ color: '#FF0035' }}>
+              Mes Publications
+            </h1>
+            <div className="space-y-4">
+              {tweets.length === 0 ? (
+                <p>Aucune publication disponible.</p>
+              ) : (
+                tweets.map((tweet) => (
+                  <div key={tweet.id} className="border-b py-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-lg">{tweet.text}</p>
+                    </div>
+                    {/* Si le tweet a une image, on l'affiche */}
+                    {tweet.image && <img src={tweet.image} alt="Image du tweet" className="mt-2" />}
+                    <Previsualisation tweet={tweet} /> {/* Composant pour prévisualiser les publications si nécessaire */}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-        
-            
+  );
+};
 
-                </div>
-                </div>
-                </div>
-
-                
-        </div>
-        
-    );  
-}
-export default Publier;
+export default All;
