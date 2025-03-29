@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-const { tweetWithImage, getAllTweets, getUserId } = require('../functions');
+const { tweetWithImage, getAllTweets, getUserId } = require('./twitter/functions');
 const axios = require("axios");
 
 const postController = {
