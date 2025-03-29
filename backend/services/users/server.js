@@ -21,9 +21,14 @@ connectDB();
 app.use(userRoutes);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     console.error(err.stack);
     res.status(500).json({error: 'Something went wrong!'});
+});
+
+// Health check
+app.get("/", (req, res) => {
+    res.json({ status: "OK" });
 });
 
 app.listen(PORT);

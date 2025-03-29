@@ -42,7 +42,7 @@ app.use("/api/users", handleProxyWithWakeUp(process.env.PROXY_USERS));
 app.use("/api/socialauth", handleProxyWithWakeUp(process.env.PROXY_SOCIALAUTH));
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/", (req, res) => {
     res.json({ status: "OK" });
 });
 

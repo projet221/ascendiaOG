@@ -3,7 +3,7 @@ const upload = require('../middlewares/upload');
 const router = express.Router();
 const postController = require('../controllers/postController');
 
-router.get('/', postController.getAllPosts);
+router.get('/a', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
 router.get('/:id', postController.getPostById);

@@ -27,6 +27,10 @@ app.use(express.json());
     res.status(500).json({ error: 'Something went wrong!' });
 });*/
 
+// Health check
+app.get("/", (req, res) => {
+    res.json({ status: "OK" });
+});
 app.listen(PORT, () => {
     console.log(`Posts service running on port ${PORT}`);
 });

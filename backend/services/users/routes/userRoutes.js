@@ -24,7 +24,7 @@ router.post('/register', registerValidation, userController.register);
 router.post('/login', userController.login);
 
 // Routes protégées
-router.get('/', auth, userController.getAllUsers);
+router.get('/a', auth, userController.getAllUsers);
 router.get('/:id', auth, userController.getUserById);
 router.put('/:id', auth, userController.updateUser);
 router.delete('/:id', auth, userController.deleteUser);
