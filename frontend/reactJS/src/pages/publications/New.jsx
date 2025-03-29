@@ -223,11 +223,9 @@ function New() {
   networks.map((account, index) => (
     <Previsualisation
       key={index}
-      platform={account.platform || account} // si tu n'as pas encore mis d'objet
+      platform={account.platform || account}
       text={message}
       image={fichier ? URL.createObjectURL(fichier) : null}
-      username={account.username || "JohnDoe"}
-      profilePic={account.profilePic || "/default-avatar.png"}
     />
   ))
 )}
