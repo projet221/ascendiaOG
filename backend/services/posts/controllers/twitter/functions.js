@@ -47,7 +47,7 @@ require("dotenv").config({ path: __dirname + "/.env" });
   }
   };
 
-const getUserId = async (username) => {
+  const getUserId = async (username) => {
   try {
     const user = await twitterClient.v2.userByUsername(username);
     return user.data.id;
@@ -72,5 +72,4 @@ const getAllTweets = async (userId) => {
 };
 
 // Exporter la fonction correctement
-module.exports = {tweetWithImage};
-module.exports = { getAllTweets };
+module.exports = {tweetWithImage, getAllTweets,getUserId};
