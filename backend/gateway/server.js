@@ -18,36 +18,15 @@ app.use(express.json());
 const handleProxyWithWakeUp = (serviceUrl) => {
     return proxy(serviceUrl, {
         timeout: 10000,
-
         proxyReqOptDecorator: async (proxyReqOpts, srcReq) => {
             try {
                 console.log(`🔄 Tentative d'appel à ${serviceUrl}${srcReq.originalUrl}`);
+                await axios.get(serviceUrl);
                 return proxyReqOpts;
             } catch (error) {
                 console.error(`❌ Erreur lors de la préparation de la requête: ${error.message}`);
                 throw error;
             }
-        },
-
-        proxyErrorHandler: async (err, res, next) => {
-            console.log(`⚠️ Erreur détectée (${err.code || "Unknown"}), possible service en veille : ${serviceUrl}`);
-
-            if (err.code === "ECONNREFUSED") {
-                try {
-                    console.log(`🔄 Ping du service pour le réveiller: ${serviceUrl}`);
-                    await axios.get(serviceUrl);
-
-                    console.log(`✅ Service réveillé, nouvelle tentative dans 5 secondes...`);
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-
-                    return next();
-                } catch (wakeUpError) {
-                    console.error(`❌ Échec du réveil du service: ${wakeUpError.message}`);
-                    return res.status(502).json({ error: "Service en veille et non réveillé." });
-                }
-            }
-
-            return next(err);
         },
 
         userResDecorator: (proxyRes, proxyResData) => {
