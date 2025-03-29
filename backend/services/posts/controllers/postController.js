@@ -64,18 +64,28 @@ const postController = {
     }
   },
 
-  // Récupérer les tweets d'un utilisateur
-  getUserTweets: async (req, res) => {
-    try {
-      const userId = req.params.userId;
-      const tweets = await getAllTweets(userId, req.twitterClient);
-      res.json(tweets);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+ const getUserTweets = async (req, res) => {
+  try {
+    const userId = req.params.userId;  // Récupérer le userId à partir de l'URL
+    // Logique pour récupérer les tweets de l'utilisateur (par exemple via une API ou la base de données)
+    const tweets = await getTweetsFromDatabaseOrApi(userId);  // Exemple de fonction pour récupérer les tweets
 
-  // Autres actions comme la mise à jour et la suppression de posts (voir ci-dessus)
+    // Renvoyer les tweets en réponse
+    res.status(200).json(tweets);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la récupération des tweets', error: error.message });
+  }
 };
+
+// Fonction fictive pour récupérer les tweets d'une source quelconque
+async function getTweetsFromDatabaseOrApi(userId) {
+  // Par exemple, récupérer des tweets depuis une API externe ou une base de données
+  return [
+    { id: 1, text: "Premier tweet" },
+    { id: 2, text: "Deuxième tweet" },
+  ];
+}
+
+module.exports = { getUserTweets };
 
 module.exports = postController;
