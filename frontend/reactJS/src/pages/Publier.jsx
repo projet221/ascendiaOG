@@ -23,7 +23,7 @@ function Publier() {
     };
 
     const handleActionChange = (e) => {
-        setAction(e.target.value); // Mettre à jour l'action choisie
+        setAction(e.target.value); 
     };
     const handlePublish = () => {
         if (action === "maintenant") {
@@ -44,7 +44,6 @@ function Publier() {
         try {
             const formData = new FormData();
 
-        // Ajouter les autres données du formulaire
             formData.append("userId", userId);
             formData.append("networks", networks);
             formData.append("message", message);
@@ -80,7 +79,7 @@ function Publier() {
         try {
             const formData = new FormData();
 
-        // Ajouter les autres données du formulaire
+    
             formData.append("userId", userId);
             formData.append("networks", networks);
             formData.append("message", message);
