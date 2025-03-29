@@ -26,9 +26,4 @@ app.use((err, req, res) => {
     res.status(500).json({error: 'Something went wrong!'});
 });
 
-// Health check
-app.get("/", (req, res) => {
-    res.status(200).json({ status: "OK" });
-});
-
 app.listen(PORT);

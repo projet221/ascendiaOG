@@ -20,11 +20,6 @@ require("./config/passport"); // Charge la configuration de Passport
 // Routes
 app.use(socialAuthRoutes);
 
-// Health check
-app.get("/", (req, res) => {
-    res.status(200).json({ status: "OK" });
-});
-
 const PORT = process.env.PORT_SOCIALAUTH || 3002;
 
 app.listen(PORT);

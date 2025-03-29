@@ -21,7 +21,7 @@ const handleProxyWithWakeUp = (serviceUrl) => {
         proxyReqOptDecorator: async (proxyReqOpts, srcReq) => {
             try {
                 console.log(`🔄 Tentative d'appel à ${serviceUrl}${srcReq.originalUrl}`);
-                await axios.get(serviceUrl);
+                await axios.get(serviceUrl+srcReq.originalUrl);
                 return proxyReqOpts;
             } catch (error) {
                 console.error(`❌ Erreur lors de la préparation de la requête: ${error.message}`);
