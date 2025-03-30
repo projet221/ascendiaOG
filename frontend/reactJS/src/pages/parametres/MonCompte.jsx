@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarParametres from "../../components/SideBarParametres";
-import axiosInstance from "../../utils/axios"; // axios configuré avec baseURL + token
+import { axiosInstance } from "../../utils/axios.jsx";
 
 const MonCompte = () => {
   const [userData, setUserData] = useState(null);
