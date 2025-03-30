@@ -5,15 +5,16 @@ import { axiosInstance } from "../../utils/axios.jsx";
 
 const MonCompte = () => {
   const [userData, setUserData] = useState(null);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userId = localStorage.getItem("user_id"); // tu dois stocker ça à la connexion
+        const token = localStorage.getItem("token");
         const res = await axiosInstance.get(`/api/users/${userId}`,
             {
               headers: {
                 "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
               },
             }
         );
