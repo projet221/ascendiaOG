@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { axiosInstance } from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
+import BarreHaut from "../../components/BarreHaut";
+import SidebarParametres from "../../components/SideBarParametres";
 
 const ModifierInfos = () => {
   const [formData, setFormData] = useState({ username: "", email: "" });
