@@ -32,7 +32,7 @@ const MonCompte = () => {
 
               {userData ? (
                 <div className="space-y-4">
-                                    <div>
+                  <div>
                     <label className="font-semibold">Username :</label>
                     <p>{userData.username}</p>
                   </div>

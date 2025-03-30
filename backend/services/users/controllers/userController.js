@@ -114,11 +114,8 @@ const userController = {
             }
 
             res.json({
-                _id: user._id,
-                nom: user.nom,
-                prenom: user.prenom,
+                username: user.username,
                 email: user.email,
-                username: user.username
               });
               
         } catch (error) {
