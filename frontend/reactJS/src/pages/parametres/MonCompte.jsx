@@ -53,14 +53,14 @@ const MonCompte = () => {
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => navigate("/parametres/modifier")}
+                  onClick={() => navigate("/parametres/modifierinfos")}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition"
                 >
                   ✏️ Modifier mes informations
                 </button>
 
                 <button
-                  onClick={() => navigate("/parametres/password")}
+                  onClick={() => navigate("/parametres/modifiermotdepasse")}
                   className="bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300 font-medium py-2 px-4 rounded-xl transition"
                 >
                   🔒 Changer mon mot de passe
