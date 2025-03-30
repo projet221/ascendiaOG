@@ -37,8 +37,8 @@ const ModifierInfos = () => {
 
   return (
     <div>
-    <BarreHaut />
-    <SidebarParametres />
+    <BarreHaut/>
+    <SidebarParametres/>
     <div className="ml-64 mt-16 p-8 bg-gray-100 min-h-screen">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
       <h1 className="text-xl font-bold mb-6">Modifier mes informations</h1>
