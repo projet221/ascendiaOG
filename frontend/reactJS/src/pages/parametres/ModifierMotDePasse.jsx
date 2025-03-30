@@ -24,7 +24,7 @@ const ModifierMotDePasse = () => {
       alert("Mot de passe mis à jour !");
       navigate("/parametres/moncompte");
     } catch (err) {
-      alert("Erreur lors de la mise à jour.");
+      alert("Erreur lors de la mise à jour : " + err);
     }
   };
 
