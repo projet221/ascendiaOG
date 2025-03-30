@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarParametres from "../../components/SideBarParametres";
-import axios from "../../utils/axios"; // axios configuré avec baseURL + token
+import axiosInstance from "../../utils/axios"; // axios configuré avec baseURL + token
 
 const MonCompte = () => {
   const [userData, setUserData] = useState(null);
@@ -11,7 +11,7 @@ const MonCompte = () => {
     const fetchUserData = async () => {
       try {
         const userId = localStorage.getItem("user_id"); // tu dois stocker ça à la connexion
-        const res = await axios.get(`/api/users/${userId}`);
+        const res = await axiosInstance.get(`/api/users/${userId}`);
         setUserData(res.data);
       } catch (err) {
         console.error("Erreur lors de la récupération des infos utilisateur", err);
