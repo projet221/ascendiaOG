@@ -10,7 +10,13 @@ const MonCompte = () => {
     const fetchUserData = async () => {
       try {
         const userId = localStorage.getItem("user_id"); // tu dois stocker ça à la connexion
-        const res = await axiosInstance.get(`/api/users/${userId}`);
+        const res = await axiosInstance.get(`/api/users/${userId}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+        );
         setUserData(res.data);
       } catch (err) {
         console.error("Erreur lors de la récupération des infos utilisateur", err);
