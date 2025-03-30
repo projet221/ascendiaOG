@@ -1,4 +1,7 @@
 import { NavLink } from "react-router-dom";
+import { FaInstagram, FaFacebook, FaTwitter, FaTiktok } from "react-icons/fa";
+
+
 import "./../index.css";
 
 const HomePage = () => {
@@ -46,11 +49,11 @@ const HomePage = () => {
               Gérez tous vos réseaux sociaux au même endroit, programmez vos publications, suivez vos performances, et boostez votre communauté en toute simplicité.</p>
             
             <p className="text-sm text-white-400 mt-4">Compatible avec Instagram, Facebook, Twitter, TikTok, et bien plus.</p>
-            <div className="flex justify-center gap-6 mt-4  text-2xl">
-              <i className="fab fa-instagram"></i>
-              <i className="fab fa-facebook"></i>
-              <i className="fab fa-x-twitter"></i>
-              <i className="fab fa-tiktok"></i>
+            <div className="flex justify-center gap-6 mt-4 text-3xl text-white">
+              <FaInstagram />
+              <FaFacebook />
+              <FaTwitter />
+              <FaTiktok />
             </div>
             </div>
         </main>
