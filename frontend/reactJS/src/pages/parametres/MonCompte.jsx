@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarParametres from "../../components/SideBarParametres";
-import axiosInstance from "../../utils/axios"; // axios configuré avec baseURL + token
+import axiosInstance from "../../utils/axios"; 
 
 const MonCompte = () => {
   const [userData, setUserData] = useState(null);
@@ -33,22 +33,15 @@ const MonCompte = () => {
 
               {userData ? (
                 <div className="space-y-4">
-                  <div>
-                    <label className="font-semibold">Nom :</label>
-                    <p>{userData.nom || "-"}</p>
-                  </div>
-                  <div>
-                    <label className="font-semibold">Prénom :</label>
-                    <p>{userData.prenom || "-"}</p>
+                                    <div>
+                    <label className="font-semibold">Username :</label>
+                    <p>{userData.username}</p>
                   </div>
                   <div>
                     <label className="font-semibold">Email :</label>
                     <p>{userData.email}</p>
                   </div>
-                  <div>
-                    <label className="font-semibold">Username :</label>
-                    <p>{userData.username}</p>
-                  </div>
+
                 </div>
               ) : (
                 <p>Chargement des informations...</p>
