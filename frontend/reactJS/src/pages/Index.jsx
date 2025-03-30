@@ -7,7 +7,6 @@ const Index = () => {
     if (token) {
         return <Navigate to="/dashboard" />;
     }
-
     return <HomePage />;
 };
 

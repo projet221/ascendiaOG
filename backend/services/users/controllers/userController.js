@@ -113,10 +113,7 @@ const userController = {
                 return res.status(403).json({ message: 'Accès non autorisé' });
             }
 
-            res.json({
-                username: user.username,
-                email: user.email,
-              });
+            res.json(user);
               
         } catch (error) {
             res.status(500).json({ error: error.message });
