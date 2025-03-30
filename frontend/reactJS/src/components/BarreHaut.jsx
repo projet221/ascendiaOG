@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom"; 
 
 const BarreHaut = () => {
   
@@ -109,14 +109,7 @@ const BarreHaut = () => {
             {menuOuvert && (
               <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md z-50">
                 <NavLink
-                  to="/mon-compte"
-                  onClick={() => setMenuOuvert(false)}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Mon compte
-                </NavLink>
-                <NavLink
-                  to="/parametres"
+                  to="/parametres/moncompte"
                   onClick={() => setMenuOuvert(false)}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
