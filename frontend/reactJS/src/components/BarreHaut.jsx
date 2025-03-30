@@ -33,13 +33,14 @@ const BarreHaut = () => {
           <div className="flex space-x-6">
             {[
               { label: "Dashboard", to: "/dashboard" },
-              { label: "Publications", to: "/publications/all" },
+              { label: "Publications", to: "/publications" },
               { label: "Planification", to: "/planification" },
               { label: "Statistiques", to: "/statistiques" },
             ].map(({ label, to }) => (
               <NavLink
                 key={label}
                 to={to}
+                end={false}
                 className={({ isActive }) =>
                   `px-3 py-2 text-sm font-medium border-b-4 ${
                     isActive
