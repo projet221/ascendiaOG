@@ -22,7 +22,7 @@ const SidebarParametres = () => {
             }`
           }
         >
-          Lier un réseau
+          Mes Réseaux
         </NavLink>
       </div>
     </aside>
