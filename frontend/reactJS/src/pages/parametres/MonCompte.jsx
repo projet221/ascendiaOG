@@ -69,7 +69,7 @@ const MonCompte = () => {
             </div>
           ) : (
             <p className="text-gray-500">Chargement des informations...</p>
-          ) }
+          )}
         </div>
       </div>
     </div>
