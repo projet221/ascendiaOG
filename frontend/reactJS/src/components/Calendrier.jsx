@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
+import BarreHaut from "./BarreHaut";
 
 const Calendar = ({ events }) => {
   const [hoveredDate, setHoveredDate] = useState(null);
@@ -25,6 +26,8 @@ const Calendar = ({ events }) => {
   };
 
   return (
+    <div><BarreHaut/>
+    
     <div className="fc-calendar">
       {/* Tooltip for date */}
       {hoveredDate && (
@@ -76,6 +79,7 @@ const Calendar = ({ events }) => {
         }}
         height="auto"
       />
+    </div>
     </div>
   );
 };

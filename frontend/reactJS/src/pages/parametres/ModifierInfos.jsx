@@ -29,7 +29,7 @@ const ModifierInfos = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Informations mises à jour !");
-      navigate("/parametres/mon-compte");
+      navigate("/parametres/moncompte");
     } catch (err) {
       alert("Erreur lors de la mise à jour.");
     }

@@ -22,7 +22,7 @@ const ModifierMotDePasse = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Mot de passe mis à jour !");
-      navigate("/parametres/mon-compte");
+      navigate("/parametres/moncompte");
     } catch (err) {
       alert("Erreur lors de la mise à jour.");
     }
