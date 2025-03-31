@@ -19,47 +19,87 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         try {
-            console.log("file recu",req.file); // ça plante
+            console.log("Fichier reçu :", req.file);
             const { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
-            const scheduleDate = req.scheduleDate;
-            //demande de token associé à un user id
-            const response = await axios.get(process.env.PROXY_GATEWAY+`/api/socialauth/tokens/${userId}`);
-            //console.log(response.data);
-            console.log("userid:"+userId+", message:"+message + " "+networks + " "+typeof(networks) +" " +networks.includes("twitter"));
-            //si twitter fait parti des choix frontend
+            //const scheduleDate = req.scheduleDate;
 
-            
-            if(networks.includes("twitter")){
+            // Demande de token associé à un user id
+            const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${userId}`);
+            const tokens = response.data;
 
-                const {accessToken, secretToken} = response.data.filter(item => item.provider === "twitter")[0];
-                console.log("access token twitter"+accessToken,"access token secret"+secretToken);
-                const client = new TwitterApi({
-                appKey: process.env.TWITTER_KEY,
-                appSecret: process.env.TWITTER_SECRET,
-                accessToken: accessToken,
-                accessSecret: secretToken,
-                });
+            // Parcours des réseaux sociaux sélectionnés
+            for (const network of networks) {
+                switch (network) {
+                    case "twitter":
+                        const twitterTokens = tokens.find(item => item.provider === "twitter");
+                        if (twitterTokens) {
+                            const client = new TwitterApi({
+                                appKey: process.env.TWITTER_KEY,
+                                appSecret: process.env.TWITTER_SECRET,
+                                accessToken: twitterTokens.accessToken,
+                                accessSecret: twitterTokens.secretToken,
+                            });
+                            const twitterClient = client.readWrite;
+                            await tweetWithImage(fileBuffer, mimeType, message, twitterClient);
+                        }
+                        break;
 
-                //const bearer = new TwitterApi(process.env.TWITTER_BEARER);
+                    case "facebook":
+                        const facebookTokens = tokens.find(item => item.provider === "facebook");
+                        if (facebookTokens) {
+                            graph.setAccessToken(facebookTokens.accessToken);
+                            if (fileBuffer) {
+                                const formData = {
+                                    message,
+                                    source: {
+                                        value: fileBuffer,
+                                        options: { filename: "image.jpg", contentType: mimeType }
+                                    }
+                                };
+                                await graph.post('/me/photos', formData);
+                            } else {
+                                await graph.post('/me/feed', { message });
+                            }
+                        }
+                        break;
 
-                const twitterClient = client.readWrite;
-                //const twitterBearer = bearer.readOnly;
+                    case "instagram":
+                        const instagramTokens = tokens.find(item => item.provider === "instagram");
+                        if (!fileBuffer) {
+                            return res.status(400).json({ error: "Instagram requiert une image pour publier." });
+                        }
+                        if (instagramTokens) {
+                            const formData = new FormData();
+                            formData.append("image", fileBuffer, { filename: "image.jpg", contentType: mimeType });
+                            formData.append("caption", message);
 
-                    //const filepath = URL.createObjectURL(fichier);
-                    console.log("le fichier en buffer :",fileBuffer);
-                    await tweetWithImage(fileBuffer,mimeType,message,twitterClient);
+                            const response = await axios.post(
+                                `https://graph.facebook.com/v18.0/${instagramTokens.userId}/media`,
+                                formData,
+                                {
+                                    headers: { Authorization: `Bearer ${instagramTokens.accessToken}`, ...formData.getHeaders() }
+                                }
+                            );
 
-            
-        }
-
+                            const creationId = response.data.id;
+                            await axios.post(
+                                `https://graph.facebook.com/v18.0/${instagramTokens.userId}/media_publish`,
+                                { creation_id: creationId },
+                                { headers: { Authorization: `Bearer ${instagramTokens.accessToken}` } }
+                            );
+                        }
+                        break;
+                }
+            }
 
             res.status(200).json({ message: "Post publié avec succès" });
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    },
+    }
+,
         // Planifier une publication
         schedulePost: async (req, res) => {
             try {
