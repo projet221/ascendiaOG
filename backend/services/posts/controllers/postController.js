@@ -20,6 +20,7 @@ const postController = {
     createPost: async (req, res) => {
         try {
             console.log("Fichier reçu :", req.file);
+            console.log("\ndata :",req.body);
             const { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
