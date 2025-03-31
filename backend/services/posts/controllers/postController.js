@@ -33,6 +33,7 @@ const postController = {
             for (const network of networks) {
                 switch (network) {
                     case "twitter":
+                        console.log("twitter detecter : Test du Post")
                         const twitterTokens = tokens.find(item => item.provider === "twitter");
                         if (twitterTokens) {
                             const client = new TwitterApi({
@@ -42,6 +43,8 @@ const postController = {
                                 accessSecret: twitterTokens.secretToken,
                             });
                             const twitterClient = client.readWrite;
+                            console.log(`twitter detecter : envoie a la fonction avec file buffer ${fileBuffer} \n mimetype : ${mimeType} \n message : ${ message }` );
+
                             await tweetWithImage(fileBuffer, mimeType, message, twitterClient);
                         }
                         break;
