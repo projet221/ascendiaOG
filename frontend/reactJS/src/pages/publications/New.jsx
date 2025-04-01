@@ -83,7 +83,9 @@ function New() {
 
         // Ajouter les autres données du formulaire
             formData.append("userId", userId);
-            formData.append("networks", networks);
+            networks.forEach(n => {
+                formData.append("networks[]", n);
+            });
             formData.append("message", message);
 
             if(fichier){
@@ -217,7 +219,7 @@ function New() {
     {networks.length === 0 ? (
   <div className="flex flex-col items-center justify-center h-full text-gray-400">
     <EyeOff className="w-12 h-12 mb-4 text-gray-300" />
-    <p className="text-lg font-medium">Rien à voir pour l'instant...</p>
+    <p className="text-lg font-medium">Rien à voir pour l&#39;instant...</p>
     <p className="text-sm">Sélectionnez un compte pour voir l’aperçu</p>
   </div>
 ) : (
