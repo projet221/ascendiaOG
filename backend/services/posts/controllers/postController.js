@@ -21,10 +21,10 @@ const postController = {
         try {
             console.log("Fichier reçu :", req.file);
             console.log("\ndata :",req.body);
-            const { userId, networks, message } = req.body;
+            let { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
-            JSON.parse(networks);
+            networks = JSON.parse(networks);
             console.log(" ici networks[0] :",networks[0]);
             console.log(" ici networks[0][0] :",networks[0][0]);
 
