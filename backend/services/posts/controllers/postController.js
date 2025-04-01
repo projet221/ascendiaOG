@@ -79,15 +79,17 @@ const postController = {
                             return res.status(400).json({ error: "Instagram requiert une image pour publier." });
                         }
                         if (instagramTokens) {
-                            const formData = new FormData();
-                            formData.append("image", fileBuffer, { filename: "image.jpg", contentType: mimeType });
-                            formData.append("caption", message);
+                            // 🔹 Convertir le fichier en base64
+                            const base64Image = fileBuffer.toString("base64");
 
                             const response = await axios.post(
                                 `https://graph.facebook.com/v18.0/${instagramTokens.userId}/media`,
-                                formData,
                                 {
-                                    headers: { Authorization: `Bearer ${instagramTokens.accessToken}`, ...formData.getHeaders() }
+                                    image_data: base64Image, // Vérifie si Instagram accepte ce champ
+                                    caption: message,
+                                },
+                                {
+                                    headers: { Authorization: `Bearer ${instagramTokens.accessToken}` }
                                 }
                             );
 
