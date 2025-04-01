@@ -25,6 +25,7 @@ const postController = {
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
             JSON.parse(networks);
+            console.log(" ici networks[0] :",networks);
             //const scheduleDate = req.scheduleDate;
 
             // Demande de token associé à un user id
