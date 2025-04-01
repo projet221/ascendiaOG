@@ -10,7 +10,7 @@ import Previsualisation from "../../components/Previsualisation.jsx";
 
 function New() {
     const [message, setMessage] = useState("");
-    const [userId, setUserId] = useState(localStorage.getItem("user_id"));
+    const userId = localStorage.getItem("user_id");
     const [networks, setNetworks] = useState([]);
     const [action, setAction] = useState(""); // État pour gérer l'action choisie
     const [fichier,setFichier] = useState(null);
@@ -24,6 +24,7 @@ function New() {
 
     const handleActionChange = (e) => {
         setAction(e.target.value); // Mettre à jour l'action choisie
+        console.log(networks)
     };
     const handlePublish = () => {
         if (action === "maintenant") {
