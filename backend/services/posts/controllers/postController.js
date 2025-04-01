@@ -1,4 +1,5 @@
-const Post = require('../models/Post');
+const sharp = require('sharp');  // Import de sharp
+const fs = require('fs');  // Import de fs pour gérer les fichiers
 const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
@@ -20,13 +21,11 @@ const postController = {
     createPost: async (req, res) => {
         try {
             console.log("Fichier reçu :", req.file);
-            console.log("\ndata :",req.body);
+            console.log("\ndata :", req.body);
             let { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
             networks = JSON.parse(networks);
-            console.log(" ici networks[0] :",networks[0]);
-            console.log(" ici networks[0][0] :",networks[0][0]);
 
             //const scheduleDate = req.scheduleDate;
 
@@ -38,7 +37,7 @@ const postController = {
             for (const network of networks) {
                 switch (network) {
                     case "twitter":
-                        console.log("twitter detecter : Test du Post")
+                        console.log("twitter détecté : Test du Post");
                         const twitterTokens = tokens.find(item => item.provider === "twitter");
                         if (twitterTokens) {
                             const client = new TwitterApi({
@@ -48,7 +47,7 @@ const postController = {
                                 accessSecret: twitterTokens.secretToken,
                             });
                             const twitterClient = client.readWrite;
-                            console.log(`twitter detecter : envoie a la fonction avec file buffer ${fileBuffer} \n mimetype : ${mimeType} \n message : ${ message }` );
+                            console.log(`Envoi à Twitter avec message : ${message}`);
 
                             await tweetWithImage(fileBuffer, mimeType, message, twitterClient);
                         }
@@ -78,18 +77,26 @@ const postController = {
                         if (!fileBuffer) {
                             return res.status(400).json({ error: "Instagram requiert une image pour publier." });
                         }
+
+                        // Si le réseau social est Instagram, on convertit l'image en JPEG
                         if (instagramTokens) {
-                            // 🔹 Convertir le fichier en base64
-                            const base64Image = fileBuffer.toString("base64");
+                            // Conversion de l'image en JPEG et stockage temporaire
+                            const tempFilePath = `./uploads/temp_image_${Date.now()}.jpg`;
+                            await sharp(fileBuffer)
+                            .jpeg({ quality: 90 })  // Conversion en JPEG avec une qualité de 90
+                            .toFile(tempFilePath);  // Sauvegarde du fichier converti
+
+                            console.log("Image convertie et sauvegardée temporairement à :", tempFilePath);
+
+                            const formData = new FormData();
+                            formData.append("image", fs.createReadStream(tempFilePath), { filename: "image.jpg", contentType: mimeType });
+                            formData.append("caption", message);
 
                             const response = await axios.post(
                                 `https://graph.facebook.com/v18.0/${instagramTokens.userId}/media`,
+                                formData,
                                 {
-                                    image_data: base64Image, // Vérifie si Instagram accepte ce champ
-                                    caption: message,
-                                },
-                                {
-                                    headers: { Authorization: `Bearer ${instagramTokens.accessToken}` }
+                                    headers: { Authorization: `Bearer ${instagramTokens.accessToken}`, ...formData.getHeaders() }
                                 }
                             );
 
@@ -99,6 +106,10 @@ const postController = {
                                 { creation_id: creationId },
                                 { headers: { Authorization: `Bearer ${instagramTokens.accessToken}` } }
                             );
+
+                            // Suppression de l'image après l'envoi réussi
+                            fs.unlinkSync(tempFilePath); // Supprime le fichier après utilisation
+                            console.log("Image supprimée du serveur après l'envoi.");
                         }
                         break;
                 }
@@ -153,67 +164,10 @@ const postController = {
             if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
             res.json(post);
         } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-
-    // Mettre à jour une publication
-    updatePost: async (req, res) => {
-        try {
-            const post = await Post.findByIdAndUpdate(
-                req.params.id,
-                { $set: req.body },
-                { new: true, runValidators: true }
-            ).populate('userId', 'username email');
-
-            if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
-            res.json(post);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    },
-
-    // Supprimer une publication
-    deletePost: async (req, res) => {
-        try {
-            const post = await Post.findByIdAndDelete(req.params.id);
-            if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
-            res.json({ message: 'Publication supprimée avec succès' });
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-
-    // Récupérer les publications d'un utilisateur
-    getUserPosts: async (req, res) => {
-        try {
-            const posts = await Post.find({ userId: req.params.userId })
-                .populate('userId', 'username email')
-                .sort({ createdAt: -1 });
-            res.json(posts);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-
-
-    // Mettre à jour les analytics d'une publication
-    updateAnalytics: async (req, res) => {
-        try {
-            const post = await Post.findByIdAndUpdate(
-                req.params.id,
-                { $set: { analytics: req.body.analytics } },
-                { new: true }
-            );
-
-            if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
-            res.json(post);
-        } catch (error) {
+            console.error("Erreur :", error);
             res.status(400).json({ error: error.message });
         }
     }
 };
-
-
 
 module.exports = postController;
