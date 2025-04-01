@@ -24,6 +24,7 @@ const postController = {
             const { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
+            JSON.parse(networks);
             //const scheduleDate = req.scheduleDate;
 
             // Demande de token associé à un user id
