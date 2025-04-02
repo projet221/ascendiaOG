@@ -20,6 +20,33 @@ const socialAuthController = {
                 // Création d'un nouvel enregistrement SocialAuth
             switch (network) {
                 case "instagram": {
+                    const getLongLivedToken = async (shortLivedToken) => {
+                        if (!shortLivedToken) {
+                            throw new Error("Le token d'accès et le client secret sont requis !");
+                        }
+
+                        try {
+                            const response = await axios.get("https://graph.instagram.com/access_token", {
+                                params: {
+                                    grant_type: "ig_exchange_token",
+                                    client_secret: process.env.INSTAGRAM_CLIENT_SECRET,
+                                    access_token: shortLivedToken
+                                }
+                            });
+                            return response.data; // Retourne le long-lived token
+                        } catch (error) {
+                            if (error.response) {
+                                console.error("Erreur API:", error.response.data);
+                            } else if (error.request) {
+                                console.error("Aucune réponse reçue:", error.request);
+                            } else {
+                                console.error("Erreur lors de la requête:", error.message);
+                            }
+                            return null;
+                        }
+                    };
+
+                    const longtoken = getLongLivedToken(req.body.urlParams.token);
                     // Instagram Graph API
                     const instagramProfile = async (token) => {
                         try {
@@ -29,7 +56,6 @@ const socialAuthController = {
                                     access_token: token
                                 }
                             });
-                            console.log(response.data);
                             return response.data;
                         } catch (error) {
                             console.error("Erreur lors de la récupération du profil Instagram:", error);
@@ -37,7 +63,7 @@ const socialAuthController = {
                         }
                     };
 
-                    const profile = await instagramProfile(req.body.urlParams.token);  // Récupérer les infos de profil via le token d'accès
+                    const profile = await instagramProfile(longtoken);  // Récupérer les infos de profil via le token d'accès
                     if (!profile) {
                         return res.status(400).json({
                             message: "Impossible de récupérer les informations du profil Instagram."
@@ -47,7 +73,7 @@ const socialAuthController = {
                     socialAuth = new SocialAuth({
                         user: user_id,  // L'ID de l'utilisateur
                         provider: network,  // Le réseau social (ex: 'facebook', 'twitter')
-                        accessToken: req.body.urlParams.token,  // Le token d'accès de l'utilisateur
+                        accessToken: longtoken,  // Le token d'accès de l'utilisateur
                         profile: {
                             id: profile.id,  // ID de l'utilisateur Instagram
                             username: profile.username,  // Nom d'utilisateur Instagram
