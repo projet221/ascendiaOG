@@ -11,7 +11,9 @@ const postController = {
             const network = req.params.networks;
             const id = req.params.id;
             const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
+            console.log('access token twitter',id);
             const tokens = response.data;
+            console.log("mes tokens", tokens);
             switch (network) {
                 case 'twitter':
                     const url = 'https://api.twitter.com/2/tweets';
