@@ -20,37 +20,7 @@ const socialAuthController = {
                 // Création d'un nouvel enregistrement SocialAuth
             switch (network) {
                 case "instagram": {
-                    console.log("tentative d'echange du tokenaccess en longtoken")
-                    const getLongLivedToken = async (shortLivedToken) => {
-                        console.log(" voici le token :",shortLivedToken,"\n et ici le client sect : ", process.env.INSTAGRAM_CLIENT_SECRET);
-                        if (!shortLivedToken) {
-                            throw new Error("Le token d'accès et le client secret sont requis !");
-                        }
-
-                        try {
-                            const response = await axios.get("https://graph.instagram.com/access_token", {
-                                params: {
-                                    grant_type: "ig_exchange_token",
-                                    client_secret: process.env.INSTAGRAM_CLIENT_SECRET,
-                                    access_token: shortLivedToken
-                                }
-                            });
-                            console.log(response.data);
-                            return response.data; // Retourne le long-lived token
-                        } catch (error) {
-                            if (error.response) {
-                                console.error("Erreur API:", error.response.data);
-                            } else if (error.request) {
-                                console.error("Aucune réponse reçue:", error.request);
-                            } else {
-                                console.error("Erreur lors de la requête:", error.message);
-                            }
-                            return null;
-                        }
-                    };
-
-                    const longtoken =  await getLongLivedToken(req.body.urlParams.token);
-                    console.log("le long token recuperer :",longtoken);
+                    const longtoken =  req.body.urlParams.token;
                     // Instagram Graph API
                     const instagramProfile = async (token) => {
                         try {
