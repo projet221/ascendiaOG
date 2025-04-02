@@ -10,10 +10,10 @@ function Previsualisation({ platform, text, image }) {
       const userId = localStorage.getItem("user_id");
       const fetchUserData = async () => {
         try {
-          const response = await axiosInstance.get(`/api/users/${userId}`);
-          const { username, profilePic } = response.data;
+          const response = await axiosInstance.get(`/api/socialAuth/${userId}`);
+          const { username, photo } = response.data.profile;
           setUsername(username);
-          setProfilePic(profilePic);
+          setProfilePic(photo);
         } catch (err) {
           console.error("Erreur lors de la récupération des infos utilisateur :", err.message);
         }
