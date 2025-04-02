@@ -14,10 +14,10 @@ const All = () => {
   useEffect(() => {
     const fetchTweets = async () => {
       try {
-        const response = await axiosInstance.get(`${process.env.PROXY_GATEWAY}/api/twitter/${userId}`);
+        const response = await axiosInstance.get(`/api/twitter/${userId}`);
         console.log(response.data); // Assure-toi que l'URL correspond bien à ton API backend
         setTweets(response.data); // Stocke les tweets récupérés dans l'état
-        
+          
       } catch (err) {
         setError("Erreur lors de la récupération des publications.");
       } finally {
