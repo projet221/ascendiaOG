@@ -16,7 +16,7 @@ const All = () => {
       try {
         const response = await axiosInstance.get(`/api/posts/twitter/${userId}`);
         console.log(response.data); // Assure-toi que l'URL correspond bien à ton API backend
-        //setTweets(response.data._realData.data); // Stocke les tweets récupérés dans l'état
+        setTweets(response.data); // Stocke les tweets récupérés dans l'état
           
       } catch (err) {
         setError("Erreur lors de la récupération des publications.");

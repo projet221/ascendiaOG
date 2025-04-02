@@ -45,12 +45,22 @@ const postController = {
                             max_results: 100, // Max allowed per request (default: 10)
                         
                         });
-                        return res.status(200).json(tweets); // Send response to client
-
-
-
-
+                        const allTweets = [];
+                        for await (const tweet of tweetIterator) {
+                            allTweets.push(tweet);
+                        }
+                        tweets: allTweets.map(tweet => ({
+                            id: tweet.id,
+                            text: tweet.text,
+                            date: tweet.created_at,
+                            likes: tweet.public_metrics?.like_count || 0,
+                            retweets: tweet.public_metrics?.retweet_count || 0,
+                            media: tweet.attachments?.media_keys?.map(key => 
+                                tweet.includes?.media?.find(m => m.media_key === key)?.url
+                            ) || []
+                        }))
                         
+                        return res.status(200).json(tweets); // Send response to client
                     } catch (twitterError) {
                         console.error("Twitter API Error:", twitterError);
                         return res.status(500).json({ error: "Failed to fetch Twitter user data" });
