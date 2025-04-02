@@ -11,6 +11,7 @@ function Previsualisation({ platform, text, image }) {
       const fetchUserData = async () => {
         try {
           const response = await axiosInstance.get(`/api/socialAuth/${userId}`);
+          console.log(" debug previsualisation, data recu : ", response.data);
           const { username, photo } = response.data.profile;
           setUsername(username);
           setProfilePic(photo);
