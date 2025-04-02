@@ -19,11 +19,43 @@ const socialAuthController = {
             } else {
                 // Création d'un nouvel enregistrement SocialAuth
             switch (network) {
-                case "instagram":{
+                case "instagram": {
+                    // Instagram Graph API
+                    const instagramProfile = async (token) => {
+                        try {
+                            const response = await axios.get(`https://graph.instagram.com/me`, {
+                                params: {
+                                    fields: "id,username,media_count,account_type,profile_picture_url",
+                                    access_token: token
+                                }
+                            });
+
+                            return response.data;
+                        } catch (error) {
+                            console.error("Erreur lors de la récupération du profil Instagram:", error);
+                            return null;  // Retourner null si une erreur survient
+                        }
+                    };
+
+                    const profile = await instagramProfile(req.body.urlParams.token);  // Récupérer les infos de profil via le token d'accès
+                    if (!profile) {
+                        return res.status(400).json({
+                            message: "Impossible de récupérer les informations du profil Instagram."
+                        });
+                    }
+
+                    // Créer l'objet SocialAuth pour Instagram
                     socialAuth = new SocialAuth({
-                        user: user_id, // L'ID de l'utilisateur
-                        provider: network, // Le réseau social (ex: 'facebook', 'twitter')
-                        accessToken: req.body.urlParams.token, // Le token d'accès de l'utilisateur
+                        user: user_id,  // L'ID de l'utilisateur
+                        provider: network,  // Le réseau social (ex: 'facebook', 'twitter')
+                        accessToken: req.body.urlParams.token,  // Le token d'accès de l'utilisateur
+                        profile: {
+                            id: profile.id,  // ID de l'utilisateur Instagram
+                            username: profile.username,  // Nom d'utilisateur Instagram
+                            name: profile.username,  // Instagram ne fournit pas de champ 'name', tu peux utiliser le 'username'
+                            email: null,  // Instagram ne fournit pas l'email par défaut, donc tu peux mettre 'null'
+                            photo: profile.profile_picture_url || null,  // URL de la photo de profil
+                        },
                     });
                     break;
                 }
