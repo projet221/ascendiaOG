@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { axiosInstance } from "../utils/axios.jsx";
 
-function SelectCompte({networks,setNetworks}) {
+function SelectCompte({networks,setNetworks,setInfoComptes}) {
     const [selectedIds, setSelectedIds] = useState([]);
     const [listeComptes, setListeComptes] = useState([]);
     

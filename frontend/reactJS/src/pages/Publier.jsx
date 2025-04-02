@@ -15,6 +15,7 @@ function Publier() {
     const [action, setAction] = useState(""); // État pour gérer l'action choisie
     const [fichier,setFichier] = useState(null);
     const [scheduleDate, setScheduleDate] = useState("");
+    const [infoComptes, setInfoComptes] = useState(null);
     const dateInputRef = useRef(null);
     
 
@@ -149,7 +150,7 @@ function Publier() {
             <div className="h-screen flex bg-gray-100 overflow-hidden">
                 <div className="min-h-screen flex bg-gray-100">
                     <div className="p-6">
-                        <SelectCompte networks={networks} setNetworks={setNetworks} />
+                        <SelectCompte networks={networks} setNetworks={setNetworks} setInfoComptes={setInfoComptes}/>
                         <div className="relative mb-6">
                           <label htmlFor="message" className="block text-gray-700 mb-2">                        
                             Votre message :

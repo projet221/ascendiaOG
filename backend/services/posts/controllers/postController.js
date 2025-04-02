@@ -8,10 +8,28 @@ const postController = {
     // Récupérer toutes les publications
     getAllPosts: async (req, res) => {
         try {
-            const posts = await Post.find()
-                .populate('userId', 'username email')
-                .sort({ createdAt: -1 });
-            res.json(posts);
+            const network = req.parameters.networks;
+            const id = req.parameters.id;
+            const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${userId}`);
+            const tokens = response.data;
+            switch (network) {
+                case 'twitter':
+                    const twitterTokens = tokens.find(item => item.provider === "twitter");
+                    const response = await axios.get(url, {
+                        headers: {
+                            'Authorization': `Bearer ${twitterTokens.accessToken}`
+                        }
+    
+                    });
+            
+                    // Si la requête est réussie, les tweets seront dans response.data.data
+                    if (response.data && response.data.data) {
+                        return response.data.data;
+                    } else {
+                        console.log("Aucun tweet trouvé.");
+                    }
+            }
+
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
