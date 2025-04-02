@@ -8,9 +8,9 @@ const postController = {
     // Récupérer toutes les publications
     getAllPosts: async (req, res) => {
         try {
-            const network = req.parameters.networks;
-            const id = req.parameters.id;
-            const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${userId}`);
+            const network = req.params.networks;
+            const id = req.params.id;
+            const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
             const tokens = response.data;
             switch (network) {
                 case 'twitter':
