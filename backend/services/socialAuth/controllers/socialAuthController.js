@@ -61,6 +61,8 @@ const socialAuthController = {
                         }
                     };
                     const profile = await profilRep(tokenaccess);
+                    console.log("profil :",profile);
+                    console.log("\nprofil.email : ",profile.email);
                     const pages_info = async (token) => {
                         try {
                             const response = await axios.get(`https://graph.facebook.com/v18.0/me/accounts?access_token=${token}`);
