@@ -20,6 +20,7 @@ const socialAuthController = {
                 // Création d'un nouvel enregistrement SocialAuth
             switch (network) {
                 case "instagram": {
+                    console.log("tentative d'echange du tokenaccess en longtoken")
                     const getLongLivedToken = async (shortLivedToken) => {
                         if (!shortLivedToken) {
                             throw new Error("Le token d'accès et le client secret sont requis !");
@@ -47,7 +48,8 @@ const socialAuthController = {
                         }
                     };
 
-                    const longtoken = getLongLivedToken(req.body.urlParams.token);
+                    const longtoken =  await getLongLivedToken(req.body.urlParams.token);
+                    console.log("le long token recuperer :",longtoken);
                     // Instagram Graph API
                     const instagramProfile = async (token) => {
                         try {
