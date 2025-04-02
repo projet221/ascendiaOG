@@ -22,6 +22,7 @@ const socialAuthController = {
                 case "instagram": {
                     console.log("tentative d'echange du tokenaccess en longtoken")
                     const getLongLivedToken = async (shortLivedToken) => {
+                        console.log(" voici le token :",shortLivedToken,"\n et ici le client sect : ", process.env.INSTAGRAM_CLIENT_SECRET);
                         if (!shortLivedToken) {
                             throw new Error("Le token d'accès et le client secret sont requis !");
                         }
