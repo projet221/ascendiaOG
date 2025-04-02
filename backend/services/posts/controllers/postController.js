@@ -36,9 +36,21 @@ const postController = {
                         const { data: user } = await twitterClient.v2.me({
                             "user.fields": ["id", "name", "username", "profile_image_url"],
                         });
-                
-                        console.log("Twitter User Data:", user);
-                        return res.status(200).json(user); // Send response to client
+                        const userId = user.id;
+                        //recuperer les tweets avec l'id
+                        const tweets = await twitterClient.v2.userTimeline(userId, {
+                            expansions: ['author_id', 'attachments.media_keys'],
+                            'tweet.fields': ['created_at', 'public_metrics', 'text', 'attachments'],
+                            'media.fields': ['url', 'preview_image_url'],
+                            max_results: 100, // Max allowed per request (default: 10)
+                        
+                        });
+                        return res.status(200).json(tweets); // Send response to client
+
+
+
+
+                        
                     } catch (twitterError) {
                         console.error("Twitter API Error:", twitterError);
                         return res.status(500).json({ error: "Failed to fetch Twitter user data" });
