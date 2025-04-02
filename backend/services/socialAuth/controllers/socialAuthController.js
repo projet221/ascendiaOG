@@ -33,6 +33,7 @@ const socialAuthController = {
                                     access_token: shortLivedToken
                                 }
                             });
+                            console.log(response.data);
                             return response.data; // Retourne le long-lived token
                         } catch (error) {
                             if (error.response) {
