@@ -102,7 +102,7 @@ const socialAuthController = {
 
                     // Get the authenticated user's data
                     const { data: user } = await twitterClient.v2.me({
-                        "user.fields": ["id", "name", "username", "profile_image_url","email"],
+                        "user.fields": ["id", "name", "username", "profile_image_url"],
                     })
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
