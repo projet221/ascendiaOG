@@ -50,7 +50,7 @@ const socialAuthController = {
                             const response = await axios.get(`https://graph.facebook.com/me`,{
                                 params:{
                                     access_token : token,
-                                    fiels:"id,name,email,picture",
+                                    fields:"id,name,email,picture",
                             }
                             });
 
@@ -61,6 +61,8 @@ const socialAuthController = {
                         }
                     };
                     const profile = await profilRep(tokenaccess);
+                    console.log("profil :",profile);
+                    console.log("\nprofil.email : ",profile.email);
                     const pages_info = async (token) => {
                         try {
                             const response = await axios.get(`https://graph.facebook.com/v18.0/me/accounts?access_token=${token}`);
@@ -77,7 +79,12 @@ const socialAuthController = {
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
                         accessToken: tokenaccess, // Le token d'accès de l'utilisateur
                         pages : Pages,
-                        profile : profile
+                        profile: {
+                            id: profile.id,
+                            name: profile.name,
+                            email: profile.email || null,
+                            photo: profile.picture.data.url || null,
+                        },
                     });
                     break;
                 }
