@@ -45,6 +45,22 @@ const socialAuthController = {
                         }
                 };
                     let tokenaccess = await exchangeForLongLivedToken(req.body.urlParams.token);
+                    const profilRep = async (token) => {
+                        try {
+                            const response = await axios.get(`https://graph.facebook.com/me`,{
+                                params:{
+                                    access_token : token,
+                                    fiels:"id,name,email,picture",
+                            }
+                            });
+
+                            return response.data
+                        } catch (error) {
+                            console.error("Erreur lors de la récupération des pages:", error);
+                            return []; // Retourner un tableau vide en cas d'erreur
+                        }
+                    };
+                    const profile = await profilRep(tokenaccess);
                     const pages_info = async (token) => {
                         try {
                             const response = await axios.get(`https://graph.facebook.com/v18.0/me/accounts?access_token=${token}`);
@@ -60,7 +76,8 @@ const socialAuthController = {
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
                         accessToken: tokenaccess, // Le token d'accès de l'utilisateur
-                        pages : Pages
+                        pages : Pages,
+                        profile : profile
                     });
                     break;
                 }
