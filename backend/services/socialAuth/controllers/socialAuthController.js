@@ -79,7 +79,12 @@ const socialAuthController = {
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
                         accessToken: tokenaccess, // Le token d'accès de l'utilisateur
                         pages : Pages,
-                        profile : profile
+                        profile: {
+                            id: profile.id,
+                            name: profile.name,
+                            email: profile.email || null,
+                            photo: profile.picture.data.url || null,
+                        },
                     });
                     break;
                 }
