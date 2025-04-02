@@ -15,39 +15,39 @@ const postController = {
             const tokens = response.data;
             console.log("mes tokens", tokens);
             switch (network) {
-                case 'twitter':
-                    //const url = 'https://api.twitter.com/2/tweets';
+                case 'twitter': {
                     const twitterTokens = tokens.find(item => item.provider === "twitter");
                     
-                    axios.get('https://api.twitter.com/2/users/me', {
-                        headers: {
-                            'Authorization': `Bearer ${twitterTokens.accessToken}`,
-                        },
-                        params: {
-                            'user.fields': 'id,name,username,profile_image_url', // Customize fields
-                        }
-                    })
-                    .then(response => {
-                        console.log('Twitter User Data:', response.data);
-                        /*
-                        Example Response:
-                        {
-                          data: {
-                            id: '123456789',
-                            name: 'John Doe',
-                            username: 'johndoe',
-                            profile_image_url: 'https://pbs.twimg.com/profile_images/xyz.jpg'
-                          }
-                        }
-                        */
-                    })
-                    .catch(error => {
-                        console.error('Error fetching Twitter user:', error.response?.data || error.message);
+                    if (!twitterTokens) {
+                        return res.status(400).json({ error: "Twitter tokens not found" });
+                    }
+    
+                    const client = new TwitterApi({
+                        appKey: process.env.TWITTER_KEY,
+                        appSecret: process.env.TWITTER_SECRET,
+                        accessToken: twitterTokens.accessToken,
+                        accessSecret: twitterTokens.secretToken,
                     });
-            
-                    
+                
+                    const twitterClient = client.readWrite;
+                
+                    try {
+                        // Get the authenticated user's data
+                        const { data: user } = await twitterClient.v2.me({
+                            "user.fields": ["id", "name", "username", "profile_image_url"],
+                        });
+                
+                        console.log("Twitter User Data:", user);
+                        return res.status(200).json(user); // Send response to client
+                    } catch (twitterError) {
+                        console.error("Twitter API Error:", twitterError);
+                        return res.status(500).json({ error: "Failed to fetch Twitter user data" });
+                    }
+                    break;
+                }
+                default:
+                    return res.status(400).json({ error: "Unsupported network" });
             }
-
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
