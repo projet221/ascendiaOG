@@ -50,7 +50,7 @@ const socialAuthController = {
                             const response = await axios.get(`https://graph.facebook.com/me`,{
                                 params:{
                                     access_token : token,
-                                    fiels:"id,name,email,picture",
+                                    fields:"id,name,email,picture",
                             }
                             });
 
