@@ -8,13 +8,16 @@ const All = () => {
   const [tweets, setTweets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userId,setUserId] = useState(localStorage.getItem("user_id"));
 
   // Charger les publications lorsque le composant est monté
   useEffect(() => {
     const fetchTweets = async () => {
       try {
-        const response = await axiosInstance.get('/posts'); // Assure-toi que l'URL correspond bien à ton API backend
+        const response = await axiosInstance.get(`/twitter/ ${userId}`);
+        console.log(response.data); // Assure-toi que l'URL correspond bien à ton API backend
         setTweets(response.data); // Stocke les tweets récupérés dans l'état
+        
       } catch (err) {
         setError("Erreur lors de la récupération des publications.");
       } finally {
