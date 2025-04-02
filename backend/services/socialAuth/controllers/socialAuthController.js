@@ -1,4 +1,5 @@
 const SocialAuth = require("../models/SocialAuth");
+const { TwitterApi } = require("twitter-api-v2");
 const axios = require("axios");
 const socialAuthController = {
     save: async (req, res) => {
@@ -89,11 +90,32 @@ const socialAuthController = {
                     break;
                 }
                 case "twitter":{
+
+                    const client = new TwitterApi({
+                        appKey: process.env.TWITTER_KEY,
+                        appSecret: process.env.TWITTER_SECRET,
+                        accessToken: req.body.urlParams.token,
+                        accessSecret: req.body.urlParams.tokenSecret,
+                    });
+
+                    const twitterClient = client.readWrite;
+
+                    // Get the authenticated user's data
+                    const { data: user } = await twitterClient.v2.me({
+                        "user.fields": ["id", "name", "username", "profile_image_url","email"],
+                    })
                     socialAuth = new SocialAuth({
                         user: user_id, // L'ID de l'utilisateur
                         provider: network, // Le réseau social (ex: 'facebook', 'twitter')
                         accessToken: req.body.urlParams.token, // Le token d'accès de l'utilisateur
-                        secretToken: req.body.urlParams.tokenSecret
+                        secretToken: req.body.urlParams.tokenSecret,
+                        profile: {
+                            id: user.id,
+                            username: user.username,
+                            name: user.name,
+                            email: user.email || null,
+                            photo: user.profile_image_url || null,
+                        },
                     });
                     break;
                 }
