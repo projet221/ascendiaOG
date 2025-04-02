@@ -29,7 +29,7 @@ const socialAuthController = {
                                     access_token: token
                                 }
                             });
-
+                            console.log(response.data);
                             return response.data;
                         } catch (error) {
                             console.error("Erreur lors de la récupération du profil Instagram:", error);
@@ -43,7 +43,6 @@ const socialAuthController = {
                             message: "Impossible de récupérer les informations du profil Instagram."
                         });
                     }
-
                     // Créer l'objet SocialAuth pour Instagram
                     socialAuth = new SocialAuth({
                         user: user_id,  // L'ID de l'utilisateur
@@ -94,8 +93,6 @@ const socialAuthController = {
                         }
                     };
                     const profile = await profilRep(tokenaccess);
-                    console.log("profil :",profile);
-                    console.log("\nprofil.email : ",profile.email);
                     const pages_info = async (token) => {
                         try {
                             const response = await axios.get(`https://graph.facebook.com/v18.0/me/accounts?access_token=${token}`);
@@ -176,7 +173,6 @@ const socialAuthController = {
     getSocialMediaProviderByUserId : async (req, res) => {
         try {
             const socialAuth = await SocialAuth.find({user: req.params.user_id}).select('provider profile');
-            console.log(socialAuth);
             if (!socialAuth) {
                 return res.status(404).json({})
             }
@@ -188,7 +184,6 @@ const socialAuthController = {
     getSocialMediaByUserId : async (req, res) => {
         try {
             const socialAuth = await SocialAuth.find({user: req.params.user_id});
-            console.log(socialAuth);
             if (!socialAuth) {
                 return res.status(404).json({})
             }
