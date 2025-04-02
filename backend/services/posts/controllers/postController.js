@@ -14,6 +14,7 @@ const postController = {
             const tokens = response.data;
             switch (network) {
                 case 'twitter':
+                    const url = 'https://api.twitter.com/2/tweets';
                     const twitterTokens = tokens.find(item => item.provider === "twitter");
                     const response = await axios.get(url, {
                         headers: {
