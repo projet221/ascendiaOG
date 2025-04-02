@@ -16,21 +16,36 @@ const postController = {
             console.log("mes tokens", tokens);
             switch (network) {
                 case 'twitter':
-                    const url = 'https://api.twitter.com/2/tweets';
+                    //const url = 'https://api.twitter.com/2/tweets';
                     const twitterTokens = tokens.find(item => item.provider === "twitter");
-                    const response = await axios.get(url, {
+                    
+                    axios.get('https://api.twitter.com/2/users/me', {
                         headers: {
-                            'Authorization': `Bearer ${twitterTokens.accessToken}`
+                            'Authorization': `Bearer ${twitterTokens.accessToken}`,
+                        },
+                        params: {
+                            'user.fields': 'id,name,username,profile_image_url', // Customize fields
                         }
-    
+                    })
+                    .then(response => {
+                        console.log('Twitter User Data:', response.data);
+                        /*
+                        Example Response:
+                        {
+                          data: {
+                            id: '123456789',
+                            name: 'John Doe',
+                            username: 'johndoe',
+                            profile_image_url: 'https://pbs.twimg.com/profile_images/xyz.jpg'
+                          }
+                        }
+                        */
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Twitter user:', error.response?.data || error.message);
                     });
             
-                    // Si la requête est réussie, les tweets seront dans response.data.data
-                    if (response.data && response.data.data) {
-                        return response.data.data;
-                    } else {
-                        console.log("Aucun tweet trouvé.");
-                    }
+                    
             }
 
         } catch (error) {
