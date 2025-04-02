@@ -3,6 +3,7 @@ const fs = require('fs');  // Import de fs pour gérer les fichiers
 const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
+const {join} = require("node:path");
 
 const postController = {
     // Récupérer toutes les publications
@@ -78,6 +79,13 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         console.log(req.file);
+        const uploadPath = join(__dirname, 'uploads', req.file.originalname);
+        fs.writeFile(uploadPath, req.file.buffer, (err) => {
+            if (err) {
+                console.error('Erreur lors de la sauvegarde du fichier:', err);
+            }
+            console.log('Fichier sauvegardé avec succès');
+        });
         return res.status(400).json({ "Debug file received" :"test"});
         try {
             console.log("Fichier reçu :", req.file);
