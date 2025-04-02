@@ -77,6 +77,8 @@ const postController = {
 
     // Créer une nouvelle publication
     createPost: async (req, res) => {
+        console.log(req.file);
+        return res.status(400).json({ "Debug file received" :"test"});
         try {
             console.log("Fichier reçu :", req.file);
             console.log("\ndata :", req.body);
