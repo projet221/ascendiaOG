@@ -81,7 +81,7 @@ const socialAuthController = {
                         pages : Pages,
                         profile: {
                             id: profile.id,
-                            name: profile.name,
+                            username: profile.name,
                             email: profile.email || null,
                             photo: profile.picture.data.url || null,
                         },
