@@ -139,7 +139,7 @@ const postController = {
                                 formData.append('message', message);
                                 formData.append('url', `${process.env.PROXY_POSTS}/uploads/${req.file.originalname}`);
                                 formData.append('access_token', accessToken);
-
+                                console.log(formData);
                                 try {
                                     const response = await axios.post(
                                         `https://graph.facebook.com/${pageId}/photos`, // Endpoint de publication sur la page
