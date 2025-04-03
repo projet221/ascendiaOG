@@ -141,7 +141,7 @@ const postController = {
                             console.log(response);
                         }else{
                             const response = await axios.post(
-                                `https://graph.facebook.com/me/photos`,  // L'endpoint pour publier une photo
+                                `https://graph.facebook.com/619080624619257/photos`,  // L'endpoint pour publier une photo
                                 {
                                     params: {
                                         message: message,  // Message
