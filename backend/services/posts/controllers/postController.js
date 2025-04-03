@@ -111,7 +111,6 @@ const postController = {
             for (const network of networks) {
                 switch (network) {
                     case "twitter":
-                        console.log("twitter détecté : Test du Post");
                         const twitterTokens = tokens.find(item => item.provider === "twitter");
                         if (twitterTokens) {
                             const client = new TwitterApi({
@@ -128,6 +127,7 @@ const postController = {
                         break;
 
                     case "facebook":
+                        console.log("facebook test ")
                         const facebookTokens = tokens.find(item => item.provider === "facebook");
                         if (facebookTokens) {
                             graph.setAccessToken(facebookTokens.accessToken);
@@ -141,6 +141,7 @@ const postController = {
                                 await graph.post('/me/feed', { message });
                             }
                         }
+                        console.log("pas d'erreur de facebook")
                         break;
 
                     case "instagram":
