@@ -18,7 +18,7 @@ const postController = {
             switch (network) {
                 case 'twitter': {
                     const twitterTokens = tokens.find(item => item.provider === "twitter");
-                    
+                    const twitterId=twitterTokens.profile.id;
                     if (!twitterTokens) {
                         return res.status(400).json({ error: "Twitter tokens not found" });
                     }
@@ -30,27 +30,29 @@ const postController = {
                         accessSecret: twitterTokens.secretToken,
                     });
                 
-                    const twitterClient = client.readWrite;
+                    const twitterClient = client.readOnly;
                 
                     try {
                         // Get the authenticated user's data
-                        const { data: user } = await twitterClient.v2.me({
+                        /*const { data: user } = await twitterClient.v2.me({
                             "user.fields": ["id", "name", "username", "profile_image_url"],
-                        });
-                        const userId = user.id;
+                        });*/
+
+                        
+                        const userId = twitterId;
                         //recuperer les tweets avec l'id
                         const tweets = await twitterClient.v2.userTimeline(userId, {
                             expansions: ['author_id', 'attachments.media_keys'],
                             'tweet.fields': ['created_at', 'public_metrics', 'text', 'attachments'],
                             'media.fields': ['url', 'preview_image_url'],
-                            max_results: 100, // Max allowed per request (default: 10)
+                            max_results: 10, // Max allowed per request (default: 10)
                         
                         });
                         const allTweets = [];
                         for await (const tweet of tweetIterator) {
                             allTweets.push(tweet);
                         }
-                        tweets: allTweets.map(tweet => ({
+                        allTweets =  allTweets.map(tweet => ({
                             id: tweet.id,
                             text: tweet.text,
                             date: tweet.created_at,
