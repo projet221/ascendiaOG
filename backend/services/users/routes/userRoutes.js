@@ -30,7 +30,7 @@ const loginValidation = [
         .isEmail()
         .withMessage("Email ou mot de passe invalide"),
     body("password")
-        .isPass({ min: 6 })
+        .isLength({ min: 6 })
         .withMessage("Email ou mot de passe invalide"),
 ];
 
