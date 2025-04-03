@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 const BarreHaut = () => {
   const [menuOuvert, setMenuOuvert] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const changeMenu = () => {
     setMenuOuvert(!menuOuvert);
@@ -13,6 +14,7 @@ const BarreHaut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user_id");
     window.location.reload();
+    navigate("/login");
   };
 
   return (
