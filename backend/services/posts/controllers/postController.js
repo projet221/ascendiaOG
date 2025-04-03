@@ -4,6 +4,7 @@ const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
 const {join} = require("node:path");
+const graph = require('fb');
 
 const postController = {
     // Récupérer toutes les publications
@@ -78,8 +79,7 @@ const postController = {
 
     // Créer une nouvelle publication
     createPost: async (req, res) => {
-        console.log(req.file);
-        // Définir le chemin du dossier de stockage
+        //chemin de sauvegarde des media
         const uploadDir = join(__dirname, 'uploads');
 
         // Vérifier si le dossier existe, sinon le créer
@@ -89,16 +89,13 @@ const postController = {
 
         const uploadPath = join(uploadDir, req.file.originalname);
 
+        // sauvegarde du fichier le temps de le soumettre aux api réseaux
         fs.writeFile(uploadPath, req.file.buffer, (err) => {
             if (err) {
                 console.error('Erreur lors de la sauvegarde du fichier:', err);
             }
-            console.log('Fichier sauvegardé avec succès chemin:',uploadPath);
         });
-        return res.status(400).json({ "Debug file received" :"test"});
         try {
-            console.log("Fichier reçu :", req.file);
-            console.log("\ndata :", req.body);
             let { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
             const mimeType = req.file ? req.file.mimetype : null;
@@ -137,10 +134,7 @@ const postController = {
                             if (fileBuffer) {
                                 const formData = {
                                     message,
-                                    source: {
-                                        value: fileBuffer,
-                                        options: { filename: "image.jpg", contentType: mimeType }
-                                    }
+                                    url:process.env.PROXY_POSTS+"/uploads/"+req.file.originalname
                                 };
                                 await graph.post('/me/photos', formData);
                             } else {
