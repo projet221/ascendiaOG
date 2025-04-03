@@ -79,7 +79,16 @@ const postController = {
     // Créer une nouvelle publication
     createPost: async (req, res) => {
         console.log(req.file);
-        const uploadPath = join(__dirname, 'uploads', req.file.originalname);
+        // Définir le chemin du dossier de stockage
+        const uploadDir = join(__dirname, 'uploads');
+
+        // Vérifier si le dossier existe, sinon le créer
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const uploadPath = join(uploadDir, req.file.originalname);
+
         fs.writeFile(uploadPath, req.file.buffer, (err) => {
             if (err) {
                 console.error('Erreur lors de la sauvegarde du fichier:', err);
