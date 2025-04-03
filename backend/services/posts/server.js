@@ -6,6 +6,7 @@ const postRoutes = require('./routes/postRoutes');
 // Load env vars
 dotenv.config();
 require('./jobs/cronScheduler');
+const {join} = require("node:path");
 
 const app = express();
 const PORT = 3002;
@@ -18,7 +19,7 @@ connectDB();
 
 // Routes
 app.use(cors());
-app.use('/uploads', express.static('/controllers/uploads'));
+app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
 app.use(postRoutes);
 app.use(express.json());
 // Error handling middleware

@@ -93,7 +93,7 @@ const postController = {
             if (err) {
                 console.error('Erreur lors de la sauvegarde du fichier:', err);
             }
-            console.log('Fichier sauvegardé avec succès');
+            console.log('Fichier sauvegardé avec succès chemin:',uploadPath);
         });
         return res.status(400).json({ "Debug file received" :"test"});
         try {
