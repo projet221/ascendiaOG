@@ -12,11 +12,6 @@ function ConfigSocialMedia() {
     });
     const [loading, setLoading] = useState(true);  // Nouvel état pour le chargement
 
-    const deconnexion = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user_id");
-        window.location.reload();
-    };
 
     const handleLinkSocialMedia = async (network) => {
         try {
@@ -110,11 +105,6 @@ function ConfigSocialMedia() {
                 />
             </div>
             {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
-            <button
-                className="w-full bg-gray-400 text-white py-3 mt-6 rounded hover:bg-red-600 transition"
-                onClick={deconnexion}>
-                Déconnexion
-            </button>
         </div>
     );
 }

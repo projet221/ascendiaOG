@@ -46,11 +46,6 @@ const Dashboard = () => {
 
         fetchUser();
     }, []); // useEffect exécuté une seule fois au montage du composant
-    const deconnexion = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user_id");
-        window.location.reload();
-    }
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
     <BarreHaut />
@@ -64,12 +59,6 @@ const Dashboard = () => {
         <ConfigSocialMedia />
       </div>
 
-      <button
-        onClick={deconnexion}
-        className="mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-      >
-        Déconnexion
-      </button>
     </div>
   </div>
     );
