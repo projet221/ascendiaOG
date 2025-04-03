@@ -126,32 +126,49 @@ const postController = {
                         break;
 
                     case "facebook":
-                        console.log("facebook test ")
+                        console.log("facebook test ");
                         const facebookTokens = tokens.find(item => item.provider === "facebook");
-                        if (fileBuffer) {
-                            const response = await axios.post(
-                                `https://graph.facebook.com/me/photos`,  // L'endpoint pour publier une photo
-                                {
-                                    params: {
-                                        message: message,  // Message
-                                        url: process.env.PROXY_POSTS+"/uploads/"+req.file.originalname,  // URL de l'image
-                                        access_token: facebookTokens.accessToken  // Token d'accès
-                                    }
-                                });
-                            console.log(response);
-                        }else{
-                            const response = await axios.post(
-                                `https://graph.facebook.com/619080624619257/photos`,  // L'endpoint pour publier une photo
-                                {
-                                    params: {
-                                        message: message,  // Message
-                                        access_token: facebookTokens.accessToken  // Token d'accès
-                                    }
-                                });
-                            console.log(response);
+
+                        if (facebookTokens) {
+                            const pageId = '619080624619257'; // ID de la page Facebook
+                            const accessToken = facebookTokens.accessToken; // Le token d'accès de la page
+
+                            if (fileBuffer) {
+                                // Si tu veux publier une photo
+                                const formData = new FormData();
+                                formData.append('message', message);
+                                formData.append('url', `${process.env.PROXY_POSTS}/uploads/${req.file.originalname}`);
+                                formData.append('access_token', accessToken);
+
+                                try {
+                                    const response = await axios.post(
+                                        `https://graph.facebook.com/${pageId}/photos`, // Endpoint de publication sur la page
+                                        formData, // Corps de la requête (les données)
+                                        { headers: { 'Content-Type': 'multipart/form-data' } } // En-tête nécessaire pour envoyer des fichiers
+                                    );
+                                    console.log('Photo publiée avec succès', response.data);
+                                } catch (err) {
+                                    console.error('Erreur lors de la publication de la photo', err);
+                                }
+                            } else {
+                                // Si tu veux publier juste un message
+                                try {
+                                    const response = await axios.post(
+                                        `https://graph.facebook.com/${pageId}/feed`, // Endpoint de publication sur la page
+                                        {
+                                            message: message, // Message à publier
+                                            access_token: accessToken // Token d'accès de la page
+                                        }
+                                    );
+                                    console.log('Message publié avec succès', response.data);
+                                } catch (err) {
+                                    console.error('Erreur lors de la publication du message', err);
+                                }
+                            }
                         }
-                        console.log("pas d'erreur de facebook")
+                        console.log("pas d'erreur de facebook");
                         break;
+
 
                     case "instagram":
                         const instagramTokens = tokens.find(item => item.provider === "instagram");
