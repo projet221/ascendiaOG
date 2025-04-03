@@ -65,7 +65,7 @@ const userController = {
             // Vérifier le mot de passe
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                return res.status(400).json({ message: 'Identifiants invalides' });
+                return res.status(400).json({ message: 'Mot de passe invalide' });
             }
             console.log("avant jwt ok")
             // Créer le token JWT
