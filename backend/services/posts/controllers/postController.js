@@ -78,7 +78,7 @@ const postController = {
 
     // Créer une nouvelle publication
     createPost: async (req, res) => {
-        //chemin de sauvegarde des media
+        // Chemin de sauvegarde des médias
         const uploadDir = join(__dirname, 'uploads');
 
         // Vérifier si le dossier existe, sinon le créer
@@ -86,13 +86,19 @@ const postController = {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
 
-        const uploadPath = join(uploadDir, req.file.originalname);
+        // Définir le chemin du fichier converti en JPEG
+        const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpg"));
 
-        // sauvegarde du fichier le temps de le soumettre aux api réseaux
-        fs.writeFile(uploadPath, req.file.buffer, (err) => {
+        // Conversion en JPEG avant la sauvegarde
+        sharp(req.file.buffer)
+        .jpeg({ quality: 90 })  // Qualité de compression de l'image
+        .toFile(uploadPath, (err, info) => {
             if (err) {
-                console.error('Erreur lors de la sauvegarde du fichier:', err);
+                console.error('Erreur lors de la conversion et de la sauvegarde de l\'image:', err);
+                return;
             }
+
+            console.log('Image convertie et sauvegardée avec succès:', info);
         });
         try {
             let { userId, networks, message } = req.body;
@@ -178,11 +184,6 @@ const postController = {
 
                         // Si le réseau social est Instagram, on convertit l'image en JPEG
                         if (instagramTokens) {
-                            // Conversion de l'image en JPEG et stockage temporaire
-                            const tempFilePath = `./uploads/${req.file.originalname}`;
-                            await sharp(fileBuffer)
-                            .jpeg({ quality: 90 })  // Conversion en JPEG avec une qualité de 90
-                            .toFile(tempFilePath);  // Sauvegarde du fichier converti
 
                             // Étape 1 : Créer un media
                             const formData = new FormData();
