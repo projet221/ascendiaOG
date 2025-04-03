@@ -4,7 +4,6 @@ const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
 const {join} = require("node:path");
-const graph = require('fb');
 
 const postController = {
     // Récupérer toutes les publications
@@ -129,17 +128,27 @@ const postController = {
                     case "facebook":
                         console.log("facebook test ")
                         const facebookTokens = tokens.find(item => item.provider === "facebook");
-                        if (facebookTokens) {
-                            graph.setAccessToken(facebookTokens.accessToken);
-                            if (fileBuffer) {
-                                const formData = {
-                                    message,
-                                    url:process.env.PROXY_POSTS+"/uploads/"+req.file.originalname
-                                };
-                                await graph.post('/me/photos', formData);
-                            } else {
-                                await graph.post('/me/feed', { message });
-                            }
+                        if (fileBuffer) {
+                            const response = await axios.post(
+                                `https://graph.facebook.com/me/photos`,  // L'endpoint pour publier une photo
+                                {
+                                    params: {
+                                        message: message,  // Message
+                                        url: process.env.PROXY_POSTS+"/uploads/"+req.file.originalname,  // URL de l'image
+                                        access_token: facebookTokens.accessToken  // Token d'accès
+                                    }
+                                });
+                            console.log(response);
+                        }else{
+                            const response = await axios.post(
+                                `https://graph.facebook.com/me/photos`,  // L'endpoint pour publier une photo
+                                {
+                                    params: {
+                                        message: message,  // Message
+                                        access_token: facebookTokens.accessToken  // Token d'accès
+                                    }
+                                });
+                            console.log(response);
                         }
                         console.log("pas d'erreur de facebook")
                         break;
