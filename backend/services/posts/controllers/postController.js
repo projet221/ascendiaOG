@@ -179,35 +179,50 @@ const postController = {
                         // Si le réseau social est Instagram, on convertit l'image en JPEG
                         if (instagramTokens) {
                             // Conversion de l'image en JPEG et stockage temporaire
-                            const tempFilePath = `./uploads/temp_image_${Date.now()}.jpg`;
+                            const tempFilePath = `./uploads/${req.file.originalname}`;
                             await sharp(fileBuffer)
                             .jpeg({ quality: 90 })  // Conversion en JPEG avec une qualité de 90
                             .toFile(tempFilePath);  // Sauvegarde du fichier converti
 
-                            console.log("Image convertie et sauvegardée temporairement à :", tempFilePath);
-
+                            // Étape 1 : Créer un media
                             const formData = new FormData();
-                            formData.append("image", fs.createReadStream(tempFilePath), { filename: "image.jpg", contentType: mimeType });
+                            formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`);
                             formData.append("caption", message);
 
-                            const response = await axios.post(
-                                `https://graph.facebook.com/v18.0/${instagramTokens.userId}/media`,
+                            const createMediaResponse = await axios.post(
+                                `https://graph.instagram.com/${instagramTokens.userId}/media`,
                                 formData,
                                 {
-                                    headers: { Authorization: `Bearer ${instagramTokens.accessToken}`, ...formData.getHeaders() }
+                                    headers: {
+                                        Authorization: `Bearer ${instagramTokens.accessToken}`,
+                                        ...formData.getHeaders()
+                                    }
                                 }
                             );
 
-                            const creationId = response.data.id;
-                            await axios.post(
-                                `https://graph.facebook.com/v18.0/${instagramTokens.userId}/media_publish`,
-                                { creation_id: creationId },
-                                { headers: { Authorization: `Bearer ${instagramTokens.accessToken}` } }
+                            // Vérifier la réponse et récupérer l'ID du média
+                            const mediaId = createMediaResponse.data.id;
+                            if (!mediaId) {
+                                return res.status(500).json({ error: "Erreur lors de la création du média Instagram." });
+                            }
+
+                            // Étape 2 : Publier le media
+                            const publishResponse = await axios.post(
+                                `https://graph.instagram.com/${instagramTokens.userId}/media_publish`,
+                                { media_id: mediaId },
+                                {
+                                    headers: {
+                                        Authorization: `Bearer ${instagramTokens.accessToken}`
+                                    }
+                                }
                             );
 
                             // Suppression de l'image après l'envoi réussi
                             fs.unlinkSync(tempFilePath); // Supprime le fichier après utilisation
                             console.log("Image supprimée du serveur après l'envoi.");
+
+                            // Retourner la réponse de la publication
+                            return res.status(200).json({ success: "Image publiée sur Instagram avec succès.", data: publishResponse.data });
                         }
                         break;
                 }
