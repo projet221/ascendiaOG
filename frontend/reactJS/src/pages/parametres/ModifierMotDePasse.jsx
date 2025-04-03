@@ -18,7 +18,7 @@ const ModifierMotDePasse = () => {
     const userId = localStorage.getItem("user_id");
     const token = localStorage.getItem("token");
     try {
-      await axiosInstance.put(`/api/users/${userId}/password`, { password }, {
+      await axiosInstance.put(`/api/users/${userId}`, { password }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Mot de passe mis à jour !");
