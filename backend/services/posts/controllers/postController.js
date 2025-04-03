@@ -130,7 +130,7 @@ const postController = {
                         const facebookTokens = tokens.find(item => item.provider === "facebook");
                         if (fileBuffer) {
                             const response = await axios.post(
-                                `https://graph.facebook.com/me/photos`,  // L'endpoint pour publier une photo
+                                `https://graph.facebook.com/619080624619257/photos`,  // L'endpoint pour publier une photo
                                 {
                                     params: {
                                         message: message,  // Message
