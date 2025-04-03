@@ -196,7 +196,6 @@ const postController = {
                                 {
                                     headers: {
                                         Authorization: `Bearer ${instagramTokens.accessToken}`,
-                                        ...formData.getHeaders()
                                     }
                                 }
                             );
