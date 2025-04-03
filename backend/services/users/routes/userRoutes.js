@@ -15,13 +15,28 @@ const registerValidation = [
         .normalizeEmail()
         .withMessage('Email invalide'),
     body('password')
-        .isLength({ min: 6 })
-        .withMessage('Le mot de passe doit contenir au moins 6 caractères')
+        .isStrongPassword({
+            minLength: 6,          // ou 8 si vous préférez
+            minLowercase: 1,
+            minUppercase: 0,
+            minNumbers: 1,
+            minSymbols: 0,
+        })
+        .withMessage("Le mot de passe doit contenir au moins 6 caractères et 1 chiffre"),
+];
+
+const loginValidation = [
+    body("email")
+        .isEmail()
+        .withMessage("Email ou mot de passe invalide"),
+    body("password")
+        .isPass({ min: 6 })
+        .withMessage("Email ou mot de passe invalide"),
 ];
 
 // Routes publiques
 router.post('/register', registerValidation, userController.register);
-router.post('/login', userController.login);
+router.post('/login', loginValidation, userController.login);
 
 // Routes protégées
 router.get('/a', auth, userController.getAllUsers);
