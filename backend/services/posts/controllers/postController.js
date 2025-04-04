@@ -191,9 +191,9 @@ const postController = {
                             const formData = new FormData();
                             formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`);
                             formData.append("caption", message);
-
+                            console.log("voici le userid du compte instagram : ")
                             const createMediaResponse = await axios.post(
-                                `https://graph.instagram.com/${instagramTokens.userId}/media`,
+                                `https://graph.instagram.com/${instagramTokens.profile.id}/media`,
                                 formData,
                                 {
                                     headers: {
@@ -210,7 +210,7 @@ const postController = {
 
                             // Étape 2 : Publier le media
                             const publishResponse = await axios.post(
-                                `https://graph.instagram.com/${instagramTokens.userId}/media_publish`,
+                                `https://graph.instagram.com/${instagramTokens.profile.id}/media_publish`,
                                 { media_id: mediaId },
                                 {
                                     headers: {
