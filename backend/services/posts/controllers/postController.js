@@ -90,7 +90,7 @@ const postController = {
         }
 
         // Définir le chemin du fichier converti en JPEG
-        const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpg"));
+        const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
 
         // Conversion en JPEG avant la sauvegarde
         sharp(req.file.buffer)
@@ -190,12 +190,12 @@ const postController = {
 
                             // Étape 1 : Créer un media
                             const formData = new FormData();
-                            formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`);
+                            formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpeg")}`);
                             formData.append("caption", message);
                             console.log(formData);
                             console.log("voici le accesstoken IG : ", instagramTokens.accessToken);
                             console.log("voici le userid du compte instagram : ",instagramTokens.profile.id)
-                            console.log("\nurl de l'image : ",`${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`)
+                            console.log("\nurl de l'image : ",`${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpeg")}`)
                             const createMediaResponse = await axios.post(
                                 `https://graph.instagram.com/${instagramTokens.profile.id}/media`,
                                 {"image_url": `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, '.jpg')}`},
@@ -226,7 +226,7 @@ const postController = {
                             );
 
                             // Suppression de l'image après l'envoi réussi
-                            const filePath = join(__dirname, "./uploads", req.file.originalname.replace(/\.[^/.]+$/, ".jpg"));
+                            const filePath = join(__dirname, "./uploads", req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
                             //fs.unlinkSync(filePath);
                             console.log("Image supprimée du serveur après l'envoi.");
 
