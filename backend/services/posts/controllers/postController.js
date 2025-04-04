@@ -4,6 +4,7 @@ const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
 const {join} = require("node:path");
+const  Post = require("../models/Post");
 
 const postController = {
     // Récupérer toutes les publications

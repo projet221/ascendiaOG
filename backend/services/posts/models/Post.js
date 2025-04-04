@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const postSchema = new mongoose.Schema({
+const Post = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -61,4 +61,4 @@ postSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Post', postSchema);
+module.exports = mongoose.model('Post', Post);
