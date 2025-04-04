@@ -179,6 +179,7 @@ export default function Dashboard() {
                     {/* Si pas de posts planifiés */}
                     {postPlanifier.length === 0 && (
                         <p className="text-gray-500">Aucune publication planifiée pour le moment.</p>
+                        
                     )}
 
                     {/* Sinon, on liste */}
