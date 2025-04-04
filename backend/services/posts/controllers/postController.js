@@ -89,20 +89,7 @@ const postController = {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
 
-        // Définir le chemin du fichier converti en JPEG
-        const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
 
-        // Conversion en JPEG avant la sauvegarde
-        sharp(req.file.buffer)
-        .jpeg({ quality: 90 })  // Qualité de compression de l'image
-        .toFile(uploadPath, (err, info) => {
-            if (err) {
-                console.error('Erreur lors de la conversion et de la sauvegarde de l\'image:', err);
-                return;
-            }
-
-            console.log('Image convertie et sauvegardée avec succès:', info);
-        });
         try {
             let { userId, networks, message } = req.body;
             const fileBuffer = req.file ? req.file.buffer : null;
@@ -115,6 +102,22 @@ const postController = {
             const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${userId}`);
             const tokens = response.data;
 
+            if (fileBuffer){
+                // Définir le chemin du fichier converti en JPEG
+                const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
+
+                // Conversion en JPEG avant la sauvegarde
+                sharp(req.file.buffer)
+                .jpeg({ quality: 90 })  // Qualité de compression de l'image
+                .toFile(uploadPath, (err, info) => {
+                    if (err) {
+                        console.error('Erreur lors de la conversion et de la sauvegarde de l\'image:', err);
+                        return;
+                    }
+
+                    console.log('Image convertie et sauvegardée avec succès:', info);
+                });
+            }
             // Parcours des réseaux sociaux sélectionnés
             for (const network of networks) {
                 switch (network) {
