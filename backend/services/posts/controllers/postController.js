@@ -191,8 +191,9 @@ const postController = {
                             // Étape 1 : Créer un media
                             const formData = new FormData();
                             formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`);
-                            formData.append("caption", message);
-                            console.log("voici le userid du compte instagram : ")
+                            //formData.append("caption", message);
+                            console.log("voici le userid du compte instagram : ",instagramTokens.profile.id)
+                            console.log("\nurl de l'image : ",`${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`)
                             const createMediaResponse = await axios.post(
                                 `https://graph.instagram.com/${instagramTokens.profile.id}/media`,
                                 formData,
@@ -208,11 +209,14 @@ const postController = {
                             if (!mediaId) {
                                 return res.status(500).json({ error: "Erreur lors de la création du média Instagram." });
                             }
-
+                            console.log("\n id du media recu : ", mediaId);
                             // Étape 2 : Publier le media
                             const publishResponse = await axios.post(
                                 `https://graph.instagram.com/${instagramTokens.profile.id}/media_publish`,
-                                { media_id: mediaId },
+                                {
+                                    creation_id: mediaId,
+                                    caption: message
+                                },
                                 {
                                     headers: {
                                         Authorization: `Bearer ${instagramTokens.accessToken}`
