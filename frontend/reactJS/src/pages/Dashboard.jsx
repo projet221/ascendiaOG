@@ -188,7 +188,7 @@ export default function Dashboard() {
                         {postPlanifier.map((post) => (
                             <li key={post._id}>
                                 <p className="font-semibold text-gray-800">
-                                    {post.platform.join(", ")} — {(post.scheduledFor).format("DD/MM/YYYY HH:mm")}
+                                    {post.platform.join(", ")} — {(post.scheduledFor)}
                                 </p>
                                 {/* Contenu du post */}
                                 <p className="text-gray-600 text-sm">{post.content}</p>
