@@ -55,7 +55,7 @@ export default function Dashboard() {
                 // Chargement terminé
                 setIsLoading(false);
 
-                const postsResp = await axios.get(`/api/posts/user/${userId}/scheduled`, {
+                const postsResp = await axios.get(`/api/posts/users/${userId}/scheduled`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setPostPlanifier(postsResp.data || []);

@@ -333,6 +333,7 @@ const postController = {
 
     getScheduledPostsByUser: async (req, res) => {
         try {
+            console.log("je suis bien dans la route getscheduledpostsbyuser");
             const userId = req.params.userId;
             // On récupère uniquement les posts dont status = "scheduled"
             const scheduledPosts = await Post.find({
