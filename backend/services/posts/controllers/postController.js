@@ -339,7 +339,7 @@ const postController = {
             const scheduledPosts = await Post.find({
                 userId,
                 status: "scheduled",
-            }).populate("userId", "username email").sort({ scheduledFor: 1 });
+            });
 
             res.json(scheduledPosts);
         } catch (error) {
