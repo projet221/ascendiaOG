@@ -104,7 +104,8 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                         <p className="text-gray-500 mb-2">Publications programmées</p>
-                        <p className="text-3xl font-semibold text-gray-800">27</p>
+                        {postPlanifier.length};
+
                     </div>
                     <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                         <p className="text-gray-500 mb-2">Publications ce mois</p>
