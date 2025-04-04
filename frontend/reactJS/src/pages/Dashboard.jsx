@@ -4,11 +4,70 @@ import BarreHaut from "../components/BarreHaut"; // ou équivalent
 // ↑ Vous pouvez utiliser la librairie de graph de votre choix (chart.js, rechart, etc.)
 
 export default function Dashboard() {
-    // Supposez que vous avez récupéré ce username d’une API
-    const [username, setUsername] = useState("JeanDupont");
+    const [username, setUsername] = useState("");
+
 
     useEffect(() => {
-        // Ex: fetchUser() pour mettre à jour le username
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const userId = localStorage.getItem("user_id");
+
+                if (!token || !userId) {
+                    console.warn("Aucun token ou user_id trouvé, utilisateur non connecté.");
+                    setUsername("Non connecté");
+                    // On arrête ici car on sait qu'il ne récupérera pas de connexions
+                    setIsLoading(false);
+                    return;
+                }
+
+                // 1) Récupération de l'utilisateur
+                const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                const userData = userResponse.data;
+                setUsername(userData.username || "Utilisateur inconnu");
+
+                // 2) Récupération des réseaux connectés
+                //    Par exemple: GET /api/socialAuth/:userId
+                const providerResponse = await axiosInstance.get(`/api/socialAuth/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const data = providerResponse.data || [];
+                // Contrôle pour chaque réseau
+                const connections = {
+                    facebook: data.some((item) => item.provider === "facebook"),
+                    instagram: data.some((item) => item.provider === "instagram"),
+                    twitter: data.some((item) => item.provider === "twitter"),
+                };
+                setSocials(connections);
+
+                // Chargement terminé
+                setIsLoading(false);
+
+                // Si absolument aucun réseau connecté => on affiche la pop-up
+                if (
+                    !connections.facebook &&
+                    !connections.instagram &&
+                    !connections.twitter
+                ) {
+                    setShowModal(true);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des infos :", error);
+                setUsername("Erreur de chargement");
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
     return (
