@@ -18,7 +18,7 @@ cron.schedule("* * * * *", async () => {
             scheduledFor: { $lte: now },
             status: "scheduled",
         });
-        console.log(`il est ${now} .`);
+        console.log(`il est ${now} .\n voici les posts retourner : ${postsToPublish}`);
         for (const post of postsToPublish) {
             try {
                 console.log("des posts sont en attente");
