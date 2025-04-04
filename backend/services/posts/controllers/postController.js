@@ -204,7 +204,7 @@ const postController = {
                                     }
                                 }
                             );
-
+                            console.log("createMedia response", createMediaResponse);
                             // Vérifier la réponse et récupérer l'ID du média
                             const mediaId = createMediaResponse.data.id;
                             if (!mediaId) {
