@@ -22,7 +22,7 @@ const SidebarPublication = () => {
             }`
           }
         >
-          Mes Publicationss
+          Mes Publication
         </NavLink>
       </div>
     </aside>
