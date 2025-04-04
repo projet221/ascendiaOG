@@ -3,7 +3,7 @@ const fs = require('fs');  // Import de fs pour gérer les fichiers
 const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
-const {join} = require("node:path");
+const { join} = require("node:path");
 const  Post = require("../models/Post");
 
 const postController = {
@@ -191,7 +191,7 @@ const postController = {
                             // Étape 1 : Créer un media
                             const formData = new FormData();
                             formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`);
-                            //formData.append("caption", message);
+                            formData.append("caption", message);
                             console.log("voici le accesstoken IG : ", instagramTokens.accessToken);
                             console.log("voici le userid du compte instagram : ",instagramTokens.profile.id)
                             console.log("\nurl de l'image : ",`${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpg")}`)
@@ -216,7 +216,6 @@ const postController = {
                                 `https://graph.instagram.com/${instagramTokens.profile.id}/media_publish`,
                                 {
                                     creation_id: mediaId,
-                                    caption: message
                                 },
                                 {
                                     headers: {
@@ -226,7 +225,8 @@ const postController = {
                             );
 
                             // Suppression de l'image après l'envoi réussi
-                            fs.unlinkSync(tempFilePath); // Supprime le fichier après utilisation
+                            const filePath = join(__dirname, "./uploads", req.file.originalname.replace(/\.[^/.]+$/, ".jpg"));
+                            fs.unlinkSync(filePath);
                             console.log("Image supprimée du serveur après l'envoi.");
 
                             // Retourner la réponse de la publication
