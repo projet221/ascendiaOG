@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import BarreHaut from "../components/BarreHaut"; // ou équivalent
+import BarreHaut from "../components/BarreHaut";
+import { axiosInstance } from "../utils/axios.jsx";
 // import { PieChart } from "react-minimal-pie-chart"; // Exemple si vous souhaitez un vrai camembert
 // ↑ Vous pouvez utiliser la librairie de graph de votre choix (chart.js, rechart, etc.)
 
@@ -21,7 +22,6 @@ export default function Dashboard() {
                     return;
                 }
 
-                // 1) Récupération de l'utilisateur
                 const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ export default function Dashboard() {
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération des infos :", error);
-                setUsername("Erreur de chargement");
+                //setUsername("Erreur de chargement");
                 setIsLoading(false);
             }
         };
