@@ -6,21 +6,30 @@ import SidebarPublication from "../../components/SideBarPublication";
 import ConfigSocialMedia from "../../components/ConfigSocialMedia";
 
 const All = () => {
-  const [socials, setSocials] = useState([]);
+  const [connected, setConnected] = useState({
+    facebook: false,
+    instagram: false,
+    twitter: false,
+  });
   const [showModal, setShowModal] = useState(false);
-  const userId = localStorage.getItem("user_id");
 
-  const reseauxIcons = {
-    facebook: <FaFacebook className="text-blue-600 text-3xl" />,
-    instagram: <FaInstagram className="text-pink-500 text-3xl" />,
-    twitter: <FaTwitter className="text-black text-3xl" />,
-  };
+  const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchSocials = async () => {
       try {
-        const res = await axiosInstance.get(`/api/socials/connected/${userId}`);
-        setSocials(res.data); // tableau avec provider + profile
+        const res = await axiosInstance.get(`/api/socialauth/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = res.data;
+        const connections = {
+          facebook: data.some(item => item.provider === 'facebook'),
+          instagram: data.some(item => item.provider === 'instagram'),
+          twitter: data.some(item => item.provider === 'twitter'),
+        };
+        setConnected(connections);
       } catch (err) {
         console.error("Erreur lors de la récupération des réseaux connectés", err);
       }
@@ -28,6 +37,12 @@ const All = () => {
 
     fetchSocials();
   }, []);
+
+  const reseaux = [
+    { name: "Facebook", key: "facebook", icon: <FaFacebook className="text-blue-600 text-3xl" /> },
+    { name: "Instagram", key: "instagram", icon: <FaInstagram className="text-pink-500 text-3xl" /> },
+    { name: "X (Twitter)", key: "twitter", icon: <FaTwitter className="text-black text-3xl" /> },
+  ];
 
   return (
     <div>
@@ -39,42 +54,32 @@ const All = () => {
             Mes Publications
           </h1>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {socials.map((reseau, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 p-4 rounded-lg shadow bg-white"
-              >
-                {reseauxIcons[reseau.provider]}
+          <div className="space-y-4 mb-6 max-w-3xl mx-auto">
+            {reseaux.map((r) => (
+              <div key={r.key} className="flex items-center gap-4 p-4 rounded-lg shadow bg-white">
+                {r.icon}
                 <div className="flex flex-col">
-                  <span className="text-lg font-semibold capitalize">{reseau.provider}</span>
-                  <span className="text-sm text-gray-600">@{reseau.profile?.username}</span>
+                  <span className="text-lg font-semibold">{r.name}</span>
+                  <span className={connected[r.key] ? "text-green-600" : "text-gray-500"}>
+                    {connected[r.key] ? "Connecté" : "Non connecté"}
+                  </span>
                 </div>
-                {reseau.profile?.photo && (
-                  <img
-                    src={reseau.profile.photo}
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full ml-auto"
-                  />
-                )}
               </div>
             ))}
+          </div>
 
-            {/* Ajouter un réseau */}
-            <div
+          <div className="flex justify-center">
+            <button
               onClick={() => setShowModal(true)}
-              className="flex flex-col justify-center items-center p-4 border-2 border-dashed border-[#FF0035] rounded hover:shadow-md transition cursor-pointer bg-white"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
-              <div className="w-10 h-10 rounded-full bg-[#FF0035] text-white flex items-center justify-center text-2xl">
-                +
-              </div>
-              <p className="mt-2 text-sm text-[#FF0035] font-medium">Ajouter un réseau</p>
-            </div>
+              ➕ Ajouter un réseau
+            </button>
           </div>
         </main>
       </div>
 
-      {/* Modal d'ajout de réseau */}
+      {/* Modal ajout réseau */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-[90%] max-w-md shadow-xl relative">
