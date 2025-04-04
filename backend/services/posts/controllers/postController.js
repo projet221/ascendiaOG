@@ -226,7 +226,7 @@ const postController = {
 
                             // Suppression de l'image après l'envoi réussi
                             const filePath = join(__dirname, "./uploads", req.file.originalname.replace(/\.[^/.]+$/, ".jpg"));
-                            fs.unlinkSync(filePath);
+                            //fs.unlinkSync(filePath);
                             console.log("Image supprimée du serveur après l'envoi.");
 
                             // Retourner la réponse de la publication
