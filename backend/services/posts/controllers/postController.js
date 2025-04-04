@@ -139,7 +139,7 @@ const postController = {
                         const facebookTokens = tokens.find(item => item.provider === "facebook");
 
                         if (facebookTokens) {
-                            const pageId = '619080624619257'; // ID de la page Facebook
+                            const pageId = facebookTokens.pages[0].id; // ID de la page Facebook
                             const accessToken = facebookTokens.accessToken; // Le token d'accès de la page
 
                             if (fileBuffer) {
