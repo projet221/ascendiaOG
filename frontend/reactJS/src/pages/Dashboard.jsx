@@ -7,6 +7,8 @@ import { axiosInstance } from "../utils/axios.jsx";
 export default function Dashboard() {
     const [username, setUsername] = useState("");
     const [postPlanifier, setPostPlanifie] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [socials, setSocials] = useState("");
 
 
 
@@ -64,7 +66,7 @@ export default function Dashboard() {
                 if (
                     !connections.facebook &&
                     !connections.instagram &&
-                    !connections.twitter
+                    !connections.twitter && isLoading
                 ) {
                     setShowModal(true);
                 }
@@ -179,7 +181,7 @@ export default function Dashboard() {
                     {/* Si pas de posts planifiés */}
                     {postPlanifier.length === 0 && (
                         <p className="text-gray-500">Aucune publication planifiée pour le moment.</p>
-                        
+
                     )}
 
                     {/* Sinon, on liste */}
