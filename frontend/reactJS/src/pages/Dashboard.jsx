@@ -6,9 +6,8 @@ import { axiosInstance } from "../utils/axios.jsx";
 
 export default function Dashboard() {
     const [username, setUsername] = useState("");
-    const [postPlanifier, setPostPlanifie] = useState([]);
+    const [postPlanifier, setPostPlanifier] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [socials, setSocials] = useState("");
 
 
 
@@ -52,7 +51,6 @@ export default function Dashboard() {
                     instagram: data.some((item) => item.provider === "instagram"),
                     twitter: data.some((item) => item.provider === "twitter"),
                 };
-                setSocials(connections);
 
                 // Chargement terminé
                 setIsLoading(false);
