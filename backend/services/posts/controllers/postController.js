@@ -191,7 +191,7 @@ const postController = {
                             // Étape 1 : Créer un media
                             const formData = new FormData();
                             formData.append("image_url", `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpeg")}`);
-                            formData.append("caption", message);
+                            //formData.append("caption", message);
                             console.log(formData);
                             console.log("voici le accesstoken IG : ", instagramTokens.accessToken);
                             console.log("voici le userid du compte instagram : ",instagramTokens.profile.id)
