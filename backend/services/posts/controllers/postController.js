@@ -331,6 +331,20 @@ const postController = {
         }
     },
 
+    getScheduledPostsByUser: async (req, res) => {
+        try {
+            const userId = req.params.userId;
+            // On récupère uniquement les posts dont status = "scheduled"
+            const scheduledPosts = await Post.find({
+                userId,
+                status: "scheduled",
+            }).populate("userId", "username email").sort({ scheduledFor: 1 });
+
+            res.json(scheduledPosts);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
 
     // Mettre à jour les analytics d'une publication
     updateAnalytics: async (req, res) => {

@@ -6,6 +6,8 @@ import { axiosInstance } from "../utils/axios.jsx";
 
 export default function Dashboard() {
     const [username, setUsername] = useState("");
+    const [postPlanifier, setPostPlanifie] = useState([]);
+
 
 
     useEffect(() => {
@@ -31,13 +33,14 @@ export default function Dashboard() {
                 const userData = userResponse.data;
                 setUsername(userData.username || "Utilisateur inconnu");
 
-                // 2) Récupération des réseaux connectés
-                //    Par exemple: GET /api/socialAuth/:userId
+                // Récupération des réseaux connectés
                 const providerResponse = await axiosInstance.get(`/api/socialAuth/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
+
+
                 });
 
                 const data = providerResponse.data || [];
@@ -51,6 +54,11 @@ export default function Dashboard() {
 
                 // Chargement terminé
                 setIsLoading(false);
+
+                const postsResp = await axios.get(`/api/posts/user/${userId}/scheduled`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setPostPlanifier(postsResp.data || []);
 
                 // Si absolument aucun réseau connecté => on affiche la pop-up
                 if (
@@ -76,8 +84,7 @@ export default function Dashboard() {
             <BarreHaut />
 
             {/* Contenu principal */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-                {/* Titre de page : “Bonjour {username}” */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">                {/* Titre de page : “Bonjour {username}” */}
                 <h1 className="text-3xl font-bold text-gray-700 mb-8">
                     Bonjour <span className="text-red-500">{username}</span>
                 </h1>
@@ -166,22 +173,25 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Troisième rangée : par exemple “Prochaines publications” */}
-                <div className="bg-white rounded-lg shadow p-6">
+                {/* Troisième rangée : “Prochaines publications” */}
+                <div className="bg-white rounded-lg shadow p-6 mt-8">
                     <h2 className="text-xl font-bold text-gray-700 mb-4">Prochaines publications</h2>
+                    {/* Si pas de posts planifiés */}
+                    {postPlanifier.length === 0 && (
+                        <p className="text-gray-500">Aucune publication planifiée pour le moment.</p>
+                    )}
+
+                    {/* Sinon, on liste */}
                     <ul className="space-y-4">
-                        <li>
-                            <p className="font-semibold text-gray-800">Facebook — demain à 15h00</p>
-                            <p className="text-gray-600 text-sm">Rendez-vous le 15/07/2025 dans notre boutique</p>
-                        </li>
-                        <li>
-                            <p className="font-semibold text-gray-800">Linkedin — demain à 15h00</p>
-                            <p className="text-gray-600 text-sm">Rendez-vous le 15/07/2025 dans notre boutique</p>
-                        </li>
-                        <li>
-                            <p className="font-semibold text-gray-800">Facebook — 15/07/2025 à 9h30</p>
-                            <p className="text-gray-600 text-sm">Anniversaire de la marque</p>
-                        </li>
+                        {postPlanifier.map((post) => (
+                            <li key={post._id}>
+                                <p className="font-semibold text-gray-800">
+                                    {post.platform.join(", ")} — {dayjs(post.scheduledFor).format("DD/MM/YYYY HH:mm")}
+                                </p>
+                                {/* Contenu du post */}
+                                <p className="text-gray-600 text-sm">{post.content}</p>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
