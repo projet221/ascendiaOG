@@ -78,6 +78,17 @@ export default function Dashboard() {
         fetchData();
     }, []);
 
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return `${date.getDate().toString().padStart(2, '0')}/${
+            (date.getMonth() + 1).toString().padStart(2, '0')}/${
+            date.getFullYear()} ${
+            date.getHours().toString().padStart(2, '0')}:${
+            date.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+
     return (
         <div className="min-h-screen bg-pink-50">
             {/* BarreHaut : en-tête globale */}
@@ -188,7 +199,7 @@ export default function Dashboard() {
                         {postPlanifier.map((post) => (
                             <li key={post._id}>
                                 <p className="font-semibold text-gray-800">
-                                    {post.platform.join(", ")} — {(post.scheduledFor)}
+                                    {post.platform.join(", ")} — {formatDate(post.scheduledFor)}
                                 </p>
                                 {/* Contenu du post */}
                                 <p className="text-gray-600 text-sm">{post.content}</p>
