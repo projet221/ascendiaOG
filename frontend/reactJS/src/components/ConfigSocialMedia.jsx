@@ -1,191 +1,117 @@
-import { useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-// Importez le composant ConfingsocialMedia (attention au chemin)
-import ConfingsocialMedia from "../votreChemin/ConfingsocialMedia";
+import { useEffect, useState } from "react";
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
+import SocialButton from "./SocialButton";
+import { axiosInstance } from "../utils/axios.jsx";
 
-const BarreHaut = () => {
-    const [menuOuvert, setMenuOuvert] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+function ConfigSocialMedia() {
+    const [error, setError] = useState(null);
+    const [socialConnections, setSocialConnections] = useState({
+        facebook: false,
+        twitter: false,
+        instagram: false,
+    });
+    const [loading, setLoading] = useState(true);  // Nouvel état pour le chargement
 
-    const location = useLocation();
-    const navigate = useNavigate();
 
-    const changeMenu = () => {
-        setMenuOuvert(!menuOuvert);
+    const handleLinkSocialMedia = async (network) => {
+        try {
+            let authUrl = import.meta.env.VITE_PROXY_GATEWAY + `/api/socialauth/connect/${network}`;
+
+            const width = 600;
+            const height = 700;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+
+            const authWindow = window.open(
+                authUrl,
+                "_blank",
+                `width=${width},height=${height},top=${top},left=${left}`,
+            );
+
+            const checkPopupClosed = setInterval(() => {
+                if (authWindow.closed) {
+                    clearInterval(checkPopupClosed);
+                    fetchSocial(); // Appel de la fonction pour actualiser les connexions après la fermeture du popup
+                }
+            }, 1000);
+        } catch (err) {
+            setError(`Une erreur est survenue lors de la connexion au réseau social : ${err.message}`);
+        }
     };
 
-    const deconnexion = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user_id");
-        window.location.reload();
-        navigate("/login");
+    const fetchSocial = async () => {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("user_id");
+
+        if (!token || !userId) {
+            console.warn("Token ou user_id non trouvé, l'utilisateur n'est peut-être pas connecté.");
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.get(`/api/socialAuth/${userId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = response.data;
+
+            // Mettre à jour l'état avec les connexions sociales
+            const connections = {
+                facebook: data.some(item => item.provider === 'facebook'),
+                twitter: data.some(item => item.provider === 'twitter'),
+                instagram: data.some(item => item.provider === 'instagram'),
+            };
+            setSocialConnections(connections); // Mettre à jour l'état des connexions
+            setLoading(false); // Fin du chargement
+        } catch (err) {
+            setError(`Erreur lors de la récupération des données utilisateur : ${err}`);
+            setLoading(false); // Fin du chargement même en cas d'erreur
+        }
     };
 
-    // Ouvrir / fermer la modal
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    useEffect(() => {
+        fetchSocial(); // Appeler la fonction pour charger les connexions sociales au montage
+    }, []); // Exécuter cette logique au montage du composant
+
+    if (loading) {
+        return <div className="text-center">Chargement...</div>; // Afficher un message de chargement pendant que les données sont récupérées
+    }
 
     return (
-        <>
-            <nav className="bg-white fixed w-full top-0 left-0 z-50 shadow">
-                <div className="w-full flex h-16 items-center justify-between px-4">
-                    {/* Logo à gauche */}
-                    <NavLink to={"/"}>
-                        <div className="flex items-center">
-                            <h1 className="text-xl font-bold" style={{ color: "#FF0035" }}>
-                                Ascendia
-                            </h1>
-                        </div>
-                    </NavLink>
-
-                    {/* Menu centré */}
-                    <div className="hidden sm:flex flex-1 justify-center">
-                        <div className="flex space-x-6">
-                            {[
-                                { label: "Dashboard", to: "/dashboard" },
-                                { label: "Publications", to: "/publications/all", base: "/publications" },
-                                { label: "Planification", to: "/planification", base: "/planification" },
-                                { label: "Statistiques", to: "/statistiques", base: "/statistiques" },
-                            ].map(({ label, to, base }) => {
-                                const isActive =
-                                    label === "Dashboard"
-                                        ? location.pathname === to
-                                        : location.pathname.startsWith(base);
-
-                                return (
-                                    <NavLink
-                                        key={label}
-                                        to={to}
-                                        className={`px-3 py-2 text-sm font-medium border-b-4 ${
-                                            isActive
-                                                ? "border-[#FF0035]"
-                                                : "border-transparent hover:border-[#FF0035]"
-                                        }`}
-                                        style={{ color: "#FF0035" }}
-                                    >
-                                        {label}
-                                    </NavLink>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Boutons à droite */}
-                    <div className="flex items-center gap-3">
-                        {/* Bouton Publier (icône crayon) */}
-                        <NavLink
-                            to="/publications/new"
-                            className="p-2 rounded-md"
-                            style={{ backgroundColor: "#FF0035", color: "white" }}
-                            title="Publier"
-                        >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15.232 5.232l3.536 3.536M4 20h4.586a1 1 0 0 0 .707-.293l10-10a1 1 0 0 0 0-1.414l-3.586-3.586a1 1 0 0 0-1.414 0l-10 10A1 1 0 0 0 4 15.414V20z"
-                                />
-                            </svg>
-                        </NavLink>
-
-                        {/* Nouveau bouton : lier un compte (icône) */}
-                        <button
-                            onClick={openModal}
-                            className="p-2 rounded-md border"
-                            style={{ borderColor: "#FF0035", color: "#FF0035" }}
-                            title="Lier un compte"
-                        >
-                            {/* Remplacez l’icône par celle de votre choix */}
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4v16m8-8H4"
-                                />
-                            </svg>
-                        </button>
-
-                        {/* Bouton Profil (icône user) */}
-                        <div className="relative">
-                            <button
-                                onClick={changeMenu}
-                                className="p-2 rounded-full border"
-                                style={{ borderColor: "#FF0035", color: "#FF0035" }}
-                                title="Profil"
-                            >
-                                <svg
-                                    className="w-6 h-6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M5.121 17.804A9.004 9.004 0 0112 15c2.003 0 3.847.66 5.258 1.763M15 10a3 3 0 11-6 0 3 3 0 016 0z"
-                                    />
-                                </svg>
-                            </button>
-
-                            {/* Menu déroulant */}
-                            {menuOuvert && (
-                                <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md z-50">
-                                    <NavLink
-                                        to="/parametres/moncompte"
-                                        onClick={() => setMenuOuvert(false)}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    >
-                                        Paramètres
-                                    </NavLink>
-                                    <button
-                                        onClick={deconnexion}
-                                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
-                                    >
-                                        Déconnexion
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {/* Modal pour lier un compte */}
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                    {/* Contenu de la modale */}
-                    <div className="bg-white p-6 rounded shadow-lg">
-                        {/* Votre composant ConfingsocialMedia */}
-                        <ConfingsocialMedia />
-
-                        {/* Bouton pour fermer la modale */}
-                        <div className="mt-4 text-right">
-                            <button
-                                onClick={closeModal}
-                                className="px-4 py-2 rounded text-white"
-                                style={{ backgroundColor: "#FF0035" }}
-                            >
-                                Fermer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </>
+        <div>
+            <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Configurer vos réseaux sociaux</h2>
+            <div className="space-y-4">
+                {/* Assurez-vous que le logo que vous passez est le bon icône */}
+                <SocialButton
+                    handleClick={() => handleLinkSocialMedia('facebook')}
+                    logo={<FaFacebook size={20} />}
+                    network="facebook"
+                    connected={socialConnections.facebook} // Connexion dynamique
+                />
+                <SocialButton
+                    handleClick={() => handleLinkSocialMedia('twitter')}
+                    logo={<FaTwitter size={30} />}
+                    network="twitter"
+                    connected={socialConnections.twitter} // Connexion dynamique
+                />
+                <SocialButton
+                    handleClick={() => handleLinkSocialMedia('instagram')}
+                    logo={<FaInstagram size={30} />}
+                    network="instagram"
+                    connected={socialConnections.instagram} // Connexion dynamique
+                />
+            </div>
+            {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
+            <button
+                className="w-full bg-gray-400 text-white py-3 mt-6 rounded hover:bg-red-600 transition"
+                onClick={deconnexion}>
+                Déconnexion
+            </button>
+        </div>
     );
-};
+}
 
-export default BarreHaut;
+export default ConfigSocialMedia;
