@@ -56,7 +56,7 @@ const Post = new mongoose.Schema({
     }
 });
 
-postSchema.pre('save', function(next) {
+Post.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
 });
