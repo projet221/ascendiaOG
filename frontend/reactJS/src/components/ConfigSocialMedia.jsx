@@ -12,6 +12,11 @@ function ConfigSocialMedia() {
     });
     const [loading, setLoading] = useState(true);  // Nouvel état pour le chargement
 
+    const deconnexion = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user_id");
+        window.location.reload();
+    };
 
     const handleLinkSocialMedia = async (network) => {
         try {
@@ -57,6 +62,7 @@ function ConfigSocialMedia() {
             });
 
             const data = response.data;
+
 
             // Mettre à jour l'état avec les connexions sociales
             const connections = {
