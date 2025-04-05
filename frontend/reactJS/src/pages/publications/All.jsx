@@ -1,50 +1,30 @@
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import { axiosInstance } from "../../utils/axios";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarPublication from "../../components/SideBarPublication";
-import ConfigSocialMedia from "../../components/ConfigSocialMedia";
-import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../utils/axios";
 
-const All = () => {
-  const [connected, setConnected] = useState({
-    facebook: false,
-    instagram: false,
-    twitter: false,
-  });
-  const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
-
+const Instagram = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const userId = localStorage.getItem("user_id");
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchSocials = async () => {
+    const fetchPosts = async () => {
       try {
-        const res = await axiosInstance.get(`/api/socialauth/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const data = res.data;
-        const connections = {
-          facebook: data.some(item => item.provider === 'facebook'),
-          instagram: data.some(item => item.provider === 'instagram'),
-          twitter: data.some(item => item.provider === 'twitter'),
-        };
-        setConnected(connections);
+        const res = await axiosInstance.get(`/api/posts/instagram/${userId}`);
+        console.log("📷 Posts Instagram :", res.data);
+        setPosts(res.data);
       } catch (err) {
-        console.error("Erreur lors de la récupération des réseaux connectés", err);
+        console.error("Erreur récupération posts Instagram :", err);
+        setError("Erreur lors du chargement des publications.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchSocials();
+    fetchPosts();
   }, []);
-
-  const reseaux = [
-    { name: "Facebook", key: "facebook", icon: <FaFacebook className="text-blue-600 text-4xl" /> },
-    { name: "Instagram", key: "instagram", icon: <FaInstagram className="text-pink-500 text-4xl" /> },
-    { name: "Twitter", key: "twitter", icon: <FaTwitter className="text-black text-4xl" /> },
-  ];
 
   return (
     <div>
@@ -52,58 +32,42 @@ const All = () => {
       <div className="flex">
         <SidebarPublication />
         <main className="flex-1 ml-64 mt-16 p-6 bg-gray-50 min-h-screen">
-          <h1 className="text-3xl font-bold text-[#FF0035] mb-6 text-center">
-            Voir mes Publications,commentaires,likes...
+          <h1 className="text-3xl font-bold text-center text-[#FF0035] mb-6">
+            Publications Instagram
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {reseaux.map((r) => (
-              <div
-                key={r.key}
-                onClick={() => navigate(`/publications/${r.key}`)}
-                className="cursor-pointer flex items-center justify-between gap-4 p-6 rounded-xl shadow bg-white hover:shadow-md transition"
-              >
-                <div className="flex items-center gap-4">
-                  {r.icon}
-                  <div className="flex flex-col">
-                    <span className="text-xl font-semibold">{r.name}</span>
-                    <span className={connected[r.key] ? "text-green-600" : "text-gray-500"}>
-                      {connected[r.key] ? "Connecté" : "Non connecté"}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-gray-400 text-xl">&rarr;</div>
-              </div>
-            ))}
-          </div>
+          {loading && <p className="text-center text-gray-500">Chargement...</p>}
+          {error && <p className="text-center text-red-500">{error}</p>}
 
-          <div className="flex justify-center mt-10">
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              ➕ Ajouter un réseau
-            </button>
-          </div>
+          {!loading && !error && (
+            posts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {posts.map((post, index) => (
+                  <div key={index} className="bg-white rounded shadow-md overflow-hidden">
+                    {post.media_url && (
+                      <img
+                        src={post.media_url}
+                        alt="Post Instagram"
+                        className="w-full h-60 object-cover"
+                      />
+                    )}
+                    <div className="p-4">
+                      <p className="text-gray-800 text-sm">
+                        {post.caption || "Aucune description."}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-2">{new Date(post.timestamp).toLocaleString()}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-600">Aucune publication trouvée.</p>
+            )
+          )}
         </main>
       </div>
-
-      {/* Modal ajout réseau */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md shadow-xl relative">
-            <button
-              className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl"
-              onClick={() => setShowModal(false)}
-            >
-              &times;
-            </button>
-            <ConfigSocialMedia />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default All;
+export default Instagram;
