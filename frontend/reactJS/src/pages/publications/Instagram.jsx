@@ -8,7 +8,7 @@ const Instagram = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const accessToken = "EAAOzyCfqi5EBO7MDIqUTVEUc99dGKnK4pWElcZAfuGM77EFnMAQOzsI7m9dfbBDdTP8LErZBZB64zbpGKmIF3dsTZAIOIUGPFFgYT4i9QDvOmAu9pGRvFpOjATHUHEBfEwrTxyjtvdkzXH2jvV06JhNem2n5ZAqblwQP0DKgK9sRxlvjFT3tvUMaZBj4XzfufzB3X5qLlEqgES7bwYjIZBKXbxiU3sZD";
+  const accessToken = "EAAOzyCfqi5EBOwyGUhYZCDVVr32BlgPGF2HTlWsJcHfixdiH0AC4vDNEzfpE5wN7h1vtulR61JpMMne9lIfLVaSZCVREIGDbKQgSDMfkqI3ZBCnedr7yqAkW1Nu6FLnBiatuk7ZAW7ZAZB6ZBbaOuvuSx32XtMzjvgkv5YQvK1kb8RZAY4pt7bpDZBRDIMQpuARk7tu0oWJgINkxJAPp0X2Mh6XWjYAZDZD";
   const igUserId = "17841472341351112";
 
   useEffect(() => {
