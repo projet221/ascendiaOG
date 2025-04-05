@@ -4,6 +4,7 @@ import { axiosInstance } from "../../utils/axios";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarPublication from "../../components/SideBarPublication";
 import ConfigSocialMedia from "../../components/ConfigSocialMedia";
+import { useNavigate } from "react-router-dom";
 
 const All = () => {
   const [connected, setConnected] = useState({
@@ -12,6 +13,7 @@ const All = () => {
     twitter: false,
   });
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem("user_id");
   const token = localStorage.getItem("token");
@@ -39,9 +41,9 @@ const All = () => {
   }, []);
 
   const reseaux = [
-    { name: "Facebook", key: "facebook", icon: <FaFacebook className="text-blue-600 text-3xl" /> },
-    { name: "Instagram", key: "instagram", icon: <FaInstagram className="text-pink-500 text-3xl" /> },
-    { name: "X (Twitter)", key: "twitter", icon: <FaTwitter className="text-black text-3xl" /> },
+    { name: "Facebook", key: "facebook", icon: <FaFacebook className="text-blue-600 text-4xl" /> },
+    { name: "Instagram", key: "instagram", icon: <FaInstagram className="text-pink-500 text-4xl" /> },
+    { name: "Twitter", key: "twitter", icon: <FaTwitter className="text-black text-4xl" /> },
   ];
 
   return (
@@ -54,21 +56,28 @@ const All = () => {
             Mes Publications
           </h1>
 
-          <div className="space-y-4 mb-6 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             {reseaux.map((r) => (
-              <div key={r.key} className="flex items-center gap-4 p-4 rounded-lg shadow bg-white">
-                {r.icon}
-                <div className="flex flex-col">
-                  <span className="text-lg font-semibold">{r.name}</span>
-                  <span className={connected[r.key] ? "text-green-600" : "text-gray-500"}>
-                    {connected[r.key] ? "Connecté" : "Non connecté"}
-                  </span>
+              <div
+                key={r.key}
+                onClick={() => navigate(`/publications/${r.key}`)}
+                className="cursor-pointer flex items-center justify-between gap-4 p-6 rounded-xl shadow bg-white hover:shadow-md transition"
+              >
+                <div className="flex items-center gap-4">
+                  {r.icon}
+                  <div className="flex flex-col">
+                    <span className="text-xl font-semibold">{r.name}</span>
+                    <span className={connected[r.key] ? "text-green-600" : "text-gray-500"}>
+                      {connected[r.key] ? "Connecté" : "Non connecté"}
+                    </span>
+                  </div>
                 </div>
+                <div className="text-gray-400 text-xl">&rarr;</div>
               </div>
             ))}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-10">
             <button
               onClick={() => setShowModal(true)}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
