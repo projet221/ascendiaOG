@@ -8,6 +8,7 @@ const Instagram = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const userId = localStorage.getItem("user_id");
+  
 
   useEffect(() => {
     const fetchPosts = async () => {
