@@ -53,7 +53,7 @@ const All = () => {
         <SidebarPublication />
         <main className="flex-1 ml-64 mt-16 p-6 bg-gray-50 min-h-screen">
           <h1 className="text-3xl font-bold text-[#FF0035] mb-6 text-center">
-            Mes Publications
+            Voir mes Publications,commentaires,likes...
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
