@@ -2,7 +2,7 @@ const express = require('express');
 const upload = require('../middlewares/upload'); 
 const router = express.Router();
 const postController = require('../controllers/postController');
-const { getInstagramPostStats } = require("../controllers/instagram/functions");
+
 
 
 router.get('/:networks/:id', postController.getAllPosts);
@@ -14,7 +14,7 @@ router.delete('/:id', postController.deletePost);
 router.get('/api/users/:userId/posts', postController.getUserPosts);
 //router.put('/:id/schedule', postController.schedulePost);
 router.put('/:id/analytics', postController.updateAnalytics);
-router.get("/stats/instagram/:userId", getInstagramPostStats);
+
 
 
 

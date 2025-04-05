@@ -1,5 +1,4 @@
-const axios = require("axios");
-const SocialAuth = require("../../../socialAuth/models/SocialAuth");
+
 
 const getInstagramPostStats = async (req, res) => {
   const userId = req.params.userId;
