@@ -4,32 +4,23 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const postRoutes = require('./routes/postRoutes');
 const instagramRoutes = require('./routes/instagramRoutes');
-// Load env vars
+const { join } = require("node:path");
+
 dotenv.config();
 require('./jobs/cronScheduler');
-const {join} = require("node:path");
 
 const app = express();
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 
-// Middleware
-
-
-// Connect to database
 connectDB();
 
-// Routes
 app.use(cors());
-app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
-app.use(postRoutes);
 app.use(express.json());
-// Error handling middleware
-/*app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
-    });*/
-app.use('/api/instagram', instagramRoutes);
+app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
+
+app.use('/api/posts', postRoutes);         
+app.use('/api/instagram', instagramRoutes); 
 
 app.listen(PORT, () => {
-    console.log(`Posts service running on port ${PORT}`);
+  console.log(`✅ Posts service running on port ${PORT}`);
 });

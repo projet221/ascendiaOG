@@ -5,6 +5,7 @@ const postController = require('../controllers/postController');
 
 
 
+
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
