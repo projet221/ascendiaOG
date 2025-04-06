@@ -1,8 +1,8 @@
 const express = require('express');
-const axios = require('axios');
 const router = express.Router();
+const axios = require('axios');
 
-const igUserId = 17841472341351112;
+const igUserId = process.env.INSTAID;
 const accessToken = process.env.INSTATOKEN;
 
 router.get('/posts', async (req, res) => {
@@ -16,7 +16,7 @@ router.get('/posts', async (req, res) => {
 
     res.json(response.data.data);
   } catch (error) {
-    console.error('❌ Erreur Instagram API:', error.response?.data || error.message);
+    console.error('Erreur Instagram API:', error.response?.data || error.message);
     res.status(500).json({ error: 'Erreur lors de la récupération des publications Instagram.' });
   }
 });
