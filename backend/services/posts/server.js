@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const { join } = require('path');
 const connectDB = require('./config/db');
 const postRoutes = require('./routes/postRoutes');
 const instagramRoutes = require('./routes/instagramRoutes');
