@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const igUserId = process.env.INSTAID;
+const igUserId = 17841472341351112;
 const accessToken = process.env.INSTATOKEN;
 
 router.get('/posts', async (req, res) => {
