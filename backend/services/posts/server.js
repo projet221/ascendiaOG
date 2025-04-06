@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const postRoutes = require('./routes/postRoutes');
+const instagramRoutes = require('./routes/instagramRoutes');
 // Load env vars
 dotenv.config();
 require('./jobs/cronScheduler');
@@ -26,7 +27,8 @@ app.use(express.json());
 /*app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
-});*/
+    });*/
+app.use('/api/instagram', instagramRoutes);
 
 app.listen(PORT, () => {
     console.log(`Posts service running on port ${PORT}`);
