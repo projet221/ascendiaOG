@@ -55,7 +55,13 @@ app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK' });
 });
-
+app.use('/api/instagram', proxy(process.env.PROXY_POSTS, {
+    timeout: 10000,
+    userResDecorator: (proxyRes, proxyResData) => {
+        console.log(`Réponse du proxy vers Instagram/posts: ${proxyRes.statusCode}`);
+        return proxyResData;
+    }
+}));
 
 // Start the server
 app.listen(PORT, () => {
