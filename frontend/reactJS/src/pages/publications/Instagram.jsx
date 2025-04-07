@@ -15,10 +15,10 @@ const Instagram = () => {
 
     try {
       const res = await axios.get(API_URL);
-      console.log("✅ Publications reçues :", res.data);
+      console.log("Publications reçues :", res.data);
       setPosts(res.data);
     } catch (err) {
-      console.error("❌ Erreur récupération Instagram :", err);
+      console.error(" Erreur récupération Instagram :", err);
       setError("Erreur lors du chargement des publications.");
     } finally {
       setLoading(false);

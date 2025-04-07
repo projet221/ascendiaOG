@@ -18,7 +18,7 @@ app.use(express.json());
 app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
 
 app.use(postRoutes);
-//app.use('/api/instagram', instagramRoutes);
+app.use('/api/instagram', instagramRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Posts service running on port ${PORT}`);
