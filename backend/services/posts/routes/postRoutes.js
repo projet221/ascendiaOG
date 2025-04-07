@@ -2,8 +2,9 @@ const express = require('express');
 const upload = require('../middlewares/upload'); 
 const router = express.Router();
 const postController = require('../controllers/postController');
+const {getInstagramPosts} = require("../controllers/instagramController");
 
-
+router.get('/posts', getInstagramPosts);
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);

@@ -3,7 +3,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const postRoutes = require('./routes/postRoutes');
-const instagramRoutes = require('./routes/instagramRoutes');
 const { join } = require("node:path");
 
 dotenv.config();
@@ -18,8 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
 
-app.use('/api/posts', postRoutes);         
-app.use('/api/instagram', instagramRoutes); 
+app.use(postRoutes);
+//app.use('/api/instagram', instagramRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Posts service running on port ${PORT}`);
