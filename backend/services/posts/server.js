@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const postRoutes = require('./routes/postRoutes');
 const { join } = require("node:path");
+const instagramRoutes = require('./routes/instagramRoutes');
 
 dotenv.config();
 require('./jobs/cronScheduler');
