@@ -12,6 +12,7 @@ const StatistiquesContent = () => {
   const [instagramPosts, setInstagramPosts] = useState([]);
   const [mostLiked, setMostLiked] = useState(null);
   const [mostCommented, setMostCommented] = useState(null);
+  const [mostEngaging, setMostEngaging] = useState(null);
 
   useEffect(() => {
     const fetchInstagramPosts = async () => {
@@ -22,18 +23,25 @@ const StatistiquesContent = () => {
 
         setInstagramPosts(posts);
 
-        // Post avec le plus de likes
+        // Top like
         const topLiked = [...posts]
           .filter((p) => typeof p.like_count !== "undefined")
           .sort((a, b) => b.like_count - a.like_count)[0];
+        setMostLiked(topLiked);
 
-        // Post avec le plus de commentaires
+        // Top comment
         const topCommented = [...posts]
           .filter((p) => typeof p.comments_count !== "undefined")
           .sort((a, b) => b.comments_count - a.comments_count)[0];
-
-        setMostLiked(topLiked);
         setMostCommented(topCommented);
+
+        // Top engagement (like + comment)
+        const topEngaging = [...posts]
+          .filter(p => typeof p.like_count !== "undefined" && typeof p.comments_count !== "undefined")
+          .sort((a, b) =>
+            (b.like_count + b.comments_count) - (a.like_count + a.comments_count)
+          )[0];
+        setMostEngaging(topEngaging);
       } catch (error) {
         console.error("Erreur récupération des publications Instagram :", error);
       }
@@ -134,6 +142,13 @@ const StatistiquesContent = () => {
             <Bar dataKey="engagement" fill="#00C49F" name="Engagement" />
           </BarChart>
         </ResponsiveContainer>
+
+        {/* Best post by engagement */}
+        {mostEngaging && (
+          <div className="mt-8">
+            {renderPostCard(mostEngaging, "🏆 Post avec le plus d'engagement (likes + commentaires)")}
+          </div>
+        )}
       </div>
 
       {/* Camembert */}
@@ -165,7 +180,7 @@ const StatistiquesContent = () => {
         )}
       </div>
 
-      {/* Croissance fictive */}
+      {/* Courbe de croissance */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
           📈 Croissance fictive des publications Instagram (7 derniers jours)
