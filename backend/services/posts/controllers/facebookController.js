@@ -15,21 +15,23 @@ exports.getFacebookPosts = async (req, res) => {
   console.log(" Token partiel:", accessToken.slice(0, 15) + "...");
 
   try {
-    const response = await axios.get(`https://graph.facebook.com/v19.0/${pageId}/feed`, {
-      params: {
-        access_token: accessToken,
-        fields:
-          "id,message,full_picture,created_time,permalink_url,likes.summary(true),comments.summary(true)",
-      },
-    });
+    const response = await axios.get(
+      `https://graph.facebook.com/v19.0/${pageId}/feed`,
+      {
+        params: {
+          access_token: accessToken,
+          fields: "id,message,full_picture,created_time,permalink_url,likes.summary(true),comments.summary(true)",
+        },
+      }
+    );
 
     const posts = response.data.data || [];
     console.log(`${posts.length} publications Facebook reçues.`);
 
     res.json(posts);
   } catch (error) {
-  console.error("❌ Erreur lors de l'appel à Facebook Graph API :");
-  console.error(error.response?.data || error.message);
-  res.status(500).json({ error: "Erreur lors de la récupération des publications Facebook." });
-}
-
+    console.error(" Erreur lors de l'appel à Facebook Graph API :");
+    console.error(error.response?.data || error.message);
+    res.status(500).json({ error: "Erreur lors de la récupération des publications Facebook." });
+  }
+};
