@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const pageId = process.env.FACEBOOK_CLIENT_ID;
+const pageId = process.env.FACEBOOK_PAGE_ID;
 const accessToken = process.env.FACEBOOK_PAGE_TOKEN;
 
 exports.getFacebookPosts = async (req, res) => {
@@ -28,9 +28,8 @@ exports.getFacebookPosts = async (req, res) => {
 
     res.json(posts);
   } catch (error) {
-    console.error(" Erreur lors de la requête à Facebook Graph API :");
-    console.error(error.response?.data || error.message);
+  console.error("❌ Erreur lors de l'appel à Facebook Graph API :");
+  console.error(error.response?.data || error.message);
+  res.status(500).json({ error: "Erreur lors de la récupération des publications Facebook." });
+}
 
-    res.status(500).json({ error: "Erreur lors de la récupération des publications Facebook." });
-  }
-};
