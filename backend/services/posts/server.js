@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const postRoutes = require('./routes/postRoutes');
 const { join } = require("node:path");
 const instagramRoutes = require('./routes/instagramRoutes');
+const facebookRoutes = require('./routes/facebookRoutes');
 
 dotenv.config();
 require('./jobs/cronScheduler');
@@ -20,6 +21,7 @@ app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
 
 app.use(postRoutes);
 app.use('/api/instagram', instagramRoutes);
+app.use('/api/facebook',facebookRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Posts service running on port ${PORT}`);
