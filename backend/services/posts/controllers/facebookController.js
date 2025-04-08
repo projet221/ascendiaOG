@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const pageId = process.env.FACEBOOK_PAGE_ID;
+const pageId = process.env.FACEBOOK_CLIENT_ID;
 const accessToken = process.env.FACEBOOK_PAGE_TOKEN;
 
 exports.getFacebookPosts = async (req, res) => {
@@ -15,7 +15,7 @@ exports.getFacebookPosts = async (req, res) => {
   console.log(" Token partiel:", accessToken.slice(0, 15) + "...");
 
   try {
-    const response = await axios.get(`https://graph.facebook.com/v19.0/${pageId}/posts`, {
+    const response = await axios.get(`https://graph.facebook.com/v19.0/${pageId}/feed`, {
       params: {
         access_token: accessToken,
         fields:
