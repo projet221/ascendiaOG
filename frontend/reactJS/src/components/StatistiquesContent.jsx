@@ -13,6 +13,7 @@ const StatistiquesContent = () => {
   const [mostLiked, setMostLiked] = useState(null);
   const [mostCommented, setMostCommented] = useState(null);
   const [mostEngaging, setMostEngaging] = useState(null);
+  const [growthData, setGrowthData] = useState([]);
 
   useEffect(() => {
     const fetchInstagramPosts = async () => {
@@ -25,23 +26,46 @@ const StatistiquesContent = () => {
 
         // Top like
         const topLiked = [...posts]
-          .filter((p) => typeof p.like_count !== "undefined")
+          .filter((p) => typeof p.like_count === "number")
           .sort((a, b) => b.like_count - a.like_count)[0];
         setMostLiked(topLiked);
 
         // Top comment
         const topCommented = [...posts]
-          .filter((p) => typeof p.comments_count !== "undefined")
+          .filter((p) => typeof p.comments_count === "number")
           .sort((a, b) => b.comments_count - a.comments_count)[0];
         setMostCommented(topCommented);
 
         // Top engagement (like + comment)
-        const topEngaging = [...posts]
-          .filter(p => typeof p.like_count !== "undefined" && typeof p.comments_count !== "undefined")
-          .sort((a, b) =>
-            (b.like_count + b.comments_count) - (a.like_count + a.comments_count)
+        const postsWithEngagement = posts.filter(
+          (p) =>
+            typeof p.like_count === "number" &&
+            typeof p.comments_count === "number"
+        );
+
+        if (postsWithEngagement.length > 0) {
+          const topEngaging = [...postsWithEngagement].sort(
+            (a, b) =>
+              b.like_count + b.comments_count - (a.like_count + a.comments_count)
           )[0];
-        setMostEngaging(topEngaging);
+          setMostEngaging(topEngaging);
+        }
+
+        // Real growth data by date
+        const postsByDate = {};
+        posts.forEach((p) => {
+          const date = new Date(p.timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
+          postsByDate[date] = (postsByDate[date] || 0) + 1;
+        });
+
+        const formattedGrowth = Object.entries(postsByDate)
+          .sort(([a], [b]) => new Date(a) - new Date(b))
+          .map(([date, count]) => ({
+            date,
+            Instagram: count,
+          }));
+
+        setGrowthData(formattedGrowth);
       } catch (error) {
         console.error("Erreur récupération des publications Instagram :", error);
       }
@@ -146,7 +170,10 @@ const StatistiquesContent = () => {
         {/* Best post by engagement */}
         {mostEngaging && (
           <div className="mt-8">
-            {renderPostCard(mostEngaging, "🏆 Post avec le plus d'engagement (likes + commentaires)")}
+            {renderPostCard(
+              mostEngaging,
+              "🏆 Post avec le plus d'engagement (likes + commentaires)"
+            )}
           </div>
         )}
       </div>
@@ -180,31 +207,25 @@ const StatistiquesContent = () => {
         )}
       </div>
 
-      {/* Courbe de croissance */}
+      {/* Courbe de croissance réelle */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
-          📈 Croissance fictive des publications Instagram (7 derniers jours)
+          📆 Croissance réelle des publications Instagram
         </h2>
-        <ResponsiveContainer width="100%" height={250}>
-          <LineChart
-            data={[
-              { day: "Lun", Instagram: 10 },
-              { day: "Mar", Instagram: 14 },
-              { day: "Mer", Instagram: 13 },
-              { day: "Jeu", Instagram: 16 },
-              { day: "Ven", Instagram: 18 },
-              { day: "Sam", Instagram: 20 },
-              { day: "Dim", Instagram: 22 },
-            ]}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="day" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="Instagram" stroke="#FF0035" />
-          </LineChart>
-        </ResponsiveContainer>
+        {growthData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={growthData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Instagram" stroke="#FF0035" />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-sm text-gray-500">Aucune publication à afficher dans la courbe.</p>
+        )}
       </div>
 
       {/* Top posts */}
