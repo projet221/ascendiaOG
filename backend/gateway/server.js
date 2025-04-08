@@ -63,6 +63,14 @@ app.use('/api/instagram', proxy(process.env.PROXY_POSTS, {
     }
 }));
 
+app.use('/api/facebook', proxy(process.env.PROXY_POSTS, {
+    timeout: 10000,
+    userResDecorator: (proxyRes, proxyResData) => {
+        console.log(`Réponse du proxy vers facebook/posts: ${proxyRes.statusCode}`);
+        return proxyResData;
+    }
+}));
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Gateway server is running on port ${PORT}`);
