@@ -18,7 +18,8 @@ exports.getInstagramPosts = async (req, res) => {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${igUserId}/media`, {
       params: {
         access_token: accessToken,
-        fields: 'id,caption,media_type,media_url,permalink,timestamp,thumbnail_url',
+     fields: 'id,caption,media_type,media_url,permalink,timestamp,thumbnail_url,like_count,comments_count'
+
       },
     });
 

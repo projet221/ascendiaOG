@@ -14,48 +14,75 @@ const StatistiquesContent = () => {
   const [mostCommented, setMostCommented] = useState(null);
   const [mostEngaging, setMostEngaging] = useState(null);
   const [growthData, setGrowthData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchInstagramPosts = async () => {
+      setLoading(true);
       const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/instagram/posts`;
       try {
         const res = await axios.get(API_URL);
         const posts = res.data || [];
+        
+        console.log(`Récupération réussie: ${posts.length} publications`);
+        
+        if (posts.length === 0) {
+          setError("Aucune publication Instagram trouvée");
+          setLoading(false);
+          return;
+        }
 
         setInstagramPosts(posts);
 
-        // Top like
-        const topLiked = [...posts]
-          .filter((p) => typeof p.like_count === "number")
-          .sort((a, b) => b.like_count - a.like_count)[0];
-        setMostLiked(topLiked);
+        // Identification du post avec le plus de likes
+        const postsWithLikes = posts.filter(p => 
+          p && typeof p.like_count === "number" && p.like_count >= 0
+        );
+        
+        console.log(`Posts avec likes valides: ${postsWithLikes.length}`);
+        
+        if (postsWithLikes.length > 0) {
+          const topLiked = [...postsWithLikes].sort((a, b) => b.like_count - a.like_count)[0];
+          console.log("Post avec le plus de likes:", topLiked);
+          setMostLiked(topLiked);
+        }
 
-        // Top comment
-        const topCommented = [...posts]
-          .filter((p) => typeof p.comments_count === "number")
-          .sort((a, b) => b.comments_count - a.comments_count)[0];
-        setMostCommented(topCommented);
+        // Identification du post avec le plus de commentaires
+        const postsWithComments = posts.filter(p => 
+          p && typeof p.comments_count === "number" && p.comments_count >= 0
+        );
+        
+        console.log(`Posts avec commentaires valides: ${postsWithComments.length}`);
+        
+        if (postsWithComments.length > 0) {
+          const topCommented = [...postsWithComments].sort((a, b) => b.comments_count - a.comments_count)[0];
+          console.log("Post avec le plus de commentaires:", topCommented);
+          setMostCommented(topCommented);
+        }
 
-        // Top engagement (like + comment)
-        const postsWithEngagement = posts.filter(
-          (p) =>
-            typeof p.like_count === "number" &&
-            typeof p.comments_count === "number"
+        // Identification du post avec le plus d'engagement (likes + commentaires)
+        const postsWithEngagement = posts.filter(p =>
+          p && 
+          typeof p.like_count === "number" && 
+          typeof p.comments_count === "number"
         );
 
         if (postsWithEngagement.length > 0) {
           const topEngaging = [...postsWithEngagement].sort(
-            (a, b) =>
-              b.like_count + b.comments_count - (a.like_count + a.comments_count)
+            (a, b) => (b.like_count + b.comments_count) - (a.like_count + a.comments_count)
           )[0];
+          console.log("Post avec le plus d'engagement:", topEngaging);
           setMostEngaging(topEngaging);
         }
 
-        // Real growth data by date
+        // Données de croissance par date
         const postsByDate = {};
         posts.forEach((p) => {
-          const date = new Date(p.timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
-          postsByDate[date] = (postsByDate[date] || 0) + 1;
+          if (p && p.timestamp) {
+            const date = new Date(p.timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
+            postsByDate[date] = (postsByDate[date] || 0) + 1;
+          }
         });
 
         const formattedGrowth = Object.entries(postsByDate)
@@ -66,16 +93,21 @@ const StatistiquesContent = () => {
           }));
 
         setGrowthData(formattedGrowth);
+        setLoading(false);
       } catch (error) {
-        console.error("Erreur récupération des publications Instagram :", error);
+        console.error("Erreur récupération des publications Instagram:", error);
+        setError("Erreur lors de la récupération des publications Instagram");
+        setLoading(false);
       }
     };
 
     fetchInstagramPosts();
   }, []);
 
+  // Calcul de l'engagement total seulement si les posts existent
   const totalEngagement = instagramPosts.reduce(
-    (acc, p) => acc + (p.like_count || 0) + (p.comments_count || 0),
+    (acc, p) => acc + (p && typeof p.like_count === "number" ? p.like_count : 0) 
+              + (p && typeof p.comments_count === "number" ? p.comments_count : 0),
     0
   );
 
@@ -102,39 +134,77 @@ const StatistiquesContent = () => {
     value: p.engagement,
   }));
 
-  const renderPostCard = (post, title) => (
-    <div className="bg-white p-6 rounded-xl shadow space-y-4">
-      <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-      {["IMAGE", "CAROUSEL_ALBUM"].includes(post.media_type) ? (
-        <img
-          src={post.media_url || post.thumbnail_url}
-          alt={post.caption || "Post Instagram"}
-          className="w-full h-64 object-cover rounded-xl"
-        />
-      ) : post.media_type === "VIDEO" ? (
-        <video controls className="w-full h-64 rounded-xl">
-          <source src={post.media_url} type="video/mp4" />
-        </video>
-      ) : null}
-      <p className="text-sm text-gray-600 line-clamp-3">{post.caption}</p>
-      <div className="flex gap-4 mt-2 text-sm">
-        <span className="flex items-center gap-1 text-red-500">
-          <FaHeart /> {post.like_count}
-        </span>
-        <span className="flex items-center gap-1 text-blue-500">
-          <FaCommentDots /> {post.comments_count}
-        </span>
+  const renderPostCard = (post, title) => {
+    if (!post) return null;
+    
+    return (
+      <div className="bg-white p-6 rounded-xl shadow space-y-4">
+        <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
+        {post.media_type && ["IMAGE", "CAROUSEL_ALBUM"].includes(post.media_type) ? (
+          <img
+            src={post.media_url || post.thumbnail_url}
+            alt={post.caption || "Post Instagram"}
+            className="w-full h-64 object-cover rounded-xl"
+          />
+        ) : post.media_type === "VIDEO" ? (
+          <video controls className="w-full h-64 rounded-xl">
+            <source src={post.media_url} type="video/mp4" />
+          </video>
+        ) : (
+          <div className="w-full h-64 bg-gray-200 rounded-xl flex items-center justify-center">
+            <p className="text-gray-500">Aperçu non disponible</p>
+          </div>
+        )}
+        <p className="text-sm text-gray-600 line-clamp-3">{post.caption || "Sans légende"}</p>
+        <div className="flex gap-4 mt-2 text-sm">
+          <span className="flex items-center gap-1 text-red-500">
+            <FaHeart /> {post.like_count || 0}
+          </span>
+          <span className="flex items-center gap-1 text-blue-500">
+            <FaCommentDots /> {post.comments_count || 0}
+          </span>
+        </div>
+        {post.permalink && (
+          <a
+            href={post.permalink}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#FF0035] text-sm underline"
+          >
+            Voir sur Instagram
+          </a>
+        )}
       </div>
-      <a
-        href={post.permalink}
-        target="_blank"
-        rel="noreferrer"
-        className="text-[#FF0035] text-sm underline"
-      >
-        Voir sur Instagram
-      </a>
-    </div>
-  );
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center p-8 bg-white rounded-xl shadow">
+          <h2 className="text-xl font-semibold text-gray-700">Chargement des statistiques...</h2>
+          <div className="mt-4 w-12 h-12 border-4 border-t-[#FF0035] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center p-8 bg-white rounded-xl shadow">
+          <h2 className="text-xl font-semibold text-red-500">Une erreur est survenue</h2>
+          <p className="mt-2 text-gray-600">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-[#FF0035] text-white rounded-lg hover:bg-red-600"
+          >
+            Réessayer
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-12 px-4 sm:px-6 lg:px-12 py-8 bg-gray-100 min-h-screen">
@@ -181,7 +251,7 @@ const StatistiquesContent = () => {
       {/* Camembert */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
-          🥇 Répartition de l’engagement global
+          🥇 Répartition de l'engagement global
         </h2>
         {globalComparison.some((entry) => entry.value > 0) ? (
           <ResponsiveContainer width="100%" height={250}>
@@ -230,8 +300,21 @@ const StatistiquesContent = () => {
 
       {/* Top posts */}
       <div className="grid md:grid-cols-2 gap-6">
-        {mostLiked && renderPostCard(mostLiked, "❤️ Post avec le plus de likes")}
-        {mostCommented && renderPostCard(mostCommented, "💬 Post avec le plus de commentaires")}
+        {mostLiked ? 
+          renderPostCard(mostLiked, "❤️ Post avec le plus de likes") : 
+          <div className="bg-white p-6 rounded-xl shadow">
+            <h3 className="text-lg font-semibold text-gray-700">❤️ Post avec le plus de likes</h3>
+            <p className="text-sm text-gray-500">Aucune publication avec des likes n'a été trouvée.</p>
+          </div>
+        }
+        
+        {mostCommented ? 
+          renderPostCard(mostCommented, "💬 Post avec le plus de commentaires") : 
+          <div className="bg-white p-6 rounded-xl shadow">
+            <h3 className="text-lg font-semibold text-gray-700">💬 Post avec le plus de commentaires</h3>
+            <p className="text-sm text-gray-500">Aucune publication avec des commentaires n'a été trouvée.</p>
+          </div>
+        }
       </div>
     </div>
   );
