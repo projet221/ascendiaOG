@@ -14,7 +14,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@tailwindcss/vite": "^4.0.9",
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "dotenv": "^16.4.1",
     "framer-motion": "^12.6.2",
     "lucide-react": "^0.484.0",
