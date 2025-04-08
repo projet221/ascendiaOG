@@ -22,9 +22,15 @@ const StatistiquesContent = () => {
 
         setInstagramPosts(posts);
 
-        // Trier pour récupérer les meilleurs posts
-        const topLiked = [...posts].sort((a, b) => (b.like_count || 0) - (a.like_count || 0))[0];
-        const topCommented = [...posts].sort((a, b) => (b.comments_count || 0) - (a.comments_count || 0))[0];
+        // Post avec le plus de likes
+        const topLiked = [...posts]
+          .filter((p) => typeof p.like_count !== "undefined")
+          .sort((a, b) => b.like_count - a.like_count)[0];
+
+        // Post avec le plus de commentaires
+        const topCommented = [...posts]
+          .filter((p) => typeof p.comments_count !== "undefined")
+          .sort((a, b) => b.comments_count - a.comments_count)[0];
 
         setMostLiked(topLiked);
         setMostCommented(topCommented);
@@ -36,11 +42,27 @@ const StatistiquesContent = () => {
     fetchInstagramPosts();
   }, []);
 
-  // Données fictives pour Facebook et Twitter à compléter plus tard
+  const totalEngagement = instagramPosts.reduce(
+    (acc, p) => acc + (p.like_count || 0) + (p.comments_count || 0),
+    0
+  );
+
   const performanceData = [
-    { name: "Instagram", posts: instagramPosts.length, engagement: instagramPosts.reduce((acc, p) => acc + (p.like_count || 0) + (p.comments_count || 0), 0) },
-    { name: "Facebook", posts: 0, engagement: 0 },
-    { name: "Twitter", posts: 0, engagement: 0 },
+    {
+      name: "Instagram",
+      posts: instagramPosts.length,
+      engagement: totalEngagement,
+    },
+    {
+      name: "Facebook",
+      posts: 0,
+      engagement: 0,
+    },
+    {
+      name: "Twitter",
+      posts: 0,
+      engagement: 0,
+    },
   ];
 
   const globalComparison = performanceData.map((p) => ({
@@ -51,7 +73,7 @@ const StatistiquesContent = () => {
   const renderPostCard = (post, title) => (
     <div className="bg-white p-6 rounded-xl shadow space-y-4">
       <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-      {post.media_type === "IMAGE" || post.media_type === "CAROUSEL_ALBUM" ? (
+      {["IMAGE", "CAROUSEL_ALBUM"].includes(post.media_type) ? (
         <img
           src={post.media_url || post.thumbnail_url}
           alt={post.caption || "Post Instagram"}
@@ -84,11 +106,15 @@ const StatistiquesContent = () => {
 
   return (
     <div className="space-y-12 px-4 sm:px-6 lg:px-12 py-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-[#FF0035] mb-4 text-center">📈 Statistiques Réseaux Sociaux</h1>
+      <h1 className="text-3xl font-bold text-[#FF0035] mb-4 text-center">
+        📈 Statistiques Réseaux Sociaux
+      </h1>
 
       {/* Total posts */}
       <div className="bg-white p-6 rounded-xl shadow text-center">
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">📸 Nombre total de publications Instagram</h2>
+        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          📸 Nombre total de publications Instagram
+        </h2>
         <p className="text-4xl font-bold text-[#FF0035]">{instagramPosts.length}</p>
       </div>
 
@@ -115,30 +141,34 @@ const StatistiquesContent = () => {
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
           🥇 Répartition de l’engagement global
         </h2>
-        <ResponsiveContainer width="100%" height={250}>
-          <PieChart>
-            <Pie
-              data={globalComparison}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={80}
-              label
-            >
-              {globalComparison.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
+        {globalComparison.some((entry) => entry.value > 0) ? (
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={globalComparison}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label
+              >
+                {globalComparison.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-sm text-gray-500">Pas encore de données pour générer ce graphique.</p>
+        )}
       </div>
 
-      {/* Croissance (données fictives) */}
+      {/* Croissance fictive */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
-          📈 Croissance fictive des publications sur 7 jours
+          📈 Croissance fictive des publications Instagram (7 derniers jours)
         </h2>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart
