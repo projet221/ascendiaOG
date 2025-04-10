@@ -4,7 +4,7 @@ const igUserId = process.env.INSTAID;
 const accessToken = process.env.INSTATOKEN;
 
 exports.getInstagramPosts = async (req, res) => {
-  console.log(' [CONTROLLER] ➤ GET /api/instagram/posts appelée');
+  console.log(' [CONTROLLER] ➤ GET /api/socialauth/instagram/posts');
 
   if (!igUserId || !accessToken) {
     console.error('INSTAID ou INSTATOKEN manquant dans les variables d’environnement');
