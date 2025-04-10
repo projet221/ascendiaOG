@@ -17,7 +17,7 @@ async function wakeUpService(url) {
     let awake = false;
     let attempt = 0;
 
-    console.log(`Service endormi détecté. Tentative de réveil sur ${url}...`);
+    console.log(`Service endormi détecté. Tentative de réveil sur ${url}`);
 
     while (!awake && attempt < 10) { // max 10 tentatives
         try {
@@ -45,7 +45,7 @@ app.use('/api/posts', proxy(process.env.PROXY_POSTS, {
     userResDecorator: async (proxyRes, proxyResData) => {
         console.log(`Réponse du proxy vers /posts: ${proxyRes.statusCode}`);
         if (proxyRes.statusCode >= 400 && proxyRes.statusCode < 600) {
-            await wakeUpService(process.env.PROXY_POSTS + '/ping');
+            await wakeUpService(process.env.PROXY_POSTS);
         }
         return proxyResData;
     }
@@ -57,7 +57,7 @@ app.use('/api/users', proxy(process.env.PROXY_USERS, {
     userResDecorator: async (proxyRes, proxyResData) => {
         console.log(`Réponse du proxy vers /users: ${proxyRes.statusCode}`);
         if (proxyRes.statusCode >= 400 && proxyRes.statusCode < 600) {
-            await wakeUpService(process.env.PROXY_USERS + '/ping');
+            await wakeUpService(process.env.PROXY_USERS);
         }
         return proxyResData;
     }
@@ -69,7 +69,7 @@ app.use('/api/socialauth', proxy(process.env.PROXY_SOCIALAUTH, {
     userResDecorator: async (proxyRes, proxyResData) => {
         console.log(`Réponse du proxy vers /socialauth: ${proxyRes.statusCode}`);
         if (proxyRes.statusCode >= 400 && proxyRes.statusCode < 600) {
-            await wakeUpService(process.env.PROXY_SOCIALAUTH + '/ping');
+            await wakeUpService(process.env.PROXY_SOCIALAUTH);
         }
         return proxyResData;
     }
