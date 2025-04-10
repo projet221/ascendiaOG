@@ -21,7 +21,7 @@ router.get("/connect/facebook", passport.authenticate("facebook", {
         scope: ["email", "public_profile", "pages_read_user_content", "read_insights", "pages_show_list",
             "business_management", "pages_read_engagement", "pages_manage_metadata", "pages_manage_posts",
             "instagram_basic", "instagram_content_publish", "ads_management", "instagram_manage_insights",
-            "ads_read","publish_to_groups"
+            "ads_read"
         ]
     }));
 
