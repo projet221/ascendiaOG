@@ -13,7 +13,7 @@ const Instagram = () => {
   const navigate = useNavigate();
 
   const fetchInstagramPosts = async () => {
-    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/instagram/posts`;
+    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/instagram/posts/${localStorage.getItem("user_id")}`;
     console.log("📡 Requête envoyée à :", API_URL);
 
     try {
@@ -22,7 +22,7 @@ const Instagram = () => {
       setPosts(res.data);
     } catch (err) {
       console.error("Erreur récupération Instagram :", err);
-      setError("Erreur lors du chargement des publications.");
+      setError(`Erreur lors du chargement des publications. ${err.message}`);
     } finally {
       setLoading(false);
     }

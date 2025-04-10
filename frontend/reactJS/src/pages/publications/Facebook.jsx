@@ -13,7 +13,7 @@ const Facebook = () => {
   const navigate = useNavigate();
 
   const fetchFacebookPosts = async () => {
-    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/facebook/posts`;
+    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/facebook/posts/${localStorage.getItem("user_id")}`;
     console.log("📡 Requête Facebook envoyée à :", API_URL);
 
     try {
@@ -22,7 +22,7 @@ const Facebook = () => {
       setPosts(res.data);
     } catch (err) {
       console.error("Erreur récupération Facebook :", err);
-      setError("Erreur lors du chargement des publications.");
+      setError(`Erreur lors du chargement des publications. ${err.message}`);
     } finally {
       setLoading(false);
     }
