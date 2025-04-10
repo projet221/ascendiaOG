@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart,
@@ -20,7 +20,7 @@ const StatistiquesContent = () => {
   useEffect(() => {
     const fetchInstagramPosts = async () => {
       setLoading(true);
-      const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/instagram/posts`;
+      const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/socialauth/instagram/posts`;
       try {
         const res = await axios.get(API_URL);
         const posts = res.data || [];
