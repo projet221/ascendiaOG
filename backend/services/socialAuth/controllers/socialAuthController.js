@@ -32,7 +32,7 @@ const socialAuthController = {
                             });
                             return response.data;
                         } catch (error) {
-                            console.error("Erreur lors de la récupération du profil Instagram:", error);
+                            console.error("Erreur lors de la récupération du profil Instagram:", error.message);
                             return null;  // Retourner null si une erreur survient
                         }
                     };
