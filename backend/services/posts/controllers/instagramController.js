@@ -8,7 +8,6 @@ exports.getInstagramPosts = async (req, res) => {
   console.log('access token twitter',id);
   const tokens = response.data;
   InstaTokens = tokens.find(item => item.provider === "instagram");
-  const igUserId = InstaTokens.profile.iba;
   const accessToken = InstaTokens.accessToken;
 
   if (!igUserId || !accessToken) {

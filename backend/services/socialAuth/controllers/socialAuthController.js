@@ -26,17 +26,23 @@ const socialAuthController = {
                         try {
                             const response = await axios.get(`https://graph.instagram.com/me`, {
                                 params: {
-                                    fields: "id,username,media_count,account_type,profile_picture_url,instagram_business_account",
+                                    fields: "id,username,media_count,account_type,profile_picture_url",
                                     access_token: token
                                 }
                             });
+                            const response2 = await axios.get(`https://graph.facebook.com/v19.0/${pageId}`, {
+                                params: {
+                                    fields: 'instagram_business_account',
+                                    access_token: token
+                                }
+                            });
+                            console.log("response2", response2.data);
                             return response.data;
                         } catch (error) {
                             console.error("Erreur lors de la récupération du profil Instagram:", error.message);
                             return null;  // Retourner null si une erreur survient
                         }
                     };
-
                     const profile = await instagramProfile(longtoken);  // Récupérer les infos de profil via le token d'accès
                     if (!profile) {
                         return res.status(400).json({
@@ -50,7 +56,6 @@ const socialAuthController = {
                         accessToken: longtoken,  // Le token d'accès de l'utilisateur
                         profile: {
                             id: profile.id,  // ID de l'utilisateur Instagram
-                            iba: profile.instagram_business_account,
                             username: profile.username,  // Nom d'utilisateur Instagram
                             name: profile.username,  // Instagram ne fournit pas de champ 'name', tu peux utiliser le 'username'
                             email: null,  // Instagram ne fournit pas l'email par défaut, donc tu peux mettre 'null'
