@@ -13,7 +13,7 @@ const Instagram = () => {
   const navigate = useNavigate();
 
   const fetchInstagramPosts = async () => {
-    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/instagram/posts`;
+    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/socialauth/instagram/posts`;
     console.log("📡 Requête envoyée à :", API_URL);
 
     try {
