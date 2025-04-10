@@ -7,7 +7,7 @@ const SocialAuth = new mongoose.Schema({
     refreshToken: {type: String}, // Optionnel, utile pour rafraîchir les tokens
     secretToken: {type: String}, // Optionnel, utile pour twitter
     pages: { type: [{ name: String, id: String }] },
-    profile: { id:String,name:String,username: String,email:String, photo: String },
+    profile: { id:String,name:String,iba:String,username: String,email:String, photo: String },
     createdAt: {type: Date, default: Date.now}
 });
 
