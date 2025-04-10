@@ -20,7 +20,7 @@ const StatistiquesContent = () => {
   useEffect(() => {
     const fetchInstagramPosts = async () => {
       setLoading(true);
-      const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/socialauth/instagram/posts`;
+      const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/socialauth/instagram/posts/${localStorage.getItem('user_id')}`;
       try {
         const res = await axios.get(API_URL);
         const posts = res.data || [];
