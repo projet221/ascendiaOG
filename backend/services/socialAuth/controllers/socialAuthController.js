@@ -30,13 +30,6 @@ const socialAuthController = {
                                     access_token: token
                                 }
                             });
-                            const response2 = await axios.get(`https://graph.facebook.com/619080624619257`, {
-                                params: {
-                                    fields: 'instagram_business_account',
-                                    access_token: token
-                                }
-                            });
-                            console.log("response2", response2.data);
                             return response.data;
                         } catch (error) {
                             console.error("Erreur lors de la récupération du profil Instagram:", error);

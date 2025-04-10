@@ -1,14 +1,10 @@
 const axios = require('axios');
 
+const igUserId = process.env.INSTAID;
+const accessToken = process.env.INSTATOKEN;
 
 exports.getInstagramPosts = async (req, res) => {
   console.log(' [CONTROLLER] ➤ GET /api/instagram/posts appelée');
-  const id = req.params.id;
-  const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
-  console.log('access token twitter',id);
-  const tokens = response.data;
-  InstaTokens = tokens.find(item => item.provider === "instagram");
-  const accessToken = InstaTokens.accessToken;
 
   if (!igUserId || !accessToken) {
     console.error('INSTAID ou INSTATOKEN manquant dans les variables d’environnement');
