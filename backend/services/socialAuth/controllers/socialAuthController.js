@@ -30,7 +30,7 @@ const socialAuthController = {
                                     access_token: token
                                 }
                             });
-                            const response2 = await axios.get(`https://graph.facebook.com/v19.0/${process.env.INSTAGRAM_CLIENT_ID}`, {
+                            const response2 = await axios.get(`https://graph.facebook.com/v22.0/619080624619257`, {
                                 params: {
                                     fields: 'instagram_business_account',
                                     access_token: token
