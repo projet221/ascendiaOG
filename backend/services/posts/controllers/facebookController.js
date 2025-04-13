@@ -8,12 +8,12 @@ async function getUserPages(accessToken) {
   const res = await axios.get(url);
   return res.data.data; // Liste des pages
 }
-exports.getFacebookPosts = async (req, res) => {z
+exports.getFacebookPosts = async (req, res) => {
   console.log(" [CONTROLLER] ➤ GET /api/facebook/posts appelée");
-  const user_id = req.id;
+
   const id = req.params.id;
   const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
-  console.log('access token twitter',id);
+  console.log("tokennnnnnnnnnns", response);
   const tokens = response.data;
   const facebookTokens = tokens.find(item => item.provider === "facebook");
                     
