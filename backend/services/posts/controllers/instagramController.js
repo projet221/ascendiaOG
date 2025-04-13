@@ -34,3 +34,42 @@ exports.getInstagramPosts = async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la récupération des publications Instagram.' });
   }
 };
+
+
+exports.getInstagramPostById = async (req, res) => {
+  const { id } = req.params;
+  const accessToken = process.env.INSTATOKEN;
+
+  try {
+    const response = await axios.get(`https://graph.facebook.com/v19.0/${id}`, {
+      params: {
+        access_token: accessToken,
+        fields: 'id,caption,media_type,media_url,permalink,timestamp,thumbnail_url,like_count,comments_count'
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Erreur récupération d’un post Instagram :", error.response?.data || error.message);
+    res.status(500).json({ error: "Impossible de récupérer la publication." });
+  }
+};
+
+exports.getInstagramPostComments = async (req, res) => {
+  const { id } = req.params;
+  const accessToken = process.env.INSTATOKEN;
+
+  try {
+    const response = await axios.get(`https://graph.facebook.com/v19.0/${id}/comments`, {
+      params: {
+        access_token: accessToken,
+        fields: 'id,text,username,like_count,timestamp'
+      }
+    });
+
+    res.json(response.data.data || []);
+  } catch (error) {
+    console.error("Erreur récupération des commentaires :", error.response?.data || error.message);
+    res.status(500).json({ error: "Impossible de récupérer les commentaires." });
+  }
+};
