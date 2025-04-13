@@ -13,11 +13,15 @@ const Facebook = () => {
   const navigate = useNavigate();
 
   const fetchFacebookPosts = async () => {
-    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/facebook/posts/${localStorage.getItem("user_id")}`;
-    console.log("📡 Requête Facebook envoyée à :", API_URL);
-
+    
     try {
-      const res = await axios.get(API_URL);
+      const res = await axiosInstance.get(`/api/socialAuth/${sessionStorage.getItem("user_id")}`, {
+                          headers: {
+                              "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+                              "Content-Type": "application/json"
+                          }
+                      });
+      
       console.log("Publications Facebook reçues :", res.data);
       setPosts(res.data);
     } catch (err) {
