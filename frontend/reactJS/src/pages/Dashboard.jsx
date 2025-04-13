@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import BarreHaut from "../components/BarreHaut";
 import { axiosInstance } from "../utils/axios.jsx";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 // import { PieChart } from "react-minimal-pie-chart"; // Exemple si vous souhaitez un vrai camembert
 // ↑ Vous pouvez utiliser la librairie de graph de votre choix (chart.js, rechart, etc.)
 
@@ -86,6 +87,20 @@ export default function Dashboard() {
             date.getHours().toString().padStart(2, '0')}:${
             date.getMinutes().toString().padStart(2, '0')}`;
     }
+
+    function getPlatformIcon(platform) {
+        switch (platform) {
+            case "facebook":
+                return <FaFacebook className="text-blue-600 text-lg" />;
+            case "instagram":
+                return <FaInstagram className="text-pink-500 text-lg" />;
+            case "twitter":
+                return <FaTwitter className="text-blue-400 text-lg" />;
+            default:
+                return null;
+        }
+    }
+
 
 
     return (
@@ -197,10 +212,12 @@ export default function Dashboard() {
                     <ul className="space-y-4">
                         {postPlanifier.map((post) => (
                             <li key={post._id}>
-                                <p className="font-semibold text-gray-800">
-                                    {post.platform.join(", ")} — {formatDate(post.scheduledFor)}
-                                </p>
-                                {/* Contenu du post */}
+                                <div className="flex items-center gap-2">
+                                    {post.platform.map((p, idx) => (
+                                        <span key={idx}>{getPlatformIcon(p)}</span>
+                                    ))}
+                                    <span className="text-sm text-gray-500">— {formatDate(post.scheduledFor)}</span>
+                                </div>
                                 <p className="text-gray-600 text-sm">{post.content}</p>
                             </li>
                         ))}
