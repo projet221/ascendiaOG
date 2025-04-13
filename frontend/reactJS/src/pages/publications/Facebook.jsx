@@ -13,7 +13,7 @@ const Facebook = () => {
   const navigate = useNavigate();
 
   const fetchFacebookPosts = async () => {
-    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/facebook/posts/${localStorage.getItem("user_id")}`;
+    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/facebook/posts/${localStorage.getItem("user_id")}`;
     console.log("📡 Requête Facebook envoyée à :", API_URL);
 
     try {
