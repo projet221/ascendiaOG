@@ -1,10 +1,33 @@
 const axios = require("axios");
 
-const pageId = process.env.FACEBOOK_PAGE_ID;
-const accessToken = process.env.FACEBOOK_PAGE_TOKEN;
+//const pageId = process.env.FACEBOOK_PAGE_ID;
+//const accessToken = process.env.FACEBOOK_PAGE_TOKEN;
 
-exports.getFacebookPosts = async (req, res) => {
+async function getUserPages(accessToken) {
+  const url = `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`;
+  const res = await axios.get(url);
+  return res.data.data; // Liste des pages
+}
+exports.getFacebookPosts = async (req, res) => {z
   console.log(" [CONTROLLER] ➤ GET /api/facebook/posts appelée");
+  const user_id = req.id;
+  const id = req.params.id;
+  const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
+  console.log('access token twitter',id);
+  const tokens = response.data;
+  const facebookTokens = tokens.find(item => item.provider === "facebook");
+                    
+                    if (!facebookTokens) {
+                        return res.status(400).json({ error: "Twitter tokens not found" });
+                    }
+  console.log("mes tokens", tokens);
+
+  const accessToken = facebookTokens.accessToken;
+
+
+
+  const pages = await getUserPages(accessToken);
+  const pageId = pages[0].id;
 
   if (!pageId || !accessToken) {
     console.error("FACEBOOK_PAGE_ID ou FACEBOOK_PAGE_TOKEN manquant");
