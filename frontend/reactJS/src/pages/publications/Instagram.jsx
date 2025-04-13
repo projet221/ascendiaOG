@@ -48,10 +48,20 @@ const Instagram = () => {
           {!loading && !error && posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition duration-300"
-                >
+                  <div
+                      key={post.id}
+                      onClick={() =>
+                          navigate("/analyse/statParPublication", {
+                            state: {
+                              postId: post.id,
+                              reseau: "instagram",
+                              postData: post,
+                            },
+                          })
+                      }
+                      className="cursor-pointer bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition duration-300 hover:scale-[1.02] hover:shadow-2xl transition-transform
+"
+                  >
                   {["IMAGE", "CAROUSEL_ALBUM"].includes(post.media_type) ? (
                     <img
                       src={post.media_url || post.thumbnail_url}

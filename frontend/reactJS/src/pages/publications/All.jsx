@@ -55,9 +55,15 @@ const All = () => {
           <h1 className="text-3xl font-bold text-[#FF0035] mb-6 text-center">
             Voir mes Publications,commentaires,likes...
           </h1>
-
+          {Object.values(connected).every(status => !status) && (
+              <p className="text-center text-gray-500 mt-6">
+                Aucun réseau connecté. Veuillez en ajouter un.
+              </p>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {reseaux.map((r) => (
+            {reseaux
+                .filter((r) => connected[r.key])
+                .map((r) => (
               <div
                 key={r.key}
                 onClick={() => navigate(`/publications/${r.key}`)}
