@@ -43,7 +43,7 @@ const BarreHaut = () => {
                   { label: "Dashboard", to: "/dashboard" },
                   { label: "Publications", to: "/publications/all", base: "/publications" },
                   { label: "Planification", to: "/planification", base: "/planification" },
-                  { label: "Statistiques", to: "/statistiques", base: "/statistiques" },
+                  { label: "Statistiques", to: "/analyses/statistiques", base: "/analyses" },
                 ].map(({ label, to, base }) => {
                   const isActive =
                       label === "Dashboard"

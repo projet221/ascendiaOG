@@ -10,7 +10,6 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState(true);
 
 
-
     useEffect(() => {
         const fetchData = async () => {
             try {
