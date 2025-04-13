@@ -15,7 +15,7 @@ const Facebook = () => {
   const fetchFacebookPosts = async () => {
     
     try {
-      const res = await axiosInstance.get(`/api/socialAuth/${sessionStorage.getItem("user_id")}`, {
+      const res = await axiosInstance.get(`/api/facebook/posts/${sessionStorage.getItem("user_id")}`, {
                           headers: {
                               "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
                               "Content-Type": "application/json"
