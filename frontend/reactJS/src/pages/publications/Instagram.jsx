@@ -51,7 +51,7 @@ const Instagram = () => {
                   <div
                       key={post.id}
                       onClick={() =>
-                          navigate("/analyse/statParPublication", {
+                          navigate("/analyses/statistiquesparpublication", {
                             state: {
                               postId: post.id,
                               reseau: "instagram",
