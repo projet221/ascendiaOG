@@ -55,19 +55,19 @@ export default function Dashboard() {
                 // Chargement terminé
                 setIsLoading(false);
 
-                const postsResp = await axiosInstance.get(`/api/posts/users/${userId}/scheduled`, {
+                const postsResp = await axiosInstance.get(`/api/posts/${userId}/scheduled`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setPostPlanifier(postsResp.data || []);
 
                 // Si absolument aucun réseau connecté => on affiche la pop-up
-                if (
+                /*if (
                     !connections.facebook &&
                     !connections.instagram &&
                     !connections.twitter && isLoading
                 ) {
                     setShowModal(true);
-                }
+                }*/
             } catch (error) {
                 console.error("Erreur lors de la récupération des infos :", error);
                 //setUsername("Erreur de chargement");
