@@ -193,17 +193,16 @@ const socialAuthController = {
     },
     DeleteSocialMedia : async (req, res) => {
         try {
-            const socialAuth = await SocialAuth.findOne({
+            const result = await SocialAuth.deleteOne({
                 user: req.params.user_id,
                 provider: req.params.network
             });
 
-            if (!socialAuth) {
-                return res.status(404).json({});
+            if (result.deletedCount === 0) {
+                return res.status(404).json({ message: "Aucune connexion trouvée" });
             }
-            console.log(socialAuth);
-            await socialAuth.remove();
-            res.status(200).json({});
+
+            res.status(200).json({ message: "Connexion supprimée" });
         } catch (err) {
             console.log(err);
             res.status(500).json({ error: 'Erreur serveur' });
