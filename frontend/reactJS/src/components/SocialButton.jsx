@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 function SocialButton({ network, logo, handleClick, connected, handleDisconnect }) {
     return (
         connected ? (
-            <div className="w-full flex flex-col gap-2">
+            <div className="w-full flex flex-row gap-2">
                 <button
                     disabled
-                    className="w-75 bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
+                    className="w-5/6 bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
                 >
                     Connecté sur {network}
                 </button>
                 <button
                     onClick={() => handleDisconnect(network)}
-                    className="w-25 bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
+                    className="w-1/6 bg-red-500 text-white py-2 rounded hover:bg-red-600 hover:w-2/6 transition"
                 >
-                    X
+                    Déconnecter
                 </button>
             </div>
         ) : (
