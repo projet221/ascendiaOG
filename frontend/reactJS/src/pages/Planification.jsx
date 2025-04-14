@@ -17,7 +17,7 @@ const Planification = () => {
         console.log("Publications a venir reçues :", res.data);
         setCalendarEvents(res.data);
       } catch (err) {
-        console.error("Erreur récupération Facebook :", err);
+        console.error("Erreur récupération posts scheduled :", err);
         setError(`Erreur lors du chargement des publications. ${err.message}`);
       } finally {
         setLoading(false);
