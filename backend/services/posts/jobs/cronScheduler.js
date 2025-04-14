@@ -10,7 +10,7 @@ cron.schedule("* * * * *", async () => {
     console.log("🔄 Vérification des posts planifiés...");
 
     const now = new Date();  // Date actuelle en UTC
-    now.setHours(now.getHours() + 1);  // Ajouter 1 heure pour passer à GMT+1
+    now.setHours(now.getHours() + 2);  // Ajouter 1 heure pour passer à GMT+1
 
     try {
         // Trouver les posts dont la date de publication est dépassée et qui ne sont pas encore publiés

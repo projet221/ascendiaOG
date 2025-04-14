@@ -260,7 +260,7 @@ const postController = {
                         content: message,
                         platform: networks,
                         mediaFiles: mediaFiles,
-                        scheduledFor: new Date(scheduleDate),  // Planifié pour le 2 avril 2025 à 14h
+                        scheduledFor: new Date(scheduleDate),
                         status: "scheduled",
                     });
     
