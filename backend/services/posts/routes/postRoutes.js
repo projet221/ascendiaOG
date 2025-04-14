@@ -6,10 +6,11 @@ const {getInstagramPosts,getInstagramPostById, getInstagramPostComments} = requi
 const {getFacebookPosts} = require("../controllers/facebookController");
 
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
+router.get("/scheduled/:id",postController.getScheduledPostsByUser);
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
-router.get("/scheduled/:id",postController.getScheduledPostsByUser);
+
 //aly
 router.get('/instagram/post/:id', getInstagramPostById);
 router.get('/instagram/post/:id/comments', getInstagramPostComments);
