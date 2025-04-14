@@ -6,15 +6,15 @@ function SocialButton({ network, logo, handleClick, connected, handleDisconnect 
             <div className="w-full flex flex-col gap-2">
                 <button
                     disabled
-                    className="w-full bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
+                    className="w-75 bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
                 >
                     Connecté sur {network}
                 </button>
                 <button
                     onClick={() => handleDisconnect(network)}
-                    className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
+                    className="w-25 bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
                 >
-                    Déconnecter
+                    X
                 </button>
             </div>
         ) : (
