@@ -18,21 +18,21 @@
   @apply bg-[#FF0035] hover:bg-[#d9002c] text-white py-1 px-3 rounded text-sm;
 }
 
-/* Style des jours */
+/* Style des jours 
 .fc .fc-daygrid-day {
   @apply relative min-h-[80px] transition-colors duration-200;
 }
-
+*/
 /* Changement de couleur au survol */
 .fc .fc-daygrid-day:hover {
   @apply bg-blue-200 cursor-pointer; /* Fond bleu clair au survol */
 }
 
-/* Numéro des jours */
+/* Numéro des jours 
 .fc .fc-daygrid-day-number {
   @apply text-sm p-1;
 }
-
+*/
 /* Style des événements */
 .fc-event {
   @apply m-0.5 p-1 rounded border-none;
@@ -72,6 +72,28 @@
     @apply min-h-[60px];
   }
 }
+
+
+
+/*CSS SAMI CALENDRIER 3ENDKOUM PAS TOUCHER*/
+.fc-daygrid-day {
+  position: relative;
+}
+
+.scheduled-count {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background-color: #28a745;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+}
+/*FIN CSS SAMI CALENDRIER 3ENDKOUM PAS TOUCHER*/
+
+
 
 /* Supprime les flèches sur Chrome, Safari et Edge */
 input[type="number"]::-webkit-inner-spin-button,

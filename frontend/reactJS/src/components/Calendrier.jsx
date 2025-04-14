@@ -9,6 +9,15 @@ const Calendar = ({ events }) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const calendarRef = useRef(null);
+  
+  
+const countPerDay = scheduledPosts.reduce((acc, post) => {
+  const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
+  acc[dateStr] = (acc[dateStr] || 0) + 1;
+  return acc;
+}, {});
+
+
 
   const handleDateMouseEnter = (cellInfo, event) => {
     const formattedDate = cellInfo.date.toLocaleDateString("fr-FR");
@@ -43,6 +52,28 @@ const Calendar = ({ events }) => {
         </div>
       )}
       
+
+      dayCellDidMount={(cellInfo) => {
+  const cell = cellInfo.el;
+  const dateStr = cellInfo.date.toISOString().split("T")[0];
+  const count = countPerDay?.[dateStr];
+
+  if (count) {
+    const countEl = document.createElement("div");
+    countEl.textContent = `${count} post${count > 1 ? 's' : ''}`;
+    countEl.className = "scheduled-count";
+    cell.appendChild(countEl);
+  }
+
+  // Gérer hover
+  cell.addEventListener("mouseenter", (event) => {
+    handleDateMouseEnter(cellInfo, event);
+  });
+  cell.addEventListener("mouseleave", () => {
+    handleDateMouseLeave();
+  });
+}}
+
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -51,11 +82,22 @@ const Calendar = ({ events }) => {
         events={events}
         dayCellDidMount={(cellInfo) => {
           const cell = cellInfo.el;
-          
+          const dateStr = cellInfo.date.toISOString().split("T")[0];
+          const count = countPerDay?.[dateStr];
+        
+          // Ajouter le nombre de posts si existant
+          if (count) {
+            const countEl = document.createElement("div");
+            countEl.textContent = `${count} post${count > 1 ? 's' : ''}`;
+            countEl.className = "scheduled-count";
+            cell.appendChild(countEl);
+          }
+        
+          // Gestion du hover pour ton tooltip (si tu veux le garder)
           cell.addEventListener("mouseenter", (event) => {
             handleDateMouseEnter(cellInfo, event);
           });
-          
+        
           cell.addEventListener("mouseleave", () => {
             handleDateMouseLeave();
           });
