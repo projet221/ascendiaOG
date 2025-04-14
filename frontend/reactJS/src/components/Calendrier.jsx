@@ -62,7 +62,7 @@ console.log("les posts a venir",countPerDay);
         events={events}
         dayCellDidMount={(cellInfo) => {
           const cell = cellInfo.el;
-          const dateStr = cellInfo.date.toISOString().split("T")[0];
+          const dateStr = cellInfo.date.toLocaleDateString('fr-CA');
           const count = countPerDay?.[dateStr];
 
           if (count) {
