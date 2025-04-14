@@ -6,6 +6,7 @@ const router = express.Router();
 const axios = require("axios");
 
 
+router.get("/alive", (req, res) => {res.status(200).send("OK");});
 
 router.post('/save', socialAuthController.save );
 

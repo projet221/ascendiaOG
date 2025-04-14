@@ -37,6 +37,7 @@ const loginValidation = [
 // Routes publiques
 router.post('/register', registerValidation, userController.register);
 router.post('/login', loginValidation, userController.login);
+router.get("/alive", (req, res) => {res.status(200).send("OK");});
 
 // Routes protégées
 router.get('/a', auth, userController.getAllUsers);
