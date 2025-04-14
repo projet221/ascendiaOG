@@ -1,13 +1,22 @@
 import PropTypes from 'prop-types';
 
-function SocialButton({ network, logo, handleClick,connected }) {
+function SocialButton({ network, logo, handleClick, connected, handleDisconnect }) {
     return (
         connected ? (
-            <button
-                disabled={true}
-                className="w-full bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
-
-            >Connecté sur {network}</button>
+            <div className="w-full flex flex-col gap-2">
+                <button
+                    disabled
+                    className="w-full bg-green-500 text-white py-3 rounded flex items-center justify-center space-x-2"
+                >
+                    Connecté sur {network}
+                </button>
+                <button
+                    onClick={() => handleDisconnect(network)}
+                    className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
+                >
+                    Déconnecter
+                </button>
+            </div>
         ) : (
             <button
                 onClick={handleClick}
@@ -19,12 +28,12 @@ function SocialButton({ network, logo, handleClick,connected }) {
     );
 }
 
-// Définition des PropTypes
 SocialButton.propTypes = {
     network: PropTypes.string.isRequired,
     logo: PropTypes.node.isRequired,
     handleClick: PropTypes.func.isRequired,
     connected: PropTypes.bool.isRequired,
+    handleDisconnect: PropTypes.func.isRequired,
 };
 
 export default SocialButton;

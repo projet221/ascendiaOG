@@ -5,7 +5,6 @@ const socialAuthController = require("../controllers/socialAuthController");
 const router = express.Router();
 const axios = require("axios");
 
-// Facebook OAuth
 
 
 router.post('/save', socialAuthController.save );
@@ -14,6 +13,7 @@ router.get("/:user_id", socialAuthController.getSocialMediaProviderByUserId )
 
 router.get("/tokens/:user_id", socialAuthController.getSocialMediaByUserId );
 
+router.delete("/:user_id/:network", socialAuthController.DeleteSocialMedia);
 
 //Routes de connexions aux réseaux sociaux
 

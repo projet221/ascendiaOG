@@ -190,6 +190,24 @@ const socialAuthController = {
         } catch (err){
             console.log(err)
         }
+    },
+    DeleteSocialMedia : async (req, res) => {
+        try {
+            const socialAuth = await SocialAuth.findOne({
+                user: req.params.user_id,
+                provider: req.params.network
+            });
+
+            if (!socialAuth) {
+                return res.status(404).json({});
+            }
+
+            await socialAuth.remove();
+            res.status(200).json({});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Erreur serveur' });
+        }
     }
 };
 

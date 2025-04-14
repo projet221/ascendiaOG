@@ -10,8 +10,10 @@ function ConfigSocialMedia() {
         twitter: false,
         instagram: false,
     });
-    const [loading, setLoading] = useState(true);  // Nouvel état pour le chargement
+    const [loading, setLoading] = useState(true);
 
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("user_id");
 
     const handleLinkSocialMedia = async (network) => {
         try {
@@ -31,7 +33,7 @@ function ConfigSocialMedia() {
             const checkPopupClosed = setInterval(() => {
                 if (authWindow.closed) {
                     clearInterval(checkPopupClosed);
-                    fetchSocial(); // Appel de la fonction pour actualiser les connexions après la fermeture du popup
+                    fetchSocial(); // Mise à jour après fermeture du popup
                 }
             }, 1000);
         } catch (err) {
@@ -39,10 +41,21 @@ function ConfigSocialMedia() {
         }
     };
 
-    const fetchSocial = async () => {
-        const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("user_id");
+    const handleDisconnectSocialMedia = async (network) => {
+        try {
+            await axiosInstance.delete(`/api/socialauth/${userId}/${network}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            fetchSocial(); // Mise à jour après la déconnexion
+        } catch (err) {
+            setError(`Erreur lors de la déconnexion : ${err.message}`);
+        }
+    };
 
+    const fetchSocial = async () => {
         if (!token || !userId) {
             console.warn("Token ou user_id non trouvé, l'utilisateur n'est peut-être pas connecté.");
             return;
@@ -58,51 +71,51 @@ function ConfigSocialMedia() {
 
             const data = response.data;
 
-
-            // Mettre à jour l'état avec les connexions sociales
             const connections = {
                 facebook: data.some(item => item.provider === 'facebook'),
                 twitter: data.some(item => item.provider === 'twitter'),
                 instagram: data.some(item => item.provider === 'instagram'),
             };
-            setSocialConnections(connections); // Mettre à jour l'état des connexions
-            setLoading(false); // Fin du chargement
+            setSocialConnections(connections);
+            setLoading(false);
         } catch (err) {
-            setError(`Erreur lors de la récupération des données utilisateur : ${err}`);
-            setLoading(false); // Fin du chargement même en cas d'erreur
+            setError(`Erreur lors de la récupération des données utilisateur : ${err.message}`);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchSocial(); // Appeler la fonction pour charger les connexions sociales au montage
-    }, []); // Exécuter cette logique au montage du composant
+        fetchSocial();
+    });
 
     if (loading) {
-        return <div className="text-center">Chargement...</div>; // Afficher un message de chargement pendant que les données sont récupérées
+        return <div className="text-center">Chargement...</div>;
     }
 
     return (
         <div>
             <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Configurer vos réseaux sociaux</h2>
             <div className="space-y-4">
-                {/* Assurez-vous que le logo que vous passez est le bon icône */}
                 <SocialButton
                     handleClick={() => handleLinkSocialMedia('facebook')}
+                    handleDisconnect={handleDisconnectSocialMedia}
                     logo={<FaFacebook size={20} />}
                     network="facebook"
-                    connected={socialConnections.facebook} // Connexion dynamique
+                    connected={socialConnections.facebook}
                 />
                 <SocialButton
                     handleClick={() => handleLinkSocialMedia('twitter')}
+                    handleDisconnect={handleDisconnectSocialMedia}
                     logo={<FaTwitter size={30} />}
                     network="twitter"
-                    connected={socialConnections.twitter} // Connexion dynamique
+                    connected={socialConnections.twitter}
                 />
                 <SocialButton
                     handleClick={() => handleLinkSocialMedia('instagram')}
+                    handleDisconnect={handleDisconnectSocialMedia}
                     logo={<FaInstagram size={30} />}
                     network="instagram"
-                    connected={socialConnections.instagram} // Connexion dynamique
+                    connected={socialConnections.instagram}
                 />
             </div>
             {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
