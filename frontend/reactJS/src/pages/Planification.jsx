@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import Calendar from "../components/Calendrier"; 
+import { axiosInstance } from "../utils/axios.jsx";
 
 const Planification = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
@@ -13,7 +14,7 @@ const Planification = () => {
                             }
                         });
         
-        console.log("Publications Facebook reçues :", res.data);
+        console.log("Publications a venir reçues :", res.data);
         setCalendarEvents(res.data);
       } catch (err) {
         console.error("Erreur récupération Facebook :", err);
