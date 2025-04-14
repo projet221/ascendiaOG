@@ -53,27 +53,6 @@ const countPerDay = events.reduce((acc, post) => {
       )}
       
 
-      dayCellDidMount={(cellInfo) => {
-  const cell = cellInfo.el;
-  const dateStr = cellInfo.date.toISOString().split("T")[0];
-  const count = countPerDay?.[dateStr];
-
-  if (count) {
-    const countEl = document.createElement("div");
-    countEl.textContent = `${count} post${count > 1 ? 's' : ''}`;
-    countEl.className = "scheduled-count";
-    cell.appendChild(countEl);
-  }
-
-  // Gérer hover
-  cell.addEventListener("mouseenter", (event) => {
-    handleDateMouseEnter(cellInfo, event);
-  });
-  cell.addEventListener("mouseleave", () => {
-    handleDateMouseLeave();
-  });
-}}
-
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -84,20 +63,18 @@ const countPerDay = events.reduce((acc, post) => {
           const cell = cellInfo.el;
           const dateStr = cellInfo.date.toISOString().split("T")[0];
           const count = countPerDay?.[dateStr];
-        
-          // Ajouter le nombre de posts si existant
+
           if (count) {
             const countEl = document.createElement("div");
             countEl.textContent = `${count} post${count > 1 ? 's' : ''}`;
             countEl.className = "scheduled-count";
             cell.appendChild(countEl);
           }
-        
-          // Gestion du hover pour ton tooltip (si tu veux le garder)
+
+          // Gérer hover
           cell.addEventListener("mouseenter", (event) => {
             handleDateMouseEnter(cellInfo, event);
           });
-        
           cell.addEventListener("mouseleave", () => {
             handleDateMouseLeave();
           });
