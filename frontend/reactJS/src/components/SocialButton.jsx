@@ -12,9 +12,10 @@ function SocialButton({ network, logo, handleClick, connected, handleDisconnect 
                 </button>
                 <button
                     onClick={() => handleDisconnect(network)}
-                    className="w-1/6 bg-red-500 text-white py-2 rounded hover:bg-red-600 hover:w-2/6 transition"
+                    className="group w-1/6 bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
                 >
-                    Déconnecter
+                    <span className="group-hover:hidden">X</span> {/* Affiche "X" en état normal */}
+                    <span className="group-hover:block hidden">Déconnecter</span> {/* Affiche "Déconnecter" au survol */}
                 </button>
             </div>
         ) : (
