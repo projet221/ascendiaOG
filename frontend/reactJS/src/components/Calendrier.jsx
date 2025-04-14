@@ -11,7 +11,7 @@ const Calendar = ({ events }) => {
   const calendarRef = useRef(null);
   
   
-const countPerDay = scheduledPosts.reduce((acc, post) => {
+const countPerDay = events.reduce((acc, post) => {
   const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
   acc[dateStr] = (acc[dateStr] || 0) + 1;
   return acc;
