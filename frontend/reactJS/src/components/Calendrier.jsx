@@ -15,9 +15,10 @@ const countPerDay = events.reduce((acc, post) => {
   const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
   acc[dateStr] = (acc[dateStr] || 0) + 1;
   return acc;
+
 }, {});
 
-
+console.log("les posts a venir",countPerDay);
 
   const handleDateMouseEnter = (cellInfo, event) => {
     const formattedDate = cellInfo.date.toLocaleDateString("fr-FR");
