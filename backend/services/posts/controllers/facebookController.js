@@ -6,7 +6,6 @@ const axios = require("axios");
 async function getUserPages(accessToken) {
   const url = `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`;
   const res = await axios.get(url);
-  console.log(res.data);
   return res.data.data; // Liste des pages
 }
 exports.getFacebookPosts = async (req, res) => {
@@ -29,6 +28,7 @@ exports.getFacebookPosts = async (req, res) => {
 
   const pages = await getUserPages(accessToken);
   const pageId = pages[0].id;
+  const accessToken_page = pages[0].access_token;
 
   if (!pageId || !accessToken) {
     console.error("FACEBOOK_PAGE_ID ou FACEBOOK_PAGE_TOKEN manquant");
@@ -43,7 +43,7 @@ exports.getFacebookPosts = async (req, res) => {
       `https://graph.facebook.com/v19.0/${pageId}/feed`,
       {
         params: {
-          access_token: accessToken,
+          access_token: accessToken_page,
           fields: "id,message,full_picture,created_time,permalink_url,likes.summary(true),comments.summary(true)",
         },
       }
