@@ -66,7 +66,7 @@ exports.getInstagramPostComments = async (req, res) => {
         fields: 'id,text,username,like_count,timestamp'
       }
     });
-
+    console.log(response.data);
     res.json(response.data.data || []);
   } catch (error) {
     console.error("Erreur récupération des commentaires :", error.response?.data || error.message);
