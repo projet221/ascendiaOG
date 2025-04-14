@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FaHeart, FaCommentDots, FaPlus } from "react-icons/fa";
-
 import BarreHaut from "../../components/BarreHaut";
 import SidebarPublication from "../../components/SideBarPublication";
+import {axiosInstance} from "../../utils/axios.jsx";
 
 const Facebook = () => {
   const [posts, setPosts] = useState([]);
@@ -15,7 +14,7 @@ const Facebook = () => {
   const fetchFacebookPosts = async () => {
     
     try {
-      const res = await axiosInstance.get(`/api/facebook/posts/${sessionStorage.getItem("user_id")}`, {
+      const res = await axiosInstance.get(`/api/posts/facebook/posts/${localStorage.getItem("user_id")}`, {
                           headers: {
                               "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
                               "Content-Type": "application/json"
