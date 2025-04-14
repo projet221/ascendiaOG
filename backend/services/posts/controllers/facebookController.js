@@ -6,6 +6,7 @@ const axios = require("axios");
 async function getUserPages(accessToken) {
   const url = `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`;
   const res = await axios.get(url);
+  console.log(res.data);
   return res.data.data; // Liste des pages
 }
 exports.getFacebookPosts = async (req, res) => {
