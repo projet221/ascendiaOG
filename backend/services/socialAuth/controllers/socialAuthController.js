@@ -201,7 +201,7 @@ const socialAuthController = {
             if (!socialAuth) {
                 return res.status(404).json({});
             }
-
+            console.log(socialAuth);
             await socialAuth.remove();
             res.status(200).json({});
         } catch (err) {

@@ -86,7 +86,7 @@ function ConfigSocialMedia() {
 
     useEffect(() => {
         fetchSocial();
-    });
+    }, [fetchSocial]);
 
     if (loading) {
         return <div className="text-center">Chargement...</div>;
