@@ -19,9 +19,7 @@ const Planification = () => {
       } catch (err) {
         console.error("Erreur récupération posts scheduled :", err);
         setError(`Erreur lors du chargement des publications. ${err.message}`);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
   useEffect(()=>{
    fetchScheduledPosts();
