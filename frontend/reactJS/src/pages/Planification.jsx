@@ -4,8 +4,9 @@ import { axiosInstance } from "../utils/axios.jsx";
 
 const Planification = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const [countPerDay,setCountPerDate] = useState(null);
   const fetchScheduledPosts = async () => {
-      
+  
       try {
         const res = await axiosInstance.get(`/api/posts/scheduled/${localStorage.getItem("user_id")}`, {
                             headers: {
@@ -24,13 +25,21 @@ const Planification = () => {
   useEffect(()=>{
    fetchScheduledPosts();
   },[]);
+  useEffect(()=>{
+    setCountPerDate(events.reduce((acc, post) => {
+      const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
+      acc[dateStr] = (acc[dateStr] || 0) + 1;
+      return acc;
+    
+    }, {}));
+   },[calendarEvents]);
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold text-center mb-4" style={{ color: '#FF0035' }}>
         Page Planification
       </h1>
 
-      <Calendar events={calendarEvents} />
+      <Calendar events={calendarEvents} countPerDay = {countPerDay} />
     </div>
   );
 };

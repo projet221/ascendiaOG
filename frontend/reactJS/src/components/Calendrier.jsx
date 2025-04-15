@@ -5,18 +5,18 @@ import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
 import BarreHaut from "./BarreHaut";
 
-const Calendar = ({ events }) => {
+const Calendar = ({ events,countPerDay}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const calendarRef = useRef(null);
-  
-  
+  console.log(countPerDay);
+  /*
 const countPerDay = events.reduce((acc, post) => {
   const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
   acc[dateStr] = (acc[dateStr] || 0) + 1;
   return acc;
 
-}, {});
+}, {});*/
 
 console.log("les posts a venir",countPerDay);
 
