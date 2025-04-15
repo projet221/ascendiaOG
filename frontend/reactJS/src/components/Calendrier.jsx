@@ -65,7 +65,7 @@ console.log("les posts a venir",countPerDay);
           
           const dateStr = cellInfo.date.toLocaleDateString('fr-CA');
           console.log(dateStr);
-          const count = countPerDay?.[dateStr];
+          const count = countPerDay[dateStr];
           console.log(count);
           if (count) {
             const countEl = document.createElement("div");
