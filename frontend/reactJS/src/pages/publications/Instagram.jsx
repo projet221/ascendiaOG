@@ -36,13 +36,14 @@ const Instagram = () => {
       <BarreHaut />
       <div className="flex">
         <SidebarPublication />
+        
+        <main className="flex-1 ml-64 mt-16 p-6 bg-gray-100 min-h-screen">
         <button
                 onClick={() => navigate(-1)}
                 className="mb-4 flex items-center text-sm text-gray-600 hover:text-[#FF0035] transition"
             >
                 <FaArrowLeft className="mr-2" /> Retour
             </button>
-        <main className="flex-1 ml-64 mt-16 p-6 bg-gray-100 min-h-screen">
           <h1 className="text-4xl font-bold text-center text-[#FF0035] mb-10">
             🎯 Publications Instagram
           </h1>
