@@ -22,7 +22,7 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     //console.log(datePosts[0].scheduledfor.split("T")[0]);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg relative max-h-[80vh] w-[600px] overflow-y-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg relative max-h-[80vh] w-[600px] overflow-y-auto flex flex-col items-center">
 
         <button
           onClick={onClose}
