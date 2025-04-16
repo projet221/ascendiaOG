@@ -40,12 +40,13 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
       : null;
 
   return (
+    <div key={index} className="w-full max-w-[500px]">
     <Previsualisation
-      key={index}
       platform={post.platform[0] || post}
       text={post.content}
       image={image}
     />
+  </div>
   );
 })}
 
