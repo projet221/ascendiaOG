@@ -1,7 +1,7 @@
 
 import React, { useState,useEffect } from "react";
 import Previsualisation from "./Previsualisation";
-
+import { axiosInstance } from "../utils/axios.jsx";
 function bufferToBase64(bufferObj) {
     const byteArray = new Uint8Array(bufferObj.data);
     let binary = "";
