@@ -27,7 +27,7 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
             key={index}
             platform={post.platform[0]|| post} // si tu n'as pas encore mis d'objet
             text={post.content}
-            image={post.mediaFiles[0] ? URL.createObjectURL(post.mediaFiles[0]) : null}
+            image={post.mediaFiles[0]}
             username={post.username || "JohnDoe"}
             profilePic={post.profilePic || "/default-avatar.png"}
           />
