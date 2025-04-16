@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart, FaCommentDots, FaPlus } from "react-icons/fa";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarPublication from "../../components/SideBarPublication";
-import {axiosInstance} from "../../utils/axios.jsx";
+import { axiosInstance } from "../../utils/axios.jsx";
 
 const Facebook = () => {
   const [posts, setPosts] = useState([]);
@@ -12,19 +12,20 @@ const Facebook = () => {
   const navigate = useNavigate();
 
   const fetchFacebookPosts = async () => {
-    
+    const userId = localStorage.getItem("user_id");
+
     try {
-      const res = await axiosInstance.get(`/api/posts/facebook/posts/${localStorage.getItem("user_id")}`, {
-                          headers: {
-                              "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
-                              "Content-Type": "application/json"
-                          }
-                      });
-      
-      console.log("Publications Facebook reçues :", res.data);
+      const res = await axiosInstance.get(`/api/posts/facebook/posts/${userId}`, {
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      console.log("📘 Publications Facebook reçues :", res.data);
       setPosts(res.data);
     } catch (err) {
-      console.error("Erreur récupération Facebook :", err);
+      console.error("❌ Erreur récupération Facebook :", err);
       setError(`Erreur lors du chargement des publications. ${err.message}`);
     } finally {
       setLoading(false);
@@ -53,7 +54,16 @@ const Facebook = () => {
               {posts.map((post) => (
                 <div
                   key={post.id}
-                  className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition duration-300"
+                  onClick={() =>
+                    navigate("/analyses/statistiquesparpublication", {
+                      state: {
+                        postId: post.id,
+                        reseau: "facebook",
+                        postData: post,
+                      },
+                    })
+                  }
+                  className="cursor-pointer bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition duration-300 hover:scale-[1.02]"
                 >
                   {post.full_picture && (
                     <img
@@ -83,9 +93,9 @@ const Facebook = () => {
                         Voir sur Facebook
                       </a>
                       <div className="flex gap-4 text-sm text-gray-600 items-center">
-                        {post.likes?.summary?.total_count >= 0 && (
+                        {post.reactions?.summary?.total_count >= 0 && (
                           <span className="flex items-center gap-1">
-                            <FaHeart className="text-red-500" /> {post.likes.summary.total_count}
+                            <FaHeart className="text-red-500" /> {post.reactions.summary.total_count}
                           </span>
                         )}
                         {post.comments?.summary?.total_count >= 0 && (
@@ -99,7 +109,7 @@ const Facebook = () => {
                 </div>
               ))}
 
-              {/* ➕ Ajouter une publication */}
+              {/* ➕ Carte pour ajouter une publication */}
               <div
                 onClick={() => navigate("/publier")}
                 className="cursor-pointer flex flex-col justify-center items-center bg-white rounded-2xl border-2 border-dashed border-blue-600 p-6 hover:bg-blue-50 transition"
