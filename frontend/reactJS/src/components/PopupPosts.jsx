@@ -1,6 +1,14 @@
 
 import React, { useState,useEffect } from "react";
 import Previsualisation from "./Previsualisation";
+
+function bufferToBase64(bufferObj) {
+    const byteArray = new Uint8Array(bufferObj.data);
+    let binary = "";
+    byteArray.forEach(byte => binary += String.fromCharCode(byte));
+    return window.btoa(binary);
+  }
+
 const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     if (!isOpen) return null; // si isOpen est nul la popup ne s'ouvre pas
     const [datePosts,setDatePosts] = useState(
@@ -24,9 +32,10 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
 
         {datePosts.map((post, index) => {
   const media = post.mediaFiles?.[0];
+
   const image =
     media && media.data
-      ? `data:${media.contentType};base64,${media.data}`
+      ? `data:${media.contentType};base64,${bufferToBase64(media.data)}`
       : null;
 
   return (
