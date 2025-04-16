@@ -3,7 +3,7 @@ const upload = require('../middlewares/upload');
 const router = express.Router();
 const postController = require('../controllers/postController');
 const {getInstagramPosts,getInstagramPostById, getInstagramPostComments} = require("../controllers/instagramController");
-const {getFacebookPosts} = require("../controllers/facebookController");
+const {getFacebookPosts, getFacebookPostById, getFacebookPostComments } = require("../controllers/facebookController");
 
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
 router.get("/scheduled/:id",postController.getScheduledPostsByUser);
