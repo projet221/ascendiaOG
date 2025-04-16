@@ -14,6 +14,8 @@ router.post('/schedule',upload.single('file'), postController.schedulePost);
 //aly
 router.get('/instagram/post/:id', getInstagramPostById);
 router.get('/instagram/post/:id/comments', getInstagramPostComments);
+router.get('/facebook/post/:id', getFacebookPostById);
+router.get('/facebook/post/:id/comments', getFacebookPostComments);
 //fin aly
 router.get('/:id', postController.getPostById);
 router.put('/:id', postController.updatePost);
