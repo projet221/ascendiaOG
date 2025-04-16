@@ -210,7 +210,10 @@ export default function Dashboard() {
 
                     {/* Sinon, on liste */}
                     <ul className="space-y-4">
-                        {postPlanifier.map((post) => (
+                    {[...postPlanifier]
+                        .sort((a, b) => new Date(a.scheduledFor) - new Date(b.scheduledFor))
+                        .map((post) => (
+
                             <li key={post._id}>
                                 <div className="flex items-center gap-2">
                                     {post.platform.map((p, idx) => (
