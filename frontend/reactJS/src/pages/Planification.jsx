@@ -17,6 +17,13 @@ const Planification = () => {
         
         console.log("Publications a venir reçues :", res.data);
         setCalendarEvents(res.data);
+        setCountPerDate(res.data.reduce((acc, post) => {
+          const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
+          acc[dateStr] = (acc[dateStr] || 0) + 1;
+          return acc;
+        
+        }, {}));
+
       } catch (err) {
         console.error("Erreur récupération posts scheduled :", err);
         setError(`Erreur lors du chargement des publications. ${err.message}`);
@@ -24,6 +31,7 @@ const Planification = () => {
     };
   useEffect(()=>{
    fetchScheduledPosts();
+   
   },[]);
 
   return (
@@ -32,7 +40,7 @@ const Planification = () => {
         Page Planification
       </h1>
 
-      <Calendar events={calendarEvents} />
+      {countPerDay && <Calendar events={calendarEvents} countPerDay={countPerDay}/>}
     </div>
   );
 };
