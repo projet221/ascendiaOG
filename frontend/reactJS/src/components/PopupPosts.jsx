@@ -10,7 +10,8 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     console.log("la date",datePosts);
     console.log("les posts",posts);
     console.log("la date de la cellule",date);
-
+    console.log("datePosts 0",datePosts[0].scheduledFor);
+    console.log(datePosts[0].scheduledfor.split("T")[0]);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg relative">
