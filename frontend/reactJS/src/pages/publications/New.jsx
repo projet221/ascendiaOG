@@ -23,13 +23,20 @@ function New() {
     };
 
     const handleActionChange = (e) => {
-        setAction(e.target.value); // Mettre à jour l'action choisie
-        console.log(networks)
+      const selectedAction = e.target.value;
+      setAction(selectedAction);
+      if (selectedAction === "best") {
+        const bestDate = getBestMoment();
+        setScheduleDate(bestDate);
+      }
+    
+      console.log(networks);
     };
+    
     const handlePublish = () => {
         if (action === "maintenant") {
             publierMaintenant();
-        } else if (action === "planifier") {
+        } else if (action === "planifier" || action ==="best") {
             planifierPublication();
         } else if (action === "brouillon") {
             //enregistrerBrouillon();
@@ -117,6 +124,36 @@ function New() {
         }
     };
 
+    const getMeilleurMoment = () => {
+      const now = new Date();
+    
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const day = now.getDate();
+    
+      const today1230 = new Date(year, month, day, 12, 30);
+      const today1500 = new Date(year, month, day, 15, 0);
+      const today1945 = new Date(year, month, day, 19, 45);
+    
+      let bestTime;
+    
+      if (now < today1230) {
+        bestTime = today1230;
+      } else if (now < today1500) {
+        bestTime = today1500;
+      } else if (now < today1945) {
+        bestTime = today1945;
+      } else {
+        // Demain à 12h30
+        const tomorrow1230 = new Date(year, month, day + 1, 12, 30);
+        bestTime = tomorrow1230;
+      }
+    
+      return bestTime.toISOString().slice(0, 16); // Pour <input type="datetime-local" />
+    };
+
+    
+
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {
@@ -184,30 +221,30 @@ function New() {
                             </option>
                             <option value="maintenant">Publier Maintenant</option>
                             <option value="planifier">Planifier</option>
-                            <option value="brouillon">Enregistrer en brouillon</option>
+                            <option value="best">Publier au meilleur moment</option>
                         </select>
-                        {action === "planifier" && (
-                          <div className="mt-4">
-                            <label className="block text-gray-700 mb-2" htmlFor="schedule-date">
-                              Choisissez la date de planification :
-                            </label>
-                            <input
-                              id="schedule-date"
-                              type="datetime-local"
-                              ref={dateInputRef}
-                              value={scheduleDate}
-                              onChange={(e) => setScheduleDate(e.target.value)}
-                              className="border p-2 rounded-md"
-                            />
-                          </div>
-                          
-                        )}
+                        {(action === "planifier" || action === "best") && (
+                            <div className="mt-4">
+                              <label className="block text-gray-700 mb-2" htmlFor="schedule-date">
+                                {action === "best" ? "Créneau optimal détecté :" : "Choisissez la date de planification :"}
+                              </label>
+                              <input
+                                id="schedule-date"
+                                type="datetime-local"
+                                ref={dateInputRef}
+                                value={scheduleDate}
+                                onChange={(e) => setScheduleDate(e.target.value)}
+                                className="border p-2 rounded-md"
+                                disabled={action === "best"} // facultatif : désactive si choix automatique
+                              />
+                            </div>
+                                    )}
                     <button
-  onClick={handlePublish}
-  className="mt-50 ml-40 bg-[#FF0035] hover:bg-red-700  text-white py-2 px-6 rounded-lg shadow"
-  >
-  Publier
-</button>
+                        onClick={handlePublish}
+                        className="mt-50 ml-40 bg-[#FF0035] hover:bg-red-700  text-white py-2 px-6 rounded-lg shadow"
+                    >
+                        Publier
+                    </button>
                 </div>
                
             </div>
