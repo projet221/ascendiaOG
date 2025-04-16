@@ -10,6 +10,7 @@ const Calendar = ({ events, countPerDay}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [selectedDate,setSelectedDate] = useState(null);
   const calendarRef = useRef(null);
 
   /*
@@ -73,6 +74,7 @@ console.log("les posts a venir",countPerDay);
         events={events}
         dateClick={(info) => {
           console.log("Cellule cliquée :", info.dateStr);
+          setSelectedDate(info.dateStr);
           setPopupOpen(true);
         }}
         dayCellDidMount={(cellInfo) => {
@@ -116,9 +118,9 @@ console.log("les posts a venir",countPerDay);
         }}
         height="auto"
       />
-      <PopupPosts isOpen={isPopupOpen} onClose={() => setPopupOpen(false)}>
+      <PopupPosts isOpen={isPopupOpen} onClose={() => setPopupOpen(false)} posts = {events} date = {selectedDate} >
   <h2 className="text-lg font-bold mb-2">Popup calendrier</h2>
-  <p>Tu as cliqué sur la date </p>
+
 </PopupPosts>
     </div>
     </div>
