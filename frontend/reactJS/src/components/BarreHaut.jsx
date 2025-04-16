@@ -15,8 +15,7 @@ const BarreHaut = () => {
   const deconnexion = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user_id");
-    window.location.reload();
-    navigate("/login");
+    navigate("/");
   };
 
   // Ouvrir / fermer la modal
