@@ -52,6 +52,21 @@ const Facebook = () => {
             🌐 Publications Facebook
           </h1>
 
+          {/*<div className="mb-10 max-w-md mx-auto">
+            <select
+              value={selectedPageId}
+              onChange={(e) => setSelectedPageId(e.target.value)}
+              className="w-full p-3 rounded-xl border border-blue-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+            >
+              <option value="">📄 Sélectionnez une page Facebook</option>
+              {pages.map((page) => (
+                <option key={page.id} value={page.id}>
+                  {page.name}
+                </option>
+              ))}
+            </select>
+              </div>*/}
+
           {loading && <p className="text-gray-500 text-center">Chargement...</p>}
           {error && <p className="text-red-500 text-center">{error}</p>}
 
