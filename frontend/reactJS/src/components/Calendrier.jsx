@@ -18,6 +18,15 @@ const countPerDay = events.reduce((acc, post) => {
 
 }, {});
 
+useEffect(() => {
+  if (!calendarRef.current) return;
+
+  // Forcer le recalcul des cellules
+  const calendarApi = calendarRef.current.getApi();
+  calendarApi.render(); // 🔁 Forcer le render du calendrier
+}, [events]);
+
+
 console.log("les posts a venir",countPerDay);
 
   const handleDateMouseEnter = (cellInfo, event) => {
