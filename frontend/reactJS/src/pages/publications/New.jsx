@@ -131,9 +131,9 @@ function New() {
       const month = now.getMonth();
       const day = now.getDate();
     
-      const today1230 = new Date(year, month, day, 12, 30);
-      const today1500 = new Date(year, month, day, 15, 0);
-      const today1945 = new Date(year, month, day, 19, 45);
+      const today1230 = new Date(year, month, day, 14, 30);
+      const today1500 = new Date(year, month, day, 17, 0);
+      const today1945 = new Date(year, month, day, 21, 45);
     
       let bestTime;
     
