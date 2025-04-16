@@ -1,6 +1,6 @@
 
 import React, { useState,useEffect } from "react";
-
+import Previsualisation from "./Previsualisation";
 const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     if (!isOpen) return null; // si isOpen est nul la popup ne s'ouvre pas
     const [datePosts,setDatePosts] = useState(
