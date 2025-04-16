@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeart, FaCommentDots, FaPlus } from "react-icons/fa";
+import { FaHeart, FaCommentDots, FaPlus, FaArrowLeft } from "react-icons/fa";
 import BarreHaut from "../../components/BarreHaut";
 import SidebarPublication from "../../components/SideBarPublication";
 import { axiosInstance } from "../../utils/axios.jsx";
