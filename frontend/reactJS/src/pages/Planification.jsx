@@ -25,14 +25,7 @@ const Planification = () => {
   useEffect(()=>{
    fetchScheduledPosts();
   },[]);
-  useEffect(()=>{
-    setCountPerDate(events.reduce((acc, post) => {
-      const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
-      acc[dateStr] = (acc[dateStr] || 0) + 1;
-      return acc;
-    
-    }, {}));
-   },[calendarEvents]);
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold text-center mb-4" style={{ color: '#FF0035' }}>
