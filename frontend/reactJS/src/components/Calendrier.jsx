@@ -8,6 +8,7 @@ import BarreHaut from "./BarreHaut";
 const Calendar = ({ events, countPerDay}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [isPopupOpen, setPopupOpen] = useState(false);
   const calendarRef = useRef(null);
 
   /*
@@ -69,6 +70,10 @@ console.log("les posts a venir",countPerDay);
         initialView="dayGridMonth"
         locale={frLocale}
         events={events}
+        dateClick={(info) => {
+          console.log("Cellule cliquée :", info.dateStr);
+          setPopupOpen(true);
+        }}
         dayCellDidMount={(cellInfo) => {
           const cell = cellInfo.el;
           
