@@ -4,7 +4,7 @@ import { axiosInstance } from "../utils/axios.jsx";
 
 const Planification = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
-  const [countPerDay,setCountPerDate] = useState(null);
+  const [countPerDay,setCountPerDate] = useState([]);
   const fetchScheduledPosts = async () => {
   
       try {
