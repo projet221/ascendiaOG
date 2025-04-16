@@ -9,7 +9,7 @@ const Calendar = ({ events}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const calendarRef = useRef(null);
-  console.log(countPerDay);
+
   
 const countPerDay = events.reduce((acc, post) => {
   const dateStr = new Date(post.scheduledFor).toISOString().split("T")[0];
