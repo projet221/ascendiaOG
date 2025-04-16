@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Popup = ({ isOpen, onClose, children }) => {
+const PopupPosts = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -18,4 +18,4 @@ const Popup = ({ isOpen, onClose, children }) => {
   );
 };
 
-export default Popup;
+export default PopupPosts;
