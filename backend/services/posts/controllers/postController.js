@@ -312,6 +312,7 @@ const postController = {
     // Supprimer une publication
     deletePost: async (req, res) => {
         try {
+            console.log("tentative de suppression du post : "+req.params.id);
             const post = await Post.findByIdAndDelete(req.params.id);
             if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
             res.json({ message: 'Publication supprimée avec succès' });

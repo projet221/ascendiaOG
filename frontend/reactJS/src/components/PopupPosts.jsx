@@ -8,13 +8,28 @@ function bufferToBase64(bufferObj) {
     byteArray.forEach(byte => binary += String.fromCharCode(byte));
     return window.btoa(binary);
   }
-  
+
 const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     if (!isOpen) return null; // si isOpen est nul la popup ne s'ouvre pas
     const [datePosts,setDatePosts] = useState(
         posts.filter((element)=>
         element.scheduledFor.split("T")[0] === date //on ne garde que les posts dont la date de publication programmé est celle de la cellule
     ));
+    const deletePost = async (id)=>{
+        try {
+                const res = await axiosInstance.get(`/api/posts/delete/${id}`, {
+                                    headers: {
+                                        "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+                                        "Content-Type": "application/json"
+                                    }
+                                });
+                
+        
+              } catch (err) {
+                console.error("Erreur suppression du post :", err);
+              } 
+
+    }
     console.log("la date",datePosts);
     console.log("les posts",posts);
     console.log("la date de la cellule",date);
@@ -46,6 +61,12 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
       text={post.content}
       image={image}
     />
+    <button
+  onClick={() => deletePost(post._id)}
+  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+>
+  Supprimer
+</button>
   </div>
   );
 })}

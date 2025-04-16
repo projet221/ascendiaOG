@@ -10,7 +10,7 @@ router.get("/scheduled/:id",postController.getScheduledPostsByUser);
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
-
+router.post('/delete/:id',postController.deletePost);
 //aly
 router.get('/instagram/post/:id', getInstagramPostById);
 router.get('/instagram/post/:id/comments', getInstagramPostComments);
