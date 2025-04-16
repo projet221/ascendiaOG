@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
 import BarreHaut from "./BarreHaut";
-
+import Popup from "./Popup";
 const Calendar = ({ events, countPerDay}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -115,6 +115,10 @@ console.log("les posts a venir",countPerDay);
         }}
         height="auto"
       />
+      <Popup isOpen={isPopupOpen} onClose={() => setPopupOpen(false)}>
+  <h2 className="text-lg font-bold mb-2">Popup calendrier</h2>
+  <p>Tu as cliqué sur la date : {selectedDate}</p>
+</Popup>
     </div>
     </div>
   );
