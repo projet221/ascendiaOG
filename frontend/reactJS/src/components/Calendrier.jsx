@@ -118,7 +118,7 @@ console.log("les posts a venir",countPerDay);
       />
       <PopupPosts isOpen={isPopupOpen} onClose={() => setPopupOpen(false)}>
   <h2 className="text-lg font-bold mb-2">Popup calendrier</h2>
-  <p>Tu as cliqué sur la date : {selectedDate}</p>
+  <p>Tu as cliqué sur la date </p>
 </PopupPosts>
     </div>
     </div>
