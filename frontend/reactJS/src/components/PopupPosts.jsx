@@ -25,7 +25,7 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
         {datePosts.map((post, index)=>(
             <Previsualisation
             key={index}
-            platform={account.platform || account} // si tu n'as pas encore mis d'objet
+            platform={post.platform[0]|| post} // si tu n'as pas encore mis d'objet
             text={post.content}
             image={post.mediaFiles[0] ? URL.createObjectURL(post.mediaFiles[0]) : null}
             username={post.username || "JohnDoe"}
