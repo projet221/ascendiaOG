@@ -26,7 +26,7 @@ function New() {
       const selectedAction = e.target.value;
       setAction(selectedAction);
       if (selectedAction === "best") {
-        const bestDate = getBestMoment();
+        const bestDate = getMeilleurMoment();
         setScheduleDate(bestDate);
       }
     
