@@ -32,9 +32,10 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
 
         {datePosts.map((post, index) => {
   const media = post.mediaFiles?.[0];
+
   const image =
     media && media.data
-      ? `data:${media.contentType};base64,${media.data}`
+      ? `data:${media.contentType};base64,${bufferToBase64(media.data)}`
       : null;
 
   return (
