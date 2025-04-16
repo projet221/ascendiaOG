@@ -21,18 +21,24 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
         >
           &times;
         </button>
-        <p>bonsoir paris</p>
-        {datePosts.map((post, index)=>(
-            <Previsualisation
-            key={index}
-            platform={post.platform[0]|| post} // si tu n'as pas encore mis d'objet
-            text={post.content}
-            image={post.mediaFiles[0]}
-            username={post.username || "JohnDoe"}
-            profilePic={post.profilePic || "/default-avatar.png"}
-          />
-        ))
-    }
+
+        {datePosts.map((post, index) => {
+  const media = post.mediaFiles?.[0];
+  const image =
+    media && media.data
+      ? `data:${media.contentType};base64,${media.data}`
+      : null;
+
+  return (
+    <Previsualisation
+      key={index}
+      platform={post.platform[0] || post}
+      text={post.content}
+      image={image}
+    />
+  );
+})}
+
       </div>
     </div>
   );
