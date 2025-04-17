@@ -136,7 +136,7 @@ const StatistiquesGlobales = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPIBlock
           icon={FaHeart}
-          title="Total J'aime"
+          title="Total J'aimes"
           value={kpi.likes}
           tooltipContent={<div>Instagram : <strong>{data.instagram.reduce((a, b) => a + (b.like_count || 0), 0)}</strong><br />Facebook : <strong>{data.facebook.reduce((a, b) => a + (b.likes?.summary?.total_count || 0), 0)}</strong></div>}
         />
