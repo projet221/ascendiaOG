@@ -42,7 +42,7 @@ const COLORS = ["#FF6384", "#36A2EB"];
 
 const StatistiquesGlobales = () => {
   const [data, setData] = useState({ instagram: [], facebook: [] });
-  const [kpi, setKpi] = useState({ likes: 0, comments: 0, posts: 0, engagement: 0 });
+  const [kpi, setKpi] = useState({});
   const [timeline, setTimeline] = useState([]);
   const [topPost, setTopPost] = useState(null);
   const [showPlatformBreakdown, setShowPlatformBreakdown] = useState(false);
@@ -51,6 +51,7 @@ const StatistiquesGlobales = () => {
   const fetchData = async () => {
     const userId = localStorage.getItem("user_id");
     const proxy = import.meta.env.VITE_PROXY_GATEWAY;
+
     const [igRes, fbRes] = await Promise.all([
       axios.get(`${proxy}/api/posts/instagram/posts/${userId}`),
       axios.get(`${proxy}/api/posts/facebook/posts/${userId}`)
@@ -96,7 +97,6 @@ const StatistiquesGlobales = () => {
 
     ig.forEach(post => mapPost(post, "timestamp", "instagram"));
     fb.forEach(post => mapPost(post, "created_time", "facebook"));
-
     setTimeline(Object.values(timelineMap).sort((a, b) => a.month.localeCompare(b.month)));
 
     const allPosts = [...ig, ...fb];
@@ -118,6 +118,7 @@ const StatistiquesGlobales = () => {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Statistiques Globales</h1>
 
+      {}
       <div className="flex gap-4 items-end">
         <div>
           <label className="block text-sm font-medium text-gray-700">Date de début</label>
@@ -127,20 +128,11 @@ const StatistiquesGlobales = () => {
           <label className="block text-sm font-medium text-gray-700">Date de fin</label>
           <input type="date" className="border rounded p-2" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
         </div>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-          onClick={fetchData}
-        >
-          OK
-        </button>
-        <button
-          className="bg-gray-300 text-black px-4 py-2 rounded"
-          onClick={() => { setDateRange({ start: '', end: '' }); fetchData(); }}
-        >
-          Réinitialiser
-        </button>
+        <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={fetchData}>OK</button>
+        <button className="bg-gray-300 text-black px-4 py-2 rounded" onClick={() => { setDateRange({ start: '', end: '' }); fetchData(); }}>Réinitialiser</button>
       </div>
 
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPIBlock
           icon={FaHeart}
@@ -158,8 +150,8 @@ const StatistiquesGlobales = () => {
           icon={FaCalendarAlt}
           title="Total Posts"
           value={kpi.posts}
-          onClick={() => setShowPlatformBreakdown(prev => !prev)}
           tooltipContent={<div>Instagram : <strong>{kpi.instagramPosts}</strong><br />Facebook : <strong>{kpi.facebookPosts}</strong></div>}
+          onClick={() => setShowPlatformBreakdown(prev => !prev)}
         />
         <KPIBlock
           icon={FaChartLine}
@@ -169,6 +161,38 @@ const StatistiquesGlobales = () => {
         />
       </div>
 
+      {}
+      <div className="bg-white rounded-xl p-4 shadow-md">
+        <h2 className="font-semibold mb-4">Comparatif d'engagement par mois</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={timeline}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="instagram" fill="#FF6384" name="Instagram" />
+            <Bar dataKey="facebook" fill="#36A2EB" name="Facebook" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="bg-white rounded-xl p-4 shadow-md">
+        <h2 className="font-semibold mb-4">Timeline d'activité</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={timeline}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="instagram" stroke="#FF6384" name="Instagram" />
+            <Line type="monotone" dataKey="facebook" stroke="#36A2EB" name="Facebook" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {}
       <div className="bg-white rounded-xl p-4 shadow-md">
         <h2 className="font-semibold mb-4">Répartition de l'engagement total</h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -190,6 +214,7 @@ const StatistiquesGlobales = () => {
         </ResponsiveContainer>
       </div>
 
+      {}
       {topPost && (
         <div className="bg-white rounded-xl p-4 shadow-md">
           <h2 className="font-semibold mb-4 flex items-center gap-2"><FaStar className="text-yellow-400" /> Post le plus performant</h2>
