@@ -66,19 +66,19 @@ export default function Dashboard() {
                     axiosInstance.get(`/api/posts/instagram/posts/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axiosInstance.get(`/api/posts/twitter/posts/${userId}`, {
+                    /*axiosInstance.get(`/api/posts/twitter/posts/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
-                    }),
+                    }),*/
                 ]);
     
                 const facebookPosts = facebookResp.data || [];
                 const instagramPosts = instagramResp.data || [];
-                const twitterPosts = twitterResp.data || [];
+                //const twitterPosts = twitterResp.data || [];
 
                 
                 console.log("Facebook posts:", facebookPosts);
                 console.log("Instagram posts:", instagramPosts);
-                console.log("Twitter posts:", twitterPosts);
+                //console.log("Twitter posts:", twitterPosts);
 
 
 
@@ -91,14 +91,14 @@ export default function Dashboard() {
                 
                 const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0), 0);
 
-                const engagementTwitter = twitterPosts.reduce((acc, tweet) => {
+                /*const engagementTwitter = twitterPosts.reduce((acc, tweet) => {
                     const likes = tweet.likes || 0;
                     const retweets = tweet.retweets || 0;
                     return acc + likes + retweets;
-                }, 0);
+                }, 0);*/
     
                 
-                setTotalEngagement(engagementFacebook + engagementInstagram+engagementTwitter);
+                setTotalEngagement(engagementFacebook + engagementInstagram);   //+engagementTwitter
                 const isThisMonth = (dateStr) => {
                     const date = new Date(dateStr);
                     const now = new Date();
@@ -112,8 +112,8 @@ export default function Dashboard() {
                 [
                     ...facebookPosts.map(post => ({ ...post, publishedAt: post.created_time })),
                     ...instagramPosts.map(post => ({ ...post, publishedAt: post.timestamp })),
-                    ...twitterPosts.map(p => ({ publishedAt: p.publishedAt })),
-                ]; //twitterPosts
+                   // ...twitterPosts.map(p => ({ publishedAt: p.publishedAt })),
+                ];
                 const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
                 setTotalPostsThisMonth(postsThisMonth.length);
         
