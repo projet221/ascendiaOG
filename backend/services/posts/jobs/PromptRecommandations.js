@@ -76,7 +76,7 @@ Donne-moi UNE recommandation simple et concrète pour améliorer ses performance
             const contenu = await axios.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 {
-                    model: "mistral/mistral-7b-instruct",
+                    model: "deepseek/deepseek-chat-v3-0324:free",
                     messages: [
                         { role: "system", content: "Tu es un expert en réseaux sociaux." },
                         { role: "user", content: prompt }
