@@ -19,7 +19,10 @@ router.get('/instagram/post/:id/comments', getInstagramPostComments);
 router.get('/facebook/post/:id', getFacebookPostById);
 router.get('/facebook/post/:id/comments', getFacebookPostComments);
 //fin aly
-router.get('/:id', postController.getPostById);
+
+// ATTENTION ICI ROUTE MODIFIER SANS AVOIR CHANGER EN FRONT OU ELLE EST APPELEE
+router.get('/post/:id', postController.getPostById);
+
 router.put('/:id', postController.updatePost);
 router.delete('/:id', postController.deletePost);
 router.get('/api/users/:userId/posts', postController.getUserPosts);
