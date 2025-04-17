@@ -181,15 +181,7 @@ export default function Dashboard() {
               </span>
                         </div>
 
-                        {/* Card “Recommandation IA” */}
-                        <div className="bg-white rounded-lg shadow p-6">
-                            <h2 className="text-xl font-bold text-gray-700 mb-4">Recommandation de contenu</h2>
-                            {recommandation ? (
-                                <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
-                            ) : (
-                                <p className="text-gray-400 italic">Aucune recommandation disponible pour le moment.</p>
-                            )}
-                        </div>
+
 
 
                         {/* Quelques indicateurs */}
@@ -213,6 +205,16 @@ export default function Dashboard() {
                                 Analyser
                             </button>
                         </div>
+                    </div>
+
+                    {/* Card “Recommandation IA” */}
+                    <div className="bg-white rounded-lg shadow p-6">
+                        <h2 className="text-xl font-bold text-gray-700 mb-4">Recommandation de contenu</h2>
+                        {recommandation ? (
+                            <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
+                        ) : (
+                            <p className="text-gray-400 italic">Aucune recommandation disponible pour le moment.</p>
+                        )}
                     </div>
                 </div>
 
