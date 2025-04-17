@@ -11,6 +11,7 @@ router.post('/delete',postController.deletePost);
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
+router.get('/recommandation/:id', postController.getRecommandationIA);
 
 //aly
 router.get('/instagram/post/:id', getInstagramPostById);
@@ -26,7 +27,6 @@ router.get('/api/users/:userId/posts', postController.getUserPosts);
 router.put('/:id/analytics', postController.updateAnalytics);
 router.get('/instagram/posts/:id', getInstagramPosts);
 router.get("/facebook/posts/:id", getFacebookPosts);
-router.get("/recommandationIA/:id", postController.getRecommandationIA);
 
 
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre

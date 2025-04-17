@@ -26,13 +26,6 @@ export default function Dashboard() {
                     return;
                 }
 
-                const recommandationIA = await axiosInstance.get(`/api/posts/recommandationIA/${userId}`, {
-                    headers: {
-                    Authorization: `Bearer ${token}`,
-                    },
-                });
-                setRecommandation(recommandationIA.data);
-
                 const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -59,6 +52,12 @@ export default function Dashboard() {
                     instagram: data.some((item) => item.provider === "instagram"),
                     twitter: data.some((item) => item.provider === "twitter"),
                 };
+                const recommandationIA = await axiosInstance.get(`/api/posts/recommandation/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setRecommandation(recommandationIA.data);
 
                 // Chargement terminé
                 setIsLoading(false);
