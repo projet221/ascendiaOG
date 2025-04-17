@@ -83,7 +83,7 @@ export default function Dashboard() {
                     return acc + likes + comments;
                 }, 0);
                 
-                const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
+                const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0), 0);
                 
                 setTotalEngagement(engagementFacebook + engagementInstagram);
                 // Marquer la fin du chargement
