@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
-import BarreHaut from "./BarreHaut";
 import PopupPosts from "./PopupPosts";
 
+// eslint-disable-next-line react/prop-types
 const Calendar = ({ events, countPerDay}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -49,7 +49,7 @@ console.log("les posts a venir",countPerDay);
 
   return (
 
-    <div className="fc-calendar">
+    <div className="fc-calendar mx-28">
       {/* Tooltip for date */}
       {hoveredDate && (
         <div 
