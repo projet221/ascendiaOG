@@ -54,13 +54,9 @@ cron.schedule("0 * * * *", async () => {
                 continue;
             }
 
-            const formattedPosts = posts.map(post => {
-                return `Texte : ${post.text}\nHashtags : ${post.hashtags?.join(', ') || 'aucun'}\nEngagement : ${post.engagement || 'non précisé'}\nDate : ${post.createdAt?.toLocaleDateString() || 'inconnue'}`;
-            }).join('\n\n');
-
             const prompt = `
 Voici les posts récupérés depuis la base de données avec leurs données analytiques :
-${formattedPosts}
+${posts}
 
 Donne-moi UNE recommandation simple et concrète pour améliorer ses performances sur les réseaux sociaux aujourd'hui.
 Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de tirets, pas de listes, pas de markdown), en revanche tu peux intégrer des smiley pour rendre la recommandation conviviale. Ne commence pas par "Voici une recommandation :".
@@ -81,7 +77,7 @@ Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de ti
                         Authorization: `Bearer ${process.env.CLE_API_IA}`,
                         "Content-Type": "application/json",
                         "HTTP-Referer": process.env.PROXY_GATEWAY,
-                        "X-Title": "Recommandation Réseaux Sociaux"
+                        "X-Title": "Ascendia"
                     }
                 }
             );
