@@ -118,7 +118,7 @@ const Instagram = () => {
 
               {/* ➕ Carte pour ajouter une publication */}
               <div
-                onClick={() => navigate("/publier")}
+                onClick={() => navigate("/publications/new")}
                 className="cursor-pointer flex flex-col justify-center items-center bg-white rounded-2xl border-2 border-dashed border-[#FF0035] p-6 hover:bg-[#fff0f3] transition"
               >
                 <FaPlus className="text-[#FF0035] text-4xl mb-2" />

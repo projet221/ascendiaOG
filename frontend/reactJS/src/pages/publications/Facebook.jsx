@@ -133,7 +133,7 @@ const Facebook = () => {
 
               {/* ➕ Carte pour ajouter une publication */}
               <div
-                onClick={() => navigate("/publier")}
+                onClick={() => navigate("/publications/new")}
                 className="cursor-pointer flex flex-col justify-center items-center bg-white rounded-2xl border-2 border-dashed border-blue-600 p-6 hover:bg-blue-50 transition"
               >
                 <FaPlus className="text-blue-600 text-4xl mb-2" />
