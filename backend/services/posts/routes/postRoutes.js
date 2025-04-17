@@ -8,10 +8,10 @@ const {getFacebookPosts, getFacebookPostById, getFacebookPostComments } = requir
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
 router.get("/scheduled/:id",postController.getScheduledPostsByUser);
 router.post('/delete',postController.deletePost);
+router.get('/recommandation/:id', postController.getRecommandation);
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
-router.get('/aaa/:id', postController.getRecommandation);
 
 //aly
 router.get('/instagram/post/:id', getInstagramPostById);

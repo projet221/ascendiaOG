@@ -52,7 +52,7 @@ export default function Dashboard() {
                     instagram: data.some((item) => item.provider === "instagram"),
                     twitter: data.some((item) => item.provider === "twitter"),
                 };
-                const recommandationIA = await axiosInstance.get(`/api/posts/aaa/${userId}`, {
+                const recommandationIA = await axiosInstance.get(`/api/posts/recommandation/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
