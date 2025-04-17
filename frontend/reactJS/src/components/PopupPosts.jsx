@@ -17,14 +17,9 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     ));
     const deletePost = async (id)=>{
         try {
-                const res = await axiosInstance.post(`/api/posts/delete/`,
-                    id, {
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    }
-                                });
-                
-                                window.location.reload();                
+                const res = await axiosInstance.post(`/api/posts/${post._id}`);
+                console.log(res);
+               window.location.reload();                
               } catch (err) {
                 console.error("Erreur suppression du post :", err);
               } 
