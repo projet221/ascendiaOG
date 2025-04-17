@@ -14,31 +14,49 @@ function estDateDuJour(date) {
 
 // Fonction principale
 async function genererRecommandations() {
-    console.log("[CRON] Lancement de la génération des recommandations...");
+    console.log("🚀 [CRON] Début de la génération des recommandations...");
 
     try {
+        console.log("📡 Récupération des utilisateurs...");
         const { data: users } = await axios.get(`${process.env.PROXY_GATEWAY}/api/users/a`);
+        console.log(`👥 ${users.length} utilisateur(s) trouvé(s).`);
 
         for (const user of users) {
+            console.log(`\n🔍 Traitement de l'utilisateur : ${user.email} (${user._id})`);
+
             // Vérifie si une reco a déjà été générée aujourd’hui
-            const derniereReco = await Recommandation.findOne({ user_id: user._id })
-            .sort({ date: -1 });
+            console.log("📅 Vérification de la dernière recommandation...");
+            const derniereReco = await Recommandation.findOne({ user_id: user._id }).sort({ date: -1 });
 
             if (derniereReco && estDateDuJour(derniereReco.date)) {
-                console.log(`⏩ Recommandation déjà générée pour ${user.email}`);
+                console.log("⏩ Recommandation déjà générée aujourd'hui, on passe.");
                 continue;
             }
 
-            // Récupération des données nécessaires
-            const { data: Posts } = Post.find({userId: user._id});
+            // Récupération des posts
+            console.log("📝 Récupération des posts de l'utilisateur...");
+            const posts = await Post.find({ userId: user._id });
+
+            if (!posts.length) {
+                console.log("⚠️ Aucun post trouvé pour cet utilisateur, on passe.");
+                continue;
+            }
+
+            console.log(`📦 ${posts.length} post(s) trouvé(s).`);
+
+            // Construction du prompt avec les posts
+            const formattedPosts = posts.map(post => {
+                return `Texte : ${post.text}\nHashtags : ${post.hashtags?.join(', ') || 'aucun'}\nEngagement : ${post.engagement || 'non précisé'}\nDate : ${post.createdAt?.toLocaleDateString() || 'inconnue'}`;
+            }).join('\n\n');
 
             const prompt = `
-Voici les posts recuperer depuis la base de donnée avec les données analytiques :
-${Posts}
+Voici les posts récupérés depuis la base de données avec leurs données analytiques :
+${formattedPosts}
 
 Donne-moi UNE recommandation simple et concrète pour améliorer ses performances sur les réseaux sociaux aujourd'hui.
-      `;
+`;
 
+            console.log("🧠 Envoi du prompt au LLM...");
             const contenu = await axios.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 {
@@ -60,17 +78,18 @@ Donne-moi UNE recommandation simple et concrète pour améliorer ses performance
 
             const texte = contenu.data.choices[0].message.content;
 
+            console.log("💾 Sauvegarde de la recommandation...");
             await Recommandation.create({
                 user_id: user._id,
                 contenu: texte
             });
 
-            console.log(`✅ Recommandation générée pour ${user.email}`);
+            console.log(`✅ Recommandation enregistrée pour ${user.email}`);
         }
 
-        console.log("[CRON] ✅ Toutes les recommandations du jour sont générées.");
+        console.log("\n🎉 [CRON] ✅ Toutes les recommandations du jour ont été générées.");
     } catch (err) {
-        console.error("❌ Erreur dans la génération des recommandations :", err.message || err);
+        console.error("❌ Erreur dans la génération des recommandations :", err?.response?.data || err.message || err);
     }
 }
 
