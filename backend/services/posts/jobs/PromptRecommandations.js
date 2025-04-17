@@ -18,7 +18,23 @@ async function genererRecommandations() {
 
     try {
         console.log("📡 Récupération des utilisateurs...");
-        const { data: users } = await axios.get(`${process.env.PROXY_GATEWAY}/api/users/a`);
+        const response = await axios.post(`${process.env.PROXY_GATEWAY}/api/users/login`,
+            { email: "samir@gmail.com", password: "password" },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        const { data: users } = await axios.get(`${process.env.PROXY_GATEWAY}/api/users/a`,
+            {
+                headers:{
+                    Authorization: `Bearer ${response.data.token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+            );
         console.log(`👥 ${users.length} utilisateur(s) trouvé(s).`);
 
         for (const user of users) {
