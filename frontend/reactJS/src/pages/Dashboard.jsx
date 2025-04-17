@@ -97,7 +97,11 @@ export default function Dashboard() {
                     );
                 };
     
-                const allPosts = [...facebookPosts, ...instagramPosts, ...twitterPosts];
+                const allPosts = 
+                [
+                    ...facebookPosts.map(post => ({ ...post, publishedAt: post.created_time })),
+                    ...instagramPosts.map(post => ({ ...post, publishedAt: post.timestamp })),
+                ]; //twitterPosts
                 const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
                 setTotalPostsThisMonth(postsThisMonth.length);
         
