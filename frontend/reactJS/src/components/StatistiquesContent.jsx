@@ -1,414 +1,207 @@
+// Fichier : StatistiquesGlobales.jsx
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  BarChart, Bar, PieChart, Pie, Cell, LineChart,
-  Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
-import { FaHeart, FaCommentDots } from "react-icons/fa";
+import { FaHeart, FaCommentDots, FaCalendarAlt, FaChartLine, FaStar } from "react-icons/fa";
 
-const COLORS = ["#FF0035", "#00C49F", "#0088FE"];
+const KPIBlock = ({ icon: Icon, title, value }) => (
+  <div className="bg-white shadow rounded p-4 flex justify-between items-center">
+    <div className="text-2xl"><Icon /></div>
+    <div className="text-right">
+      <div className="text-sm text-gray-500">{title}</div>
+      <div className="text-lg font-bold">{value}</div>
+    </div>
+  </div>
+);
 
-const StatistiquesContent = () => {
-  const [instagramPosts, setInstagramPosts] = useState([]);
-  const [facebookPosts, setFacebookPosts] = useState([]);
-  const [mostLikedInstagram, setMostLikedInstagram] = useState(null);
-  const [mostCommentedInstagram, setMostCommentedInstagram] = useState(null);
-  const [mostEngagingInstagram, setMostEngagingInstagram] = useState(null);
-  const [mostLikedFacebook, setMostLikedFacebook] = useState(null);
-  const [mostCommentedFacebook, setMostCommentedFacebook] = useState(null);
-  const [mostEngagingFacebook, setMostEngagingFacebook] = useState(null);
-  const [growthDataInstagram, setGrowthDataInstagram] = useState([]);
-  const [growthDataFacebook, setGrowthDataFacebook] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const COLORS = ["#FF6384", "#36A2EB"];
+
+const StatistiquesGlobales = () => {
+  const [data, setData] = useState({ instagram: [], facebook: [] });
+  const [kpi, setKpi] = useState({ likes: 0, comments: 0, posts: 0, engagement: 0 });
+  const [timeline, setTimeline] = useState([]);
+  const [topPost, setTopPost] = useState(null);
+  const [platformDistribution, setPlatformDistribution] = useState([]);
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
   useEffect(() => {
-    const fetchInstagramPosts = async () => {
-      setLoading(true);
-      const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/instagram/posts/${localStorage.getItem('user_id')}`;
-      try {
-        const res = await axios.get(API_URL);
-        const posts = res.data || [];
+    const fetchData = async () => {
+      const userId = localStorage.getItem("user_id");
+      const proxy = import.meta.env.VITE_PROXY_GATEWAY;
+      const [igRes, fbRes] = await Promise.all([
+        axios.get(`${proxy}/api/posts/instagram/posts/${userId}`),
+        axios.get(`${proxy}/api/posts/facebook/posts/${userId}`)
+      ]);
 
-        console.log(`Récupération réussie: ${posts.length} publications Instagram`);
+      let ig = igRes.data || [];
+      let fb = fbRes.data || [];
 
-        if (posts.length === 0) {
-          setError("Aucune publication Instagram trouvée");
-          setLoading(false);
-          return;
-        }
-
-        setInstagramPosts(posts);
-
-        // Identification du post avec le plus de likes
-        const postsWithLikes = posts.filter(p =>
-            p && typeof p.like_count === "number" && p.like_count >= 0
-        );
-
-        console.log(`Posts Instagram avec likes valides: ${postsWithLikes.length}`);
-
-        if (postsWithLikes.length > 0) {
-          const topLiked = [...postsWithLikes].sort((a, b) => b.like_count - a.like_count)[0];
-          setMostLikedInstagram(topLiked);
-        }
-
-        // Identification du post avec le plus de commentaires
-        const postsWithComments = posts.filter(p =>
-            p && typeof p.comments_count === "number" && p.comments_count >= 0
-        );
-
-        if (postsWithComments.length > 0) {
-          const topCommented = [...postsWithComments].sort((a, b) => b.comments_count - a.comments_count)[0];
-          setMostCommentedInstagram(topCommented);
-        }
-
-        // Identification du post avec le plus d'engagement (likes + commentaires)
-        const postsWithEngagement = posts.filter(p =>
-            p && typeof p.like_count === "number" && typeof p.comments_count === "number"
-        );
-
-        if (postsWithEngagement.length > 0) {
-          const topEngaging = [...postsWithEngagement].sort(
-              (a, b) => (b.like_count + b.comments_count) - (a.like_count + a.comments_count)
-          )[0];
-          setMostEngagingInstagram(topEngaging);
-        }
-
-        // Données de croissance par date
-        const postsByDate = {};
-        posts.forEach((p) => {
-          if (p && p.timestamp) {
-            const date = new Date(p.timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
-            postsByDate[date] = (postsByDate[date] || 0) + 1;
-          }
-        });
-
-        const formattedGrowth = Object.entries(postsByDate)
-        .sort(([a], [b]) => new Date(a) - new Date(b))
-        .map(([date, count]) => ({
-          date,
-          Instagram: count,
-        }));
-
-        setGrowthDataInstagram(formattedGrowth);
-      } catch (error) {
-        console.error("Erreur récupération des publications Instagram:", error);
-        setError("Erreur lors de la récupération des publications Instagram");
+      // Filtrage par date
+      if (dateRange.start && dateRange.end) {
+        const start = new Date(dateRange.start);
+        const end = new Date(dateRange.end);
+        ig = ig.filter(post => new Date(post.timestamp) >= start && new Date(post.timestamp) <= end);
+        fb = fb.filter(post => new Date(post.created_time) >= start && new Date(post.created_time) <= end);
       }
+
+      setData({ instagram: ig, facebook: fb });
+
+      const igLikes = ig.reduce((a, b) => a + (b.like_count || 0), 0);
+      const fbLikes = fb.reduce((a, b) => a + (b.likes?.summary?.total_count || 0), 0);
+      const igComments = ig.reduce((a, b) => a + (b.comments_count || 0), 0);
+      const fbComments = fb.reduce((a, b) => a + (b.comments?.summary?.total_count || 0), 0);
+      const posts = ig.length + fb.length;
+      const engagement = posts ? ((igLikes + fbLikes + igComments + fbComments) / posts).toFixed(2) : 0;
+
+      setKpi({
+        likes: igLikes + fbLikes,
+        comments: igComments + fbComments,
+        posts,
+        engagement,
+        instagramPosts: ig.length,
+        facebookPosts: fb.length
+      });
+
+      const timelineMap = {};
+      const mapPost = (post, dateField, src) => {
+        const date = new Date(post[dateField]);
+        const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        if (!timelineMap[month]) timelineMap[month] = { month, instagram: 0, facebook: 0 };
+        timelineMap[month][src]++;
+      };
+
+      ig.forEach(post => mapPost(post, "timestamp", "instagram"));
+      fb.forEach(post => mapPost(post, "created_time", "facebook"));
+
+      setTimeline(Object.values(timelineMap).sort((a, b) => a.month.localeCompare(b.month)));
+
+      const allPosts = [...ig, ...fb];
+      const top = allPosts.reduce((max, post) => {
+        const likes = post.like_count || post.likes?.summary?.total_count || 0;
+        const comments = post.comments_count || post.comments?.summary?.total_count || 0;
+        const engagement = likes + comments;
+        return engagement > max.engagement ? { ...post, engagement } : max;
+      }, { engagement: 0 });
+
+      setTopPost(top);
+
+      setPlatformDistribution([
+        { name: "Instagram", value: ig.length },
+        { name: "Facebook", value: fb.length }
+      ]);
     };
 
-    const fetchFacebookPosts = async () => {
-      const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/facebook/posts/${localStorage.getItem('user_id')}`;
-      try {
-        const res = await axios.get(API_URL);
-        const posts = res.data || [];
-
-        console.log(`Récupération réussie: ${posts.length} publications Facebook`);
-
-        if (posts.length === 0) {
-          setError("Aucune publication Facebook trouvée");
-          setLoading(false);
-          return;
-        }
-
-        setFacebookPosts(posts);
-
-        // Identification du post avec le plus de likes
-        const postsWithLikes = posts.filter(p =>
-            p && typeof p.like_count === "number" && p.like_count >= 0
-        );
-
-        console.log(`Posts Facebook avec likes valides: ${postsWithLikes.length}`);
-
-        if (postsWithLikes.length > 0) {
-          const topLiked = [...postsWithLikes].sort((a, b) => b.like_count - a.like_count)[0];
-          setMostLikedFacebook(topLiked);
-        }
-
-        // Identification du post avec le plus de commentaires
-        const postsWithComments = posts.filter(p =>
-            p && typeof p.comments_count === "number" && p.comments_count >= 0
-        );
-
-        if (postsWithComments.length > 0) {
-          const topCommented = [...postsWithComments].sort((a, b) => b.comments_count - a.comments_count)[0];
-          setMostCommentedFacebook(topCommented);
-        }
-
-        // Identification du post avec le plus d'engagement (likes + commentaires)
-        const postsWithEngagement = posts.filter(p =>
-            p && typeof p.like_count === "number" && typeof p.comments_count === "number"
-        );
-
-        if (postsWithEngagement.length > 0) {
-          const topEngaging = [...postsWithEngagement].sort(
-              (a, b) => (b.like_count + b.comments_count) - (a.like_count + a.comments_count)
-          )[0];
-          setMostEngagingFacebook(topEngaging);
-        }
-
-        // Données de croissance par date
-        const postsByDate = {};
-        posts.forEach((p) => {
-          if (p && p.timestamp) {
-            const date = new Date(p.timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
-            postsByDate[date] = (postsByDate[date] || 0) + 1;
-          }
-        });
-
-        const formattedGrowth = Object.entries(postsByDate)
-        .sort(([a], [b]) => new Date(a) - new Date(b))
-        .map(([date, count]) => ({
-          date,
-          Facebook: count,
-        }));
-
-        setGrowthDataFacebook(formattedGrowth);
-        setLoading(false);
-      } catch (error) {
-        console.error("Erreur récupération des publications Facebook:", error);
-        setError("Erreur lors de la récupération des publications Facebook");
-        setLoading(false);
-      }
-    };
-
-    fetchInstagramPosts();
-    fetchFacebookPosts();
-  }, []);
-
-  const totalEngagementInstagram = instagramPosts.reduce(
-      (acc, p) => acc + (p && typeof p.like_count === "number" ? p.like_count : 0)
-          + (p && typeof p.comments_count === "number" ? p.comments_count : 0),
-      0
-  );
-
-  const totalEngagementFacebook = facebookPosts.reduce(
-      (acc, p) => acc + (p && typeof p.like_count === "number" ? p.like_count : 0)
-          + (p && typeof p.comments_count === "number" ? p.comments_count : 0),
-      0
-  );
-
-  const performanceData = [
-    {
-      name: "Instagram",
-      posts: instagramPosts.length,
-      engagement: totalEngagementInstagram,
-    },
-    {
-      name: "Facebook",
-      posts: facebookPosts.length,
-      engagement: totalEngagementFacebook,
-    },
-    {
-      name: "Twitter",
-      posts: 0,
-      engagement: 0,
-    },
-  ];
-
-  const globalComparison = performanceData.map((p) => ({
-    name: p.name,
-    value: p.engagement,
-  }));
-
-  const renderPostCard = (post, title) => {
-    if (!post) return null;
-
-    return (
-        <div className="bg-white p-6 rounded-xl shadow space-y-4">
-          <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-          {post.media_type && ["IMAGE", "CAROUSEL_ALBUM"].includes(post.media_type) ? (
-              <img
-                  src={post.media_url || post.thumbnail_url}
-                  alt={post.caption || "Post Instagram"}
-                  className="w-full h-64 object-cover rounded-xl"
-              />
-          ) : post.media_type === "VIDEO" ? (
-              <video controls className="w-full h-64 rounded-xl">
-                <source src={post.media_url} type="video/mp4" />
-              </video>
-          ) : (
-              <div className="w-full h-64 bg-gray-200 rounded-xl flex items-center justify-center">
-                <p className="text-gray-500">Aperçu non disponible</p>
-              </div>
-          )}
-          <p className="text-sm text-gray-600 line-clamp-3">{post.caption || "Sans légende"}</p>
-          <div className="flex gap-4 mt-2 text-sm">
-          <span className="flex items-center gap-1 text-red-500">
-            <FaHeart /> {post.like_count || 0}
-          </span>
-            <span className="flex items-center gap-1 text-blue-500">
-            <FaCommentDots /> {post.comments_count || 0}
-          </span>
-          </div>
-          {post.permalink && (
-              <a
-                  href={post.permalink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[#FF0035] text-sm underline"
-              >
-                Voir sur Instagram
-              </a>
-          )}
-        </div>
-    );
-  };
-
-  if (loading) {
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-          <div className="text-center p-8 bg-white rounded-xl shadow">
-            <h2 className="text-xl font-semibold text-gray-700">Chargement des statistiques...</h2>
-            <div className="mt-4 w-12 h-12 border-4 border-t-[#FF0035] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin mx-auto"></div>
-          </div>
-        </div>
-    );
-  }
-
-  if (error) {
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-          <div className="text-center p-8 bg-white rounded-xl shadow">
-            <h2 className="text-xl font-semibold text-red-500">Une erreur est survenue</h2>
-            <p className="mt-2 text-gray-600">{error}</p>
-            <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-[#FF0035] text-white rounded-lg hover:bg-red-600"
-            >
-              Réessayer
-            </button>
-          </div>
-        </div>
-    );
-  }
+    fetchData();
+  }, [dateRange]);
 
   return (
-      <div className="space-y-12 px-4 sm:px-6 lg:px-12 py-8 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold text-[#FF0035] mb-4 text-center">
-          📈 Statistiques Réseaux Sociaux
-        </h1>
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-bold">Statistiques Globales</h1>
 
-        {/* Total posts */}
-        <div className="bg-white p-6 rounded-xl shadow text-center">
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">
-            📸 Nombre total de publications Instagram
-          </h2>
-          <p className="text-4xl font-bold text-[#FF0035]">{instagramPosts.length}</p>
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">
-            📘 Nombre total de publications Facebook
-          </h2>
-          <p className="text-4xl font-bold text-[#00C49F]">{facebookPosts.length}</p>
+      <div className="flex gap-4 items-center">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Date de début</label>
+          <input type="date" className="border rounded p-2" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
         </div>
-
-        {/* Bar chart */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            📊 Publications & Engagement par réseau
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={performanceData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="posts" fill="#FF0035" name="Publications" />
-              <Bar dataKey="engagement" fill="#00C49F" name="Engagement" />
-            </BarChart>
-          </ResponsiveContainer>
-
-          {/* Best post by engagement for Instagram */}
-          {mostEngagingInstagram && (
-              <div className="mt-8">
-                {renderPostCard(
-                    mostEngagingInstagram,
-                    "🏆 Post avec le plus d'engagement Instagram"
-                )}
-              </div>
-          )}
-
-          {/* Best post by engagement for Facebook */}
-          {mostEngagingFacebook && (
-              <div className="mt-8">
-                {renderPostCard(
-                    mostEngagingFacebook,
-                    "🏆 Post avec le plus d'engagement Facebook"
-                )}
-              </div>
-          )}
-        </div>
-
-        {/* Camembert */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            🥇 Répartition de l'engagement global
-          </h2>
-          {globalComparison.some((entry) => entry.value > 0) ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                      data={globalComparison}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      label
-                  >
-                    {globalComparison.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-          ) : (
-              <p className="text-sm text-gray-500">Pas encore de données pour générer ce graphique.</p>
-          )}
-        </div>
-
-        {/* Courbe de croissance */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            📆 Croissance réelle des publications Instagram
-          </h2>
-          {growthDataInstagram.length > 0 ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={growthDataInstagram}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="Instagram" stroke="#FF0035" />
-                </LineChart>
-              </ResponsiveContainer>
-          ) : (
-              <p className="text-sm text-gray-500">Aucune publication Instagram à afficher.</p>
-          )}
-        </div>
-
-        {/* Top posts */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {mostLikedInstagram ?
-              renderPostCard(mostLikedInstagram, "❤️ Post avec le plus de likes Instagram") :
-              <div className="bg-white p-6 rounded-xl shadow">
-                <h3 className="text-lg font-semibold text-gray-700">❤️ Post avec le plus de likes Instagram</h3>
-                <p className="text-sm text-gray-500">Aucune publication avec des likes Instagram n'a été trouvée.</p>
-              </div>
-          }
-
-          {mostLikedFacebook ?
-              renderPostCard(mostLikedFacebook, "❤️ Post avec le plus de likes Facebook") :
-              <div className="bg-white p-6 rounded-xl shadow">
-                <h3 className="text-lg font-semibold text-gray-700">❤️ Post avec le plus de likes Facebook</h3>
-                <p className="text-sm text-gray-500">Aucune publication avec des likes Facebook n'a été trouvée.</p>
-              </div>
-          }
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Date de fin</label>
+          <input type="date" className="border rounded p-2" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <KPIBlock icon={FaHeart} title="Total Likes" value={kpi.likes} />
+        <KPIBlock icon={FaCommentDots} title="Total Comments" value={kpi.comments} />
+        <KPIBlock icon={FaCalendarAlt} title="Total Posts" value={kpi.posts} />
+        <KPIBlock icon={FaChartLine} title="Engagement Moyen" value={kpi.engagement} />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <KPIBlock icon={FaCalendarAlt} title="Posts Instagram" value={kpi.instagramPosts || 0} />
+        <KPIBlock icon={FaCalendarAlt} title="Posts Facebook" value={kpi.facebookPosts || 0} />
+      </div>
+
+      <div className="bg-white rounded-xl p-4 shadow-md">
+        <h2 className="font-semibold mb-4">Comparatif d'engagement par mois</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={timeline}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="instagram" fill="#FF6384" name="Instagram" />
+            <Bar dataKey="facebook" fill="#36A2EB" name="Facebook" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="bg-white rounded-xl p-4 shadow-md">
+        <h2 className="font-semibold mb-4">Timeline d'activité</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={timeline}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="instagram" stroke="#FF6384" name="Instagram" />
+            <Line type="monotone" dataKey="facebook" stroke="#36A2EB" name="Facebook" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="bg-white rounded-xl p-4 shadow-md">
+        <h2 className="font-semibold mb-4">Répartition des publications par plateforme</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={platformDistribution}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              label
+            >
+              {platformDistribution.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {topPost && (
+        <div className="bg-white rounded-xl p-4 shadow-md">
+          <h2 className="font-semibold mb-4 flex items-center gap-2"><FaStar className="text-yellow-400" /> Post le plus performant</h2>
+          <div className="flex flex-col md:flex-row items-start gap-4">
+            {topPost.media_url || topPost.full_picture ? (
+              <img src={topPost.media_url || topPost.full_picture} alt="Top Post" className="w-full md:w-64 rounded" />
+            ) : null}
+            <div>
+              <p className="font-semibold">Engagement : {topPost.engagement}</p>
+              <p className="text-gray-600 mt-2">{topPost.caption || topPost.message || "Aucune description"}</p>
+              <a
+                href={topPost.permalink || topPost.permalink_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline mt-2 inline-block"
+              >
+                Voir le post
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
-export default StatistiquesContent;
+export default StatistiquesGlobales;
