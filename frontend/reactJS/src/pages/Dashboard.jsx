@@ -77,7 +77,12 @@ export default function Dashboard() {
 
 
                 // Calcul de l'engagement total : somme des likes + commentaires
-                const engagementFacebook = facebookPosts.reduce((acc, post) => acc + (post.likes_count || 0) + (post.comments_count || 0), 0);
+                const engagementFacebook = facebookPosts.reduce((acc, post) => {
+                    const likes = post.likes?.summary?.total_count || 0;
+                    const comments = post.comments?.summary?.total_count || 0;
+                    return acc + likes + comments;
+                }, 0);
+                
                 const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
                 
                 setTotalEngagement(engagementFacebook + engagementInstagram);
