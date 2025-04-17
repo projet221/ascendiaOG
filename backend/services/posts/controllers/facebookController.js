@@ -51,6 +51,7 @@ exports.getFacebookPosts = async (req, res) => {
 
     const posts = response.data.data || [];
     console.log(`${posts.length} publications Facebook reçues.`);
+    console.log(posts);
 
     res.json(posts);
   } catch (error) {
