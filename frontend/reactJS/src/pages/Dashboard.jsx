@@ -194,16 +194,10 @@ export default function Dashboard() {
                     {/* Card “Recommandation IA” */}
                     <div className="bg-white rounded-lg shadow p-6">
                         <h2 className="text-xl font-bold text-gray-700 mb-4">🤖 Recommandation de contenu</h2>
-                        {loadingRecommandation ? (
-                            <p className="text-gray-400 italic">Chargement en cours...</p>
-                        ) : (
-                            <>
                                 {recommandation ? (
                                     <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
                                 ) : (
                                     <p className="text-gray-400 italic">Aucune recommandation disponible pour le moment.</p>
-                                )}
-                            </>
                         )}
                     </div>
                 </div>
