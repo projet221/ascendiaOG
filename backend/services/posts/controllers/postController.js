@@ -13,9 +13,7 @@ const postController = {
             const network = req.params.networks;
             const id = req.params.id;
             const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
-            console.log('access token twitter',id);
             const tokens = response.data;
-            console.log("mes tokens", tokens);
             switch (network) {
                 case 'twitter': {
                     const twitterTokens = tokens.find(item => item.provider === "twitter");
@@ -365,6 +363,7 @@ const postController = {
         }
     },
     getRecommandationIA : async (req, res) => {
+        console.log("je viens bien dans getRecommandationIA" )
         try {
             const Recommandations = await Recommandation.find({ userId: req.params.id });
             res.json(Recommandations);
