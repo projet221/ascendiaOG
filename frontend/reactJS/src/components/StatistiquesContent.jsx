@@ -8,8 +8,8 @@ import {
 } from "recharts";
 import { FaHeart, FaCommentDots, FaCalendarAlt, FaChartLine, FaStar } from "react-icons/fa";
 
-const KPIBlock = ({ icon: Icon, title, value }) => (
-  <div className="bg-white shadow rounded p-4 flex justify-between items-center">
+const KPIBlock = ({ icon: Icon, title, value, onClick }) => (
+  <div onClick={onClick} className={`bg-white shadow rounded p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50`}>
     <div className="text-2xl"><Icon /></div>
     <div className="text-right">
       <div className="text-sm text-gray-500">{title}</div>
@@ -27,82 +27,83 @@ const StatistiquesGlobales = () => {
   const [topPost, setTopPost] = useState(null);
   const [platformDistribution, setPlatformDistribution] = useState([]);
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [showPlatformBreakdown, setShowPlatformBreakdown] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const userId = localStorage.getItem("user_id");
-      const proxy = import.meta.env.VITE_PROXY_GATEWAY;
-      const [igRes, fbRes] = await Promise.all([
-        axios.get(`${proxy}/api/posts/instagram/posts/${userId}`),
-        axios.get(`${proxy}/api/posts/facebook/posts/${userId}`)
-      ]);
+  const fetchData = async () => {
+    const userId = localStorage.getItem("user_id");
+    const proxy = import.meta.env.VITE_PROXY_GATEWAY;
+    const [igRes, fbRes] = await Promise.all([
+      axios.get(`${proxy}/api/posts/instagram/posts/${userId}`),
+      axios.get(`${proxy}/api/posts/facebook/posts/${userId}`)
+    ]);
 
-      let ig = igRes.data || [];
-      let fb = fbRes.data || [];
+    let ig = igRes.data || [];
+    let fb = fbRes.data || [];
 
-      // Filtrage par date
-      if (dateRange.start && dateRange.end) {
-        const start = new Date(dateRange.start);
-        const end = new Date(dateRange.end);
-        ig = ig.filter(post => new Date(post.timestamp) >= start && new Date(post.timestamp) <= end);
-        fb = fb.filter(post => new Date(post.created_time) >= start && new Date(post.created_time) <= end);
-      }
+    // Filtrage par date
+    if (dateRange.start && dateRange.end) {
+      const start = new Date(dateRange.start);
+      const end = new Date(dateRange.end);
+      ig = ig.filter(post => new Date(post.timestamp) >= start && new Date(post.timestamp) <= end);
+      fb = fb.filter(post => new Date(post.created_time) >= start && new Date(post.created_time) <= end);
+    }
 
-      setData({ instagram: ig, facebook: fb });
+    setData({ instagram: ig, facebook: fb });
 
-      const igLikes = ig.reduce((a, b) => a + (b.like_count || 0), 0);
-      const fbLikes = fb.reduce((a, b) => a + (b.likes?.summary?.total_count || 0), 0);
-      const igComments = ig.reduce((a, b) => a + (b.comments_count || 0), 0);
-      const fbComments = fb.reduce((a, b) => a + (b.comments?.summary?.total_count || 0), 0);
-      const posts = ig.length + fb.length;
-      const engagement = posts ? ((igLikes + fbLikes + igComments + fbComments) / posts).toFixed(2) : 0;
+    const igLikes = ig.reduce((a, b) => a + (b.like_count || 0), 0);
+    const fbLikes = fb.reduce((a, b) => a + (b.likes?.summary?.total_count || 0), 0);
+    const igComments = ig.reduce((a, b) => a + (b.comments_count || 0), 0);
+    const fbComments = fb.reduce((a, b) => a + (b.comments?.summary?.total_count || 0), 0);
+    const posts = ig.length + fb.length;
+    const engagement = posts ? ((igLikes + fbLikes + igComments + fbComments) / posts).toFixed(2) : 0;
 
-      setKpi({
-        likes: igLikes + fbLikes,
-        comments: igComments + fbComments,
-        posts,
-        engagement,
-        instagramPosts: ig.length,
-        facebookPosts: fb.length
-      });
+    setKpi({
+      likes: igLikes + fbLikes,
+      comments: igComments + fbComments,
+      posts,
+      engagement,
+      instagramPosts: ig.length,
+      facebookPosts: fb.length
+    });
 
-      const timelineMap = {};
-      const mapPost = (post, dateField, src) => {
-        const date = new Date(post[dateField]);
-        const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-        if (!timelineMap[month]) timelineMap[month] = { month, instagram: 0, facebook: 0 };
-        timelineMap[month][src]++;
-      };
-
-      ig.forEach(post => mapPost(post, "timestamp", "instagram"));
-      fb.forEach(post => mapPost(post, "created_time", "facebook"));
-
-      setTimeline(Object.values(timelineMap).sort((a, b) => a.month.localeCompare(b.month)));
-
-      const allPosts = [...ig, ...fb];
-      const top = allPosts.reduce((max, post) => {
-        const likes = post.like_count || post.likes?.summary?.total_count || 0;
-        const comments = post.comments_count || post.comments?.summary?.total_count || 0;
-        const engagement = likes + comments;
-        return engagement > max.engagement ? { ...post, engagement } : max;
-      }, { engagement: 0 });
-
-      setTopPost(top);
-
-      setPlatformDistribution([
-        { name: "Instagram", value: ig.length },
-        { name: "Facebook", value: fb.length }
-      ]);
+    const timelineMap = {};
+    const mapPost = (post, dateField, src) => {
+      const date = new Date(post[dateField]);
+      const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      if (!timelineMap[month]) timelineMap[month] = { month, instagram: 0, facebook: 0 };
+      timelineMap[month][src]++;
     };
 
+    ig.forEach(post => mapPost(post, "timestamp", "instagram"));
+    fb.forEach(post => mapPost(post, "created_time", "facebook"));
+
+    setTimeline(Object.values(timelineMap).sort((a, b) => a.month.localeCompare(b.month)));
+
+    const allPosts = [...ig, ...fb];
+    const top = allPosts.reduce((max, post) => {
+      const likes = post.like_count || post.likes?.summary?.total_count || 0;
+      const comments = post.comments_count || post.comments?.summary?.total_count || 0;
+      const engagement = likes + comments;
+      return engagement > max.engagement ? { ...post, engagement } : max;
+    }, { engagement: 0 });
+
+    setTopPost(top);
+
+    setPlatformDistribution([
+      { name: "Instagram", value: ig.length },
+      { name: "Facebook", value: fb.length }
+    ]);
+  };
+
+  useEffect(() => {
     fetchData();
-  }, [dateRange]);
+  }, []);
 
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Statistiques Globales</h1>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-end">
         <div>
           <label className="block text-sm font-medium text-gray-700">Date de début</label>
           <input type="date" className="border rounded p-2" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
@@ -111,19 +112,33 @@ const StatistiquesGlobales = () => {
           <label className="block text-sm font-medium text-gray-700">Date de fin</label>
           <input type="date" className="border rounded p-2" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
         </div>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          onClick={fetchData}
+        >
+          OK
+        </button>
+        <button
+          className="bg-gray-300 text-black px-4 py-2 rounded"
+          onClick={() => { setDateRange({ start: '', end: '' }); fetchData(); }}
+        >
+          Réinitialiser
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPIBlock icon={FaHeart} title="Total Likes" value={kpi.likes} />
         <KPIBlock icon={FaCommentDots} title="Total Comments" value={kpi.comments} />
-        <KPIBlock icon={FaCalendarAlt} title="Total Posts" value={kpi.posts} />
+        <KPIBlock icon={FaCalendarAlt} title="Total Posts" value={kpi.posts} onClick={() => setShowPlatformBreakdown(prev => !prev)} />
         <KPIBlock icon={FaChartLine} title="Engagement Moyen" value={kpi.engagement} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <KPIBlock icon={FaCalendarAlt} title="Posts Instagram" value={kpi.instagramPosts || 0} />
-        <KPIBlock icon={FaCalendarAlt} title="Posts Facebook" value={kpi.facebookPosts || 0} />
-      </div>
+      {showPlatformBreakdown && (
+        <div className="grid grid-cols-2 gap-4">
+          <KPIBlock icon={FaCalendarAlt} title="Posts Instagram" value={kpi.instagramPosts || 0} />
+          <KPIBlock icon={FaCalendarAlt} title="Posts Facebook" value={kpi.facebookPosts || 0} />
+        </div>
+      )}
 
       <div className="bg-white rounded-xl p-4 shadow-md">
         <h2 className="font-semibold mb-4">Comparatif d'engagement par mois</h2>
