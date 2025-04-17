@@ -60,10 +60,10 @@ export default function Dashboard() {
 
                 // Récupération des posts Facebook et Instagram pour calculer l'engagement
                 const [facebookResp, instagramResp] = await Promise.all([
-                    axiosInstance.get(`/api/posts/facebook/${userId}`, {
+                    axiosInstance.get(`/api/posts/facebook/posts/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axiosInstance.get(`/api/posts/instagram/${userId}`, {
+                    axiosInstance.get(`/api/posts/instagram/posts/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                 ]);
