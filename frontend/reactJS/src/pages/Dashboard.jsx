@@ -57,7 +57,7 @@ export default function Dashboard() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(recommandationIA);
+                console.log(recommandationIA.data[0].contenu);
                 //setRecommandation(recommandationIA.data.contenu);
 
                 // Chargement terminé
