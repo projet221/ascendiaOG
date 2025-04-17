@@ -1,10 +1,10 @@
-const sharp = require('sharp');  // Import de sharp
 const fs = require('fs');  // Import de fs pour gérer les fichiers
 const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
 const { join} = require("node:path");
 const  Post = require("../models/Post");
+const Recommandation = require("../models/Recommandation");
 
 const postController = {
     // Récupérer toutes les publications
@@ -363,7 +363,15 @@ const postController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    }
+    },
+    getRecommandationIA : async (req, res) => {
+        try {
+            const Recommandations = await Recommandation.find({ userId: req.params.userId });
+            res.json(Recommandations);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
 };
 
 module.exports = postController;

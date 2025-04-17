@@ -26,7 +26,7 @@ router.get('/api/users/:userId/posts', postController.getUserPosts);
 router.put('/:id/analytics', postController.updateAnalytics);
 router.get('/instagram/posts/:id', getInstagramPosts);
 router.get("/facebook/posts/:id", getFacebookPosts);
-
+router.get("/recommandationIA/:id", postController.getRecommandationIA);
 
 
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre

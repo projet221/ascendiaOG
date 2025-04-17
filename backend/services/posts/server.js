@@ -7,8 +7,7 @@ const { join } = require("node:path");
 
 dotenv.config();
 require('./jobs/cronScheduler');
-const genererRecommandations = require('./jobs/PromptRecommandations');
-genererRecommandations();
+require('./jobs/PromptRecommandations');
 const app = express();
 const PORT = process.env.PORT || 3002;
 

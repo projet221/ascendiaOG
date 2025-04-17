@@ -1,4 +1,4 @@
-// jobs/generateRecommandations.js
+const cron = require("node-cron");
 const axios = require("axios");
 const Recommandation = require("../models/Recommandation");
 const Post = require("../models/Post");
@@ -12,12 +12,12 @@ function estDateDuJour(date) {
     return dateComparee.getTime() === aujourdHui.getTime();
 }
 
-// Fonction principale
-async function genererRecommandations() {
-    console.log("🚀 [CRON] Début de la génération des recommandations...");
+// Tâche cron : toutes les heures
+cron.schedule("0 * * * *", async () => {
+    console.log("⏰ [CRON] Lancement de la génération des recommandations...");
 
     try {
-        console.log("📡 Récupération des utilisateurs...");
+        console.log("📡 Connexion au service utilisateur...");
         const response = await axios.post(`${process.env.PROXY_GATEWAY}/api/users/login`,
             { email: "samir@gmail.com", password: "password" },
             {
@@ -27,40 +27,33 @@ async function genererRecommandations() {
             }
         );
 
-        const { data: users } = await axios.get(`${process.env.PROXY_GATEWAY}/api/users/a`,
-            {
-                headers:{
-                    Authorization: `Bearer ${response.data.token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-            );
-        console.log(`👥 ${users.length} utilisateur(s) trouvé(s).`);
+        const { data: users } = await axios.get(`${process.env.PROXY_GATEWAY}/api/users/a`, {
+            headers: {
+                Authorization: `Bearer ${response.data.token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        console.log(`👥 ${users.length} utilisateur(s) récupéré(s).`);
 
         for (const user of users) {
-            console.log(`\n🔍 Traitement de l'utilisateur : ${user.email} (${user._id})`);
+            console.log(`\n🔍 Traitement : ${user.email}`);
 
-            // Vérifie si une reco a déjà été générée aujourd’hui
-            console.log("📅 Vérification de la dernière recommandation...");
             const derniereReco = await Recommandation.findOne({ user_id: user._id }).sort({ date: -1 });
 
             if (derniereReco && estDateDuJour(derniereReco.date)) {
-                console.log("⏩ Recommandation déjà générée aujourd'hui, on passe.");
+                console.log("⏩ Recommandation déjà générée aujourd'hui.");
                 continue;
             }
 
-            // Récupération des posts
-            console.log("📝 Récupération des posts de l'utilisateur...");
+            console.log("📝 Récupération des posts...");
             const posts = await Post.find({ userId: user._id });
 
             if (!posts.length) {
-                console.log("⚠️ Aucun post trouvé pour cet utilisateur, on passe.");
+                console.log("⚠️ Aucun post pour cet utilisateur.");
                 continue;
             }
 
-            console.log(`📦 ${posts.length} post(s) trouvé(s).`);
-
-            // Construction du prompt avec les posts
             const formattedPosts = posts.map(post => {
                 return `Texte : ${post.text}\nHashtags : ${post.hashtags?.join(', ') || 'aucun'}\nEngagement : ${post.engagement || 'non précisé'}\nDate : ${post.createdAt?.toLocaleDateString() || 'inconnue'}`;
             }).join('\n\n');
@@ -70,10 +63,10 @@ Voici les posts récupérés depuis la base de données avec leurs données anal
 ${formattedPosts}
 
 Donne-moi UNE recommandation simple et concrète pour améliorer ses performances sur les réseaux sociaux aujourd'hui.
-Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de tirets, pas de listes, pas de markdown). Ne commence pas par "Voici une recommandation :".
+Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de tirets, pas de listes, pas de markdown), en revanche tu peux intégrer des smiley pour rendre la recommandation conviviale. Ne commence pas par "Voici une recommandation :".
 `;
 
-            console.log("🧠 Envoi du prompt au LLM...");
+            console.log("🧠 Envoi du prompt à OpenRouter...");
             const contenu = await axios.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 {
@@ -104,10 +97,10 @@ Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de ti
             console.log(`✅ Recommandation enregistrée pour ${user.email}`);
         }
 
-        console.log("\n🎉 [CRON] ✅ Toutes les recommandations du jour ont été générées.");
+        console.log("\n🎉 [CRON] Recommandations générées avec succès !");
     } catch (err) {
-        console.error("❌ Erreur dans la génération des recommandations :", err?.response?.data || err.message || err);
+        console.error("❌ Erreur dans la génération :", err?.response?.data || err.message || err);
     }
-}
+});
 
-module.exports = genererRecommandations;
+console.log("✅ Cron job de génération de recommandations démarré (chaque heure) !");

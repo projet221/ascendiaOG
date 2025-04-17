@@ -8,6 +8,7 @@ import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 export default function Dashboard() {
     const [username, setUsername] = useState("");
     const [postPlanifier, setPostPlanifier] = useState([]);
+    const [recommandation, setRecommandation] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
 
@@ -24,6 +25,14 @@ export default function Dashboard() {
                     setIsLoading(false);
                     return;
                 }
+
+                const recommandationIA = await axiosInstance.get(`/api/posts/recommandationIA/${userId}`, {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                setRecommandation(recommandationIA.data);
 
                 const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
                     headers: {
@@ -172,6 +181,16 @@ export default function Dashboard() {
                             <span className="bg-purple-100 text-purple-600 px-2 py-1 rounded-md text-sm">
                 #tech
               </span>
+                        </div>
+
+                        {/* Card “Recommandation IA” */}
+                        <div className="bg-white rounded-lg shadow p-6">
+                            <h2 className="text-xl font-bold text-gray-700 mb-4">Recommandation de contenu</h2>
+                            {recommandation ? (
+                                <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
+                            ) : (
+                                <p className="text-gray-400 italic">Aucune recommandation disponible pour le moment.</p>
+                            )}
                         </div>
 
 
