@@ -40,7 +40,7 @@ const postController = {
                         
                         const userId = twitterId;
                         //recuperer les tweets avec l'id
-                        const tweets = await twitterClient.v2.userTimeline(userId, {
+                        /*const tweets = await twitterClient.v2.userTimeline(userId, {
                             expansions: ['author_id', 'attachments.media_keys'],
                             'tweet.fields': ['created_at', 'public_metrics', 'text', 'attachments'],
                             'media.fields': ['url', 'preview_image_url'],
@@ -50,7 +50,22 @@ const postController = {
                         const allTweets = [];
                         for await (const tweet of tweetIterator) {
                             allTweets.push(tweet);
+                        }*/
+
+                        //aly
+                        const tweetsPaginator = await twitterClient.v2.userTimeline(userId, {
+                            expansions: ['author_id', 'attachments.media_keys'],
+                            'tweet.fields': ['created_at', 'public_metrics', 'text', 'attachments'],
+                            'media.fields': ['url', 'preview_image_url'],
+                            max_results: 100,
+                        });
+                        
+                        let allTweets = [];
+                        for await (const tweet of tweetsPaginator) {
+                            allTweets.push(tweet);
                         }
+                        
+                        //fin aly
                         allTweets =  allTweets.map(tweet => ({
                             id: tweet.id,
                             text: tweet.text,
@@ -61,8 +76,18 @@ const postController = {
                                 tweet.includes?.media?.find(m => m.media_key === key)?.url
                             ) || []
                         }))
+                        //return res.status(200).json(tweets); // Send response to client
+                        const formattedTweets = allTweets.map(tweet => ({
+                            id: tweet.id,
+                            content: tweet.text,
+                            publishedAt: tweet.created_at, // pour le filtrage mois
+                            likes: tweet.public_metrics?.like_count || 0,
+                            retweets: tweet.public_metrics?.retweet_count || 0,
+                        }));
                         
-                        return res.status(200).json(tweets); // Send response to client
+                        
+                        return res.status(200).json(formattedTweets);
+
                     } catch (twitterError) {
                         console.error("Twitter API Error:", twitterError);
                         return res.status(500).json({ error: "Failed to fetch Twitter user data" });
