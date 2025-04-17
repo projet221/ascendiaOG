@@ -1,10 +1,10 @@
-const sharp = require('sharp');  // Import de sharp
 const fs = require('fs');  // Import de fs pour gérer les fichiers
 const { TwitterApi } = require("twitter-api-v2");
 const { tweetWithImage } = require('./twitter/functions');
 const axios = require("axios");
 const { join} = require("node:path");
 const  Post = require("../models/Post");
+const Recommandation = require("../models/Recommandation");
 
 const postController = {
     // Récupérer toutes les publications
@@ -13,9 +13,7 @@ const postController = {
             const network = req.params.networks;
             const id = req.params.id;
             const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
-            console.log('access token twitter',id);
             const tokens = response.data;
-            console.log("mes tokens", tokens);
             switch (network) {
                 case 'twitter': {
                     const twitterTokens = tokens.find(item => item.provider === "twitter");
@@ -294,7 +292,15 @@ const postController = {
             res.status(400).json({ error: error.message });
         }
     },
-
+    getRecommandation : async (req, res) => {
+        console.log("je viens bien dans getRecommandationIA" )
+        try {
+            const Recommandations = await Recommandation.find({ user_id: req.params.id });
+            res.json(Recommandations);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
 
 
     // Récupérer une publication par ID
@@ -312,6 +318,7 @@ const postController = {
     // Supprimer une publication
     deletePost: async (req, res) => {
         try {
+            console.log("tentative de suppression du post : "+req.params.id);
             const post = await Post.findByIdAndDelete(req.params.id);
             if (!post) return res.status(404).json({ message: 'Publication non trouvée' });
             res.json({ message: 'Publication supprimée avec succès' });
@@ -362,7 +369,8 @@ const postController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    }
+    },
+
 };
 
 module.exports = postController;

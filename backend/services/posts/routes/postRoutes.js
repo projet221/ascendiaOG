@@ -7,6 +7,8 @@ const {getFacebookPosts, getFacebookPostById, getFacebookPostComments } = requir
 
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
 router.get("/scheduled/:id",postController.getScheduledPostsByUser);
+router.post('/delete',postController.deletePost);
+router.get('/recommandation/:id', postController.getRecommandation);
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
@@ -17,7 +19,9 @@ router.get('/instagram/post/:id/comments', getInstagramPostComments);
 router.get('/facebook/post/:id', getFacebookPostById);
 router.get('/facebook/post/:id/comments', getFacebookPostComments);
 //fin aly
+
 router.get('/:id', postController.getPostById);
+
 router.put('/:id', postController.updatePost);
 router.delete('/:id', postController.deletePost);
 router.get('/api/users/:userId/posts', postController.getUserPosts);
@@ -25,7 +29,6 @@ router.get('/api/users/:userId/posts', postController.getUserPosts);
 router.put('/:id/analytics', postController.updateAnalytics);
 router.get('/instagram/posts/:id', getInstagramPosts);
 router.get("/facebook/posts/:id", getFacebookPosts);
-
 
 
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre

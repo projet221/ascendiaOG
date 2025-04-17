@@ -1,13 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
-import BarreHaut from "./BarreHaut";
+import PopupPosts from "./PopupPosts";
 
+// eslint-disable-next-line react/prop-types
 const Calendar = ({ events, countPerDay}) => {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const [selectedDate,setSelectedDate] = useState(null);
   const calendarRef = useRef(null);
 
   /*
@@ -45,9 +48,8 @@ console.log("les posts a venir",countPerDay);
   };
 
   return (
-    <div><BarreHaut/>
-    
-    <div className="fc-calendar">
+
+    <div className="fc-calendar mx-28">
       {/* Tooltip for date */}
       {hoveredDate && (
         <div 
@@ -69,6 +71,11 @@ console.log("les posts a venir",countPerDay);
         initialView="dayGridMonth"
         locale={frLocale}
         events={events}
+        dateClick={(info) => {
+          console.log("Cellule cliquée :", info.dateStr);
+          setSelectedDate(info.dateStr);
+          setPopupOpen(true);
+        }}
         dayCellDidMount={(cellInfo) => {
           const cell = cellInfo.el;
           
@@ -110,7 +117,10 @@ console.log("les posts a venir",countPerDay);
         }}
         height="auto"
       />
-    </div>
+      <PopupPosts isOpen={isPopupOpen} onClose={() => setPopupOpen(false)} posts = {events} date = {selectedDate} >
+  <h2 className="text-lg font-bold mb-2">Popup calendrier</h2>
+
+</PopupPosts>
     </div>
   );
 };
