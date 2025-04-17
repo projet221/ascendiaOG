@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import BarreHaut from "../components/BarreHaut";
 import { axiosInstance } from "../utils/axios.jsx";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { PieChart } from 'react-minimal-pie-chart';
 // import { PieChart } from "react-minimal-pie-chart"; // Exemple si vous souhaitez un vrai camembert
 // ↑ Vous pouvez utiliser la librairie de graph de votre choix (chart.js, rechart, etc.)
 
@@ -136,55 +137,40 @@ export default function Dashboard() {
                         <p className="text-3xl font-semibold text-gray-800">+2.5K</p>
                     </div>
                 </div>
-
-                {/* Deuxième rangée : 2 “cards” (le camembert + Hashtags, par exemple) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                     {/* Card “Réseaux les plus utilisés” */}
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h2 className="text-xl font-bold text-gray-700 mb-4">Réseaux les plus utilisés</h2>
-                        {/* Exemple d’un camembert minimaliste en "fake" */}
+                        <h2 className="text-xl font-bold text-gray-700 mb-4">📊 Réseaux les plus utilisés</h2>
                         <div className="flex justify-center items-center h-48">
-                            <div className="bg-gray-100 w-40 h-40 rounded-full flex items-center justify-center">
-                                <p className="text-sm text-gray-500">Camembert (ex)</p>
-                            </div>
+                            <PieChart
+                                data={[
+                                    { title: 'Instagram', value: 40, color: '#E1306C' },
+                                    { title: 'Twitter', value: 30, color: '#1DA1F2' },
+                                    { title: 'YouTube', value: 20, color: '#FF0000' },
+                                    { title: 'Autres', value: 10, color: '#888888' }
+                                ]}
+                                animate
+                                label={({ dataEntry }) => `${dataEntry.title} (${dataEntry.value}%)`}
+                                labelStyle={{
+                                    fontSize: '5px',
+                                    fill: '#fff',
+                                }}
+                                radius={42}
+                                labelPosition={112}
+                            />
                         </div>
-                        {/* Option : si vous voulez un vrai chart, utilisez par ex. react-minimal-pie-chart ou chart.js */}
-                        {/*
-            <PieChart
-              data={[
-                { title: 'Instagram', value: 40, color: '#E1306C' },
-                { title: 'Twitter', value: 30, color: '#1DA1F2' },
-                { title: 'YouTube', value: 20, color: '#FF0000' },
-                { title: 'Autres', value: 10, color: '#888888' }
-              ]}
-            />
-            */}
                     </div>
 
                     {/* Card “Hashtags Tendance” */}
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h2 className="text-xl font-bold text-gray-700 mb-4">Hashtags Tendance</h2>
+                        <h2 className="text-xl font-bold text-gray-700 mb-4">🔥 Hashtags Tendance</h2>
                         <p className="text-gray-600 mb-2">Top hashtags cette semaine</p>
                         <div className="flex flex-wrap gap-2 mb-4">
-                            {/* Hashtags en mode “badge” */}
-                            <span className="bg-pink-100 text-pink-600 px-2 py-1 rounded-md text-sm">
-                #valentinesDay
-              </span>
-                            <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-md text-sm">
-                #Trump
-              </span>
-                            <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md text-sm">
-                #marketing
-              </span>
-                            <span className="bg-purple-100 text-purple-600 px-2 py-1 rounded-md text-sm">
-                #tech
-              </span>
+                            <span className="bg-pink-100 text-pink-600 px-2 py-1 rounded-md text-sm">#valentinesDay</span>
+                            <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-md text-sm">#Trump</span>
+                            <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md text-sm">#marketing</span>
+                            <span className="bg-purple-100 text-purple-600 px-2 py-1 rounded-md text-sm">#tech</span>
                         </div>
-
-
-
-
-                        {/* Quelques indicateurs */}
                         <div className="flex items-center gap-4">
                             <div>
                                 <p className="text-gray-400 text-sm">+62% Visibilité</p>
@@ -195,8 +181,6 @@ export default function Dashboard() {
                                 <p className="text-sm text-gray-700">sur la dernière campagne</p>
                             </div>
                         </div>
-
-                        {/* Quelques boutons d’actions */}
                         <div className="mt-4 flex gap-2">
                             <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                                 Utiliser
@@ -209,11 +193,17 @@ export default function Dashboard() {
 
                     {/* Card “Recommandation IA” */}
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h2 className="text-xl font-bold text-gray-700 mb-4">Recommandation de contenu</h2>
-                        {recommandation ? (
-                            <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
+                        <h2 className="text-xl font-bold text-gray-700 mb-4">🤖 Recommandation de contenu</h2>
+                        {loadingRecommandation ? (
+                            <p className="text-gray-400 italic">Chargement en cours...</p>
                         ) : (
-                            <p className="text-gray-400 italic">Aucune recommandation disponible pour le moment.</p>
+                            <>
+                                {recommandation ? (
+                                    <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
+                                ) : (
+                                    <p className="text-gray-400 italic">Aucune recommandation disponible pour le moment.</p>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
