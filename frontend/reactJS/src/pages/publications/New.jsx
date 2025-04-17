@@ -145,7 +145,7 @@ function New() {
         bestTime = today1945;
       } else {
         // Demain à 12h30
-        const tomorrow1230 = new Date(year, month, day + 1, 12, 30);
+        const tomorrow1230 = new Date(year, month, day + 1, 14, 30);
         bestTime = tomorrow1230;
       }
     
