@@ -115,12 +115,22 @@ const StatistiquesAvancees = () => {
           <option value="all">Tous les types</option>
           <option value="IMAGE">Image</option>
           <option value="VIDEO">Vidéo</option>
-          <option value="CAROUSEL_ALBUM">Carrousel</option>
+   
         </select>
 
         <input type="date" className="p-2 border rounded" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
         <input type="date" className="p-2 border rounded" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
         <input type="text" placeholder="Recherche légende..." className="p-2 border rounded" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+        <button
+            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+            onClick={() => {
+            setDateRange({ start: '', end: '' });
+            setMediaTypeFilter("all");
+            setSearchTerm("");
+            }}
+        >
+            Réinitialiser
+        </button>
       </div>
 
       {/* Graphiques */}
