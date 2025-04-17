@@ -292,7 +292,7 @@ const postController = {
             res.status(400).json({ error: error.message });
         }
     },
-    getRecommandationIA : async (req, res) => {
+    getRecommandation : async (req, res) => {
         console.log("je viens bien dans getRecommandationIA" )
         try {
             const Recommandations = await Recommandation.find({ userId: req.params.id });
