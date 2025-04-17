@@ -171,7 +171,7 @@ const socialAuthController = {
 
     getSocialMediaProviderByUserId : async (req, res) => {
         try {
-            const socialAuth = await SocialAuth.find({user: req.params.user_id}).select('provider profile');
+            const socialAuth = await SocialAuth.find({user: req.params.user_id}).select('provider profile page');
             if (!socialAuth) {
                 return res.status(404).json({})
             }
