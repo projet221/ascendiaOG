@@ -71,6 +71,8 @@ export default function Dashboard() {
                 // Extraction des données
                 const facebookPosts = facebookResp.data || [];
                 const instagramPosts = instagramResp.data || [];
+                const twitterPosts = twitterResp.data || [];
+
                 
                 console.log("Facebook posts:", facebookPosts);
                 console.log("Instagram posts:", instagramPosts);
@@ -86,6 +88,21 @@ export default function Dashboard() {
                 const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0), 0);
                 
                 setTotalEngagement(engagementFacebook + engagementInstagram);
+                const isThisMonth = (dateStr) => {
+                    const date = new Date(dateStr);
+                    const now = new Date();
+                    return (
+                        date.getMonth() === now.getMonth() &&
+                        date.getFullYear() === now.getFullYear()
+                    );
+                };
+    
+                const allPosts = [...facebookPosts, ...instagramPosts, ...twitterPosts];
+                const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
+                setTotalPostsThisMonth(postsThisMonth.length);
+        
+
+
                 // Marquer la fin du chargement
                 setIsLoading(false);
 
@@ -149,7 +166,7 @@ export default function Dashboard() {
                             </div>
                             <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                                 <p className="text-gray-500 mb-2">Publications ce mois</p>
-                                <p className="text-3xl font-semibold text-gray-800">163</p>
+                                <p className="text-3xl font-semibold text-gray-800">{totalPostsThisMonth}</p>
                             </div>
                             <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                                 <p className="text-gray-500 mb-2">Engagement total</p>
