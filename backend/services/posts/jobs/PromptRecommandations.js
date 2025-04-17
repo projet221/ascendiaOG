@@ -70,6 +70,7 @@ Voici les posts récupérés depuis la base de données avec leurs données anal
 ${formattedPosts}
 
 Donne-moi UNE recommandation simple et concrète pour améliorer ses performances sur les réseaux sociaux aujourd'hui.
+Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de tirets, pas de listes, pas de markdown). Ne commence pas par "Voici une recommandation :".
 `;
 
             console.log("🧠 Envoi du prompt au LLM...");
