@@ -117,7 +117,7 @@ export default function Dashboard() {
             <BarreHaut />
 
             {/* Contenu principal */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">                {/* Titre de page : “Bonjour {username}” */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">                {/* Titre de page : “Bonjour {username}” */}
                 <h1 className="text-3xl font-bold text-gray-700 mb-8">
                     Bonjour <span className="text-red-500">{username}</span>
                 </h1>

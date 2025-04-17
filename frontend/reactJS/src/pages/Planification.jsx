@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import Calendar from "../components/Calendrier"; 
 import { axiosInstance } from "../utils/axios.jsx";
+import BarreHaut from "../components/BarreHaut.jsx";
 
 const Planification = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
@@ -36,8 +37,9 @@ const Planification = () => {
   },[]);
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold text-center mb-4" style={{ color: '#FF0035' }}>
+    <div>
+        <BarreHaut/>
+      <h1 className="text-xl font-bold text-center mb-4 pt-20" style={{ color: '#FF0035' }}>
         Page Planification
       </h1>
 

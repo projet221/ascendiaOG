@@ -48,8 +48,7 @@ console.log("les posts a venir",countPerDay);
   };
 
   return (
-    <div><BarreHaut/>
-    
+
     <div className="fc-calendar">
       {/* Tooltip for date */}
       {hoveredDate && (
@@ -122,7 +121,6 @@ console.log("les posts a venir",countPerDay);
   <h2 className="text-lg font-bold mb-2">Popup calendrier</h2>
 
 </PopupPosts>
-    </div>
     </div>
   );
 };
