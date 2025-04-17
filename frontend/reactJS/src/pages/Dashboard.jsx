@@ -180,7 +180,7 @@ export default function Dashboard() {
 
                             {/* Card “Recommandation IA” */}
                             <div className="bg-white rounded-lg shadow p-6">
-                                <h2 className="text-xl font-bold text-gray-700 mb-4">🤖 Recommandation de contenu</h2>
+                                <h2 className="text-xl font-bold text-gray-700 mb-4">🤖 Recommandation du jour</h2>
                                 {recommandation ? (
                                     <p className="text-gray-600 whitespace-pre-line">{recommandation}</p>
                                 ) : (
