@@ -13,7 +13,7 @@ function estDateDuJour(date) {
 }
 
 // Tâche cron : toutes les heures
-cron.schedule("0 * * * *", async () => {
+cron.schedule("* * * * *", async () => {
     console.log("⏰ [CRON] Lancement de la génération des recommandations...");
 
     try {
