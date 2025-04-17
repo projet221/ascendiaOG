@@ -24,6 +24,11 @@ const StatistiquesAvancees = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
 
+  const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [sortOption, setSortOption] = useState("");
+  const [likesByPost, setLikesByPost] = useState([]);
+  const [commentsByPost, setCommentsByPost] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const userId = localStorage.getItem("user_id");
@@ -70,18 +75,34 @@ const StatistiquesAvancees = () => {
 
     const filteredByType = mediaTypeFilter === "all"
       ? filteredPosts
-      : filteredPosts.filter(p => p.type === mediaTypeFilter);
+      : filteredPosts.filter(p => (p.type || "").toLowerCase() === mediaTypeFilter.toLowerCase());
 
     const filteredBySearch = searchTerm
       ? filteredByType.filter(p => p.caption?.toLowerCase().includes(searchTerm.toLowerCase()))
       : filteredByType;
+
+    const hashtagFiltered = selectedHashtags.length === 0
+      ? filteredBySearch
+      : filteredBySearch.filter(post => {
+          const tags = (post.caption?.match(/#[\w-]+/g) || []).map(t => t.toLowerCase());
+          return selectedHashtags.some(tag => tags.includes(tag));
+        });
+
+    const sorted = [...hashtagFiltered];
+    if (sortOption === "likes") {
+      sorted.sort((a, b) => b.likes - a.likes);
+    } else if (sortOption === "comments") {
+      sorted.sort((a, b) => b.comments - a.comments);
+    } else if (sortOption === "date") {
+      sorted.sort((a, b) => new Date(b.month) - new Date(a.month));
+    }
 
     const types = {};
     const engagement = {};
     const likes = {};
     const comments = {};
 
-    filteredBySearch.forEach(p => {
+    sorted.forEach(p => {
       types[p.type] = (types[p.type] || 0) + 1;
       if (!engagement[p.month]) engagement[p.month] = { month: p.month, engagement: 0 };
       if (!likes[p.month]) likes[p.month] = { month: p.month, likes: 0 };
@@ -91,12 +112,23 @@ const StatistiquesAvancees = () => {
       comments[p.month].comments += p.comments;
     });
 
-    setFiltered(filteredBySearch);
+    const likesData = sorted.map(p => ({
+      name: p.caption?.slice(0, 20) || p.id,
+      value: p.likes
+    }));
+    const commentsData = sorted.map(p => ({
+      name: p.caption?.slice(0, 20) || p.id,
+      value: p.comments
+    }));
+
+    setFiltered(sorted);
     setTypeDistribution(Object.entries(types).map(([key, value]) => ({ name: key, value })));
     setEngagementTimeline(Object.values(engagement).sort((a, b) => a.month.localeCompare(b.month)));
     setLikesTimeline(Object.values(likes).sort((a, b) => a.month.localeCompare(b.month)));
     setCommentsTimeline(Object.values(comments).sort((a, b) => a.month.localeCompare(b.month)));
-  }, [platform, data, mediaTypeFilter, dateRange, searchTerm]);
+    setLikesByPost(likesData);
+    setCommentsByPost(commentsData);
+  }, [platform, data, mediaTypeFilter, dateRange, searchTerm, selectedHashtags, sortOption]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -106,34 +138,35 @@ const StatistiquesAvancees = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Statistiques Avancées</h1>
-
+  
       <div className="flex flex-wrap gap-4 items-end">
         <button onClick={() => setPlatform("instagram")} className={`px-4 py-2 rounded ${platform === "instagram" ? "bg-pink-500 text-white" : "bg-gray-200"}`}><FaInstagram className="inline mr-2" />Instagram</button>
         <button onClick={() => setPlatform("facebook")} className={`px-4 py-2 rounded ${platform === "facebook" ? "bg-blue-600 text-white" : "bg-gray-200"}`}><FaFacebookSquare className="inline mr-2" />Facebook</button>
-
+  
         <select className="p-2 border rounded" value={mediaTypeFilter} onChange={e => setMediaTypeFilter(e.target.value)}>
           <option value="all">Tous les types</option>
           <option value="IMAGE">Image</option>
           <option value="VIDEO">Vidéo</option>
-   
         </select>
-
+  
         <input type="date" className="p-2 border rounded" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
         <input type="date" className="p-2 border rounded" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
         <input type="text" placeholder="Recherche légende..." className="p-2 border rounded" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
         <button
-            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
-            onClick={() => {
+          className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+          onClick={() => {
             setDateRange({ start: '', end: '' });
             setMediaTypeFilter("all");
             setSearchTerm("");
-            }}
+            setSelectedHashtags([]);
+            setSortOption("");
+          }}
         >
-            Réinitialiser
+          Réinitialiser
         </button>
       </div>
-
-      {/* Graphiques */}
+  
+      {/* Graphiques principaux */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl p-4 shadow-md">
           <h2 className="font-semibold mb-4">Engagement par mois</h2>
@@ -148,7 +181,7 @@ const StatistiquesAvancees = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-
+  
         <div className="bg-white rounded-xl p-4 shadow-md">
           <h2 className="font-semibold mb-4">Répartition par type de contenu</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -171,7 +204,7 @@ const StatistiquesAvancees = () => {
           </ResponsiveContainer>
         </div>
       </div>
-
+  
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl p-4 shadow-md">
           <h2 className="font-semibold mb-4">Likes par mois</h2>
@@ -186,6 +219,7 @@ const StatistiquesAvancees = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
+  
         <div className="bg-white rounded-xl p-4 shadow-md">
           <h2 className="font-semibold mb-4">Commentaires par mois</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -200,10 +234,40 @@ const StatistiquesAvancees = () => {
           </ResponsiveContainer>
         </div>
       </div>
-
-      {/* Tableau */}
+  
+      {/* Tableau des posts */}
       <div className="bg-white rounded-xl p-4 shadow-md">
         <h2 className="font-semibold mb-4">Tableau des posts filtrés</h2>
+  
+        <div className="flex flex-wrap gap-4 items-center mb-4">
+          <select
+            multiple
+            className="p-2 border rounded min-w-[200px]"
+            value={selectedHashtags}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions, option => option.value);
+              setSelectedHashtags(selected);
+            }}
+          >
+            {[...new Set(filtered.map(p =>
+              (p.caption?.match(/#[\w-]+/g) || []).map(tag => tag.toLowerCase())
+            ).flat())].map(tag => (
+              <option key={tag} value={tag}>{tag}</option>
+            ))}
+          </select>
+  
+          <select
+            className="p-2 border rounded"
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option value="">🔠 Aucun tri</option>
+            <option value="likes">🔥 Plus de likes</option>
+            <option value="date">🕒 Plus récent</option>
+            <option value="comments">💬 Plus de commentaires</option>
+          </select>
+        </div>
+  
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm text-left border border-gray-200">
             <thead className="bg-gray-100">
@@ -240,7 +304,7 @@ const StatistiquesAvancees = () => {
             </tbody>
           </table>
         </div>
-
+  
         <div className="mt-4 flex justify-center gap-2">
           {[...Array(totalPages).keys()].map(num => (
             <button
@@ -253,8 +317,60 @@ const StatistiquesAvancees = () => {
           ))}
         </div>
       </div>
+  
+      {/* Statistiques sociales (camemberts par post) */}
+      <div className="mt-12 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl p-4 shadow-md">
+            <h2 className="font-semibold mb-4">Répartition des likes par post</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={likesByPost}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label={({ name, value }) => `${name} (${value})`}
+                >
+                  {likesByPost.map((entry, index) => (
+                    <Cell key={`like-cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+  
+          <div className="bg-white rounded-xl p-4 shadow-md">
+            <h2 className="font-semibold mb-4">Répartition des commentaires par post</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={commentsByPost}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label={({ name, value }) => `${name} (${value})`}
+                >
+                  {commentsByPost.map((entry, index) => (
+                    <Cell key={`comment-cell-${index}`} fill={COLORS[(index + 1) % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
     </div>
   );
+  
 };
 
 export default StatistiquesAvancees;
