@@ -20,8 +20,7 @@ router.get('/facebook/post/:id', getFacebookPostById);
 router.get('/facebook/post/:id/comments', getFacebookPostComments);
 //fin aly
 
-// ATTENTION ICI ROUTE MODIFIER SANS AVOIR CHANGER EN FRONT OU ELLE EST APPELEE
-router.get('/post/:id', postController.getPostById);
+router.get('/:id', postController.getPostById);
 
 router.put('/:id', postController.updatePost);
 router.delete('/:id', postController.deletePost);
