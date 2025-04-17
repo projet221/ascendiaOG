@@ -129,30 +129,32 @@ function New() {
 
     // Fonction pour obtenir le meilleur moment pour publier
     const getMeilleurMoment = () => {
-        const now = new Date();
+      const now = new Date();
+    
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const day = now.getDate();
+    
+      const today1230 = new Date(year, month, day, 14, 30);
+      const today1500 = new Date(year, month, day, 17, 0);
+      const today1945 = new Date(year, month, day, 21, 45);
+    
+      let bestTime;
+    
+      if (now < today1230) {
+        bestTime = today1230;
+      } else if (now < today1500) {
+        bestTime = today1500;
+      } else if (now < today1945) {
+        bestTime = today1945;
+      } else {
+        // Demain à 12h30
+        const tomorrow1230 = new Date(year, month, day + 1, 14, 30);
+        bestTime = tomorrow1230;
+      }
+    
+      return bestTime.toISOString().slice(0, 16); // Pour <input type="datetime-local" />
 
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const day = now.getDate();
-
-        const today1230 = new Date(year, month, day, 14, 30);
-        const today1500 = new Date(year, month, day, 17, 0);
-        const today1945 = new Date(year, month, day, 21, 45);
-        const tomorrow1230 = new Date(year, month, day + 1, 12, 30);
-
-        let bestTime;
-
-        if (now < today1230) {
-            bestTime = today1230;
-        } else if (now < today1500) {
-            bestTime = today1500;
-        } else if (now < today1945) {
-            bestTime = today1945;
-        } else {
-            bestTime = tomorrow1230;
-        }
-
-        return bestTime.toISOString().slice(0, 16); // Pour <input type="datetime-local" />
     };
 
     // Utilisation d'un useEffect pour empêcher le scroll pendant le chargement de la page

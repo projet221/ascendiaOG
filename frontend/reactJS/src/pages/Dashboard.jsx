@@ -10,6 +10,9 @@ export default function Dashboard() {
     const [postPlanifier, setPostPlanifier] = useState([]); // Liste des publications planifiées
     const [recommandation, setRecommandation] = useState(""); // Recommandation IA
     const [isLoading, setIsLoading] = useState(true); // État de chargement
+    const [totalEngagement, setTotalEngagement] = useState(0); // Engagement total
+    const [totalPostsThisMonth, setTotalPostsThisMonth] = useState(0);
+
 
     // Effet de récupération des données lorsque le composant est monté
     useEffect(() => {
@@ -52,6 +55,32 @@ export default function Dashboard() {
                 });
                 setPostPlanifier(postsResp.data || []);
 
+                
+                
+
+                // Récupération des posts Facebook et Instagram pour calculer l'engagement
+                const [facebookResp, instagramResp] = await Promise.all([
+                    axiosInstance.get(`/api/posts/facebook/${userId}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    axiosInstance.get(`/api/posts/instagram/${userId}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                ]);
+                
+                // Extraction des données
+                const facebookPosts = facebookResp.data || [];
+                const instagramPosts = instagramResp.data || [];
+                
+                console.log("Facebook posts:", facebookPosts);
+                console.log("Instagram posts:", instagramPosts);
+
+
+                // Calcul de l'engagement total : somme des likes + commentaires
+                const engagementFacebook = facebookPosts.reduce((acc, post) => acc + (post.likes_count || 0) + (post.comments_count || 0), 0);
+                const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
+                
+                setTotalEngagement(engagementFacebook + engagementInstagram);
                 // Marquer la fin du chargement
                 setIsLoading(false);
 
@@ -119,7 +148,7 @@ export default function Dashboard() {
                             </div>
                             <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                                 <p className="text-gray-500 mb-2">Engagement total</p>
-                                <p className="text-3xl font-semibold text-gray-800">+2.5K</p>
+                                <p className="text-3xl font-semibold text-gray-800">{totalEngagement.toLocaleString()}</p>
                             </div>
                         </div>
 
