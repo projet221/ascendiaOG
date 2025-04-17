@@ -292,7 +292,15 @@ const postController = {
             res.status(400).json({ error: error.message });
         }
     },
-
+    getRecommandationIA : async (req, res) => {
+        console.log("je viens bien dans getRecommandationIA" )
+        try {
+            const Recommandations = await Recommandation.find({ userId: req.params.id });
+            res.json(Recommandations);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
 
 
     // Récupérer une publication par ID
@@ -362,15 +370,7 @@ const postController = {
             res.status(400).json({ error: error.message });
         }
     },
-    getRecommandationIA : async (req, res) => {
-        console.log("je viens bien dans getRecommandationIA" )
-        try {
-            const Recommandations = await Recommandation.find({ userId: req.params.id });
-            res.json(Recommandations);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
+
 };
 
 module.exports = postController;
