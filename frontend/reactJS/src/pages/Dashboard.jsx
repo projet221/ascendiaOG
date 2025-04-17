@@ -71,7 +71,7 @@ export default function Dashboard() {
                 // Extraction des données
                 const facebookPosts = facebookResp.data || [];
                 const instagramPosts = instagramResp.data || [];
-                const twitterPosts = twitterResp.data || [];
+                //const twitterPosts = twitterResp.data || [];
 
                 
                 console.log("Facebook posts:", facebookPosts);
