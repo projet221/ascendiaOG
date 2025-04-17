@@ -115,7 +115,7 @@ const StatistiquesAvancees = () => {
           <option value="all">Tous les types</option>
           <option value="IMAGE">Image</option>
           <option value="VIDEO">Vidéo</option>
-          <option value="CAROUSEL_ALBUM">Carrousel</option>
+   
         </select>
 
         <input type="date" className="p-2 border rounded" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
