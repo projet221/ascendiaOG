@@ -1,3 +1,4 @@
+// Fichier : StatistiquesAvancees.jsx
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -106,18 +107,91 @@ const StatistiquesAvancees = () => {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Statistiques Avancées</h1>
 
-      {/* Barre de recherche */}
       <div className="flex flex-wrap gap-4 items-end">
-        <input
-          type="text"
-          placeholder="Rechercher une légende..."
-          className="p-2 border rounded w-full max-w-xs"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-        />
+        <button onClick={() => setPlatform("instagram")} className={`px-4 py-2 rounded ${platform === "instagram" ? "bg-pink-500 text-white" : "bg-gray-200"}`}><FaInstagram className="inline mr-2" />Instagram</button>
+        <button onClick={() => setPlatform("facebook")} className={`px-4 py-2 rounded ${platform === "facebook" ? "bg-blue-600 text-white" : "bg-gray-200"}`}><FaFacebookSquare className="inline mr-2" />Facebook</button>
+
+        <select className="p-2 border rounded" value={mediaTypeFilter} onChange={e => setMediaTypeFilter(e.target.value)}>
+          <option value="all">Tous les types</option>
+          <option value="IMAGE">Image</option>
+          <option value="VIDEO">Vidéo</option>
+          <option value="CAROUSEL_ALBUM">Carrousel</option>
+        </select>
+
+        <input type="date" className="p-2 border rounded" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
+        <input type="date" className="p-2 border rounded" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
+        <input type="text" placeholder="Recherche légende..." className="p-2 border rounded" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
       </div>
 
-      {/* Tableau des données */}
+      {/* Graphiques */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl p-4 shadow-md">
+          <h2 className="font-semibold mb-4">Engagement par mois</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={engagementTimeline}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="engagement" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl p-4 shadow-md">
+          <h2 className="font-semibold mb-4">Répartition par type de contenu</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={typeDistribution}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                label
+              >
+                {typeDistribution.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl p-4 shadow-md">
+          <h2 className="font-semibold mb-4">Likes par mois</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={likesTimeline}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="likes" fill="#FF6384" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-white rounded-xl p-4 shadow-md">
+          <h2 className="font-semibold mb-4">Commentaires par mois</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={commentsTimeline}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="comments" fill="#36A2EB" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Tableau */}
       <div className="bg-white rounded-xl p-4 shadow-md">
         <h2 className="font-semibold mb-4">Tableau des posts filtrés</h2>
         <div className="overflow-x-auto">
@@ -157,7 +231,6 @@ const StatistiquesAvancees = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         <div className="mt-4 flex justify-center gap-2">
           {[...Array(totalPages).keys()].map(num => (
             <button
