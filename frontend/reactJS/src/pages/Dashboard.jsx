@@ -59,23 +59,27 @@ export default function Dashboard() {
                 
 
                 // Récupération des posts Facebook et Instagram pour calculer l'engagement
-                const [facebookResp, instagramResp] = await Promise.all([
+                const [facebookResp, instagramResp, twitterResp] = await Promise.all([
                     axiosInstance.get(`/api/posts/facebook/posts/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                     axiosInstance.get(`/api/posts/instagram/posts/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
+                    axiosInstance.get(`/api/posts/twitter/posts/${userId}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
                 ]);
-                
-                // Extraction des données
+    
                 const facebookPosts = facebookResp.data || [];
                 const instagramPosts = instagramResp.data || [];
-                //const twitterPosts = twitterResp.data || [];
+                const twitterPosts = twitterResp.data || [];
 
                 
                 console.log("Facebook posts:", facebookPosts);
                 console.log("Instagram posts:", instagramPosts);
+                console.log("Twitter posts:", twitterPosts);
+
 
 
                 // Calcul de l'engagement total : somme des likes + commentaires
@@ -86,8 +90,15 @@ export default function Dashboard() {
                 }, 0);
                 
                 const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0), 0);
+
+                const engagementTwitter = twitterPosts.reduce((acc, tweet) => {
+                    const likes = tweet.likes || 0;
+                    const retweets = tweet.retweets || 0;
+                    return acc + likes + retweets;
+                }, 0);
+    
                 
-                setTotalEngagement(engagementFacebook + engagementInstagram);
+                setTotalEngagement(engagementFacebook + engagementInstagram+engagementTwitter);
                 const isThisMonth = (dateStr) => {
                     const date = new Date(dateStr);
                     const now = new Date();
@@ -101,6 +112,7 @@ export default function Dashboard() {
                 [
                     ...facebookPosts.map(post => ({ ...post, publishedAt: post.created_time })),
                     ...instagramPosts.map(post => ({ ...post, publishedAt: post.timestamp })),
+                    ...twitterPosts.map(p => ({ publishedAt: p.publishedAt })),
                 ]; //twitterPosts
                 const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
                 setTotalPostsThisMonth(postsThisMonth.length);
