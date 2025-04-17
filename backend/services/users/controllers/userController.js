@@ -89,10 +89,6 @@ const userController = {
     // Récupérer tous les utilisateurs (protégé, admin seulement)
     getAllUsers: async (req, res) => {
         try {
-            if (req.user.role !== 'admin') {
-                return res.status(403).json({ message: 'Accès non autorisé' });
-            }
-
             const allUser = await User.find().select('-password');
             res.json(allUser);
         } catch (error) {
