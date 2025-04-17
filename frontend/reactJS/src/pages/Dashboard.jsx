@@ -18,16 +18,19 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Récupération du token et de l'ID utilisateur depuis le localStorage
                 const token = localStorage.getItem("token");
                 const userId = localStorage.getItem("user_id");
-    
+
+                // Si le token ou l'ID utilisateur est manquant, on arrête le processus
                 if (!token || !userId) {
                     console.warn("Aucun token ou user_id trouvé, utilisateur non connecté.");
                     setUsername("Non connecté");
-                    setIsLoading(false);
+                    setIsLoading(false); // Fin du chargement
                     return;
                 }
-    
+
+                // Récupération des données utilisateur (nom d'utilisateur)
                 const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -36,67 +39,60 @@ export default function Dashboard() {
                 });
                 const userData = userResponse.data;
                 setUsername(userData.username || "Utilisateur inconnu");
-    
+
+
+                // Récupération de la recommandation de contenu par IA
                 const recommandationIA = await axiosInstance.get(`/api/posts/recommandation/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
-                setRecommandation(recommandationIA.data[0]?.contenu || "");
-    
+                setRecommandation(recommandationIA.data[0].contenu);
+
+                // Récupération des publications planifiées
                 const postsResp = await axiosInstance.get(`/api/posts/scheduled/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setPostPlanifier(postsResp.data || []);
-    
-                // Récupération de TOUS les posts publiés
-                const [facebookResp, instagramResp, twitterResp] = await Promise.all([
+
+                // Marquer la fin du chargement
+                setIsLoading(false);
+
+                // Récupération des posts Facebook et Instagram pour calculer l'engagement
+                const [facebookResp, instagramResp] = await Promise.all([
                     axiosInstance.get(`/api/posts/facebook/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                     axiosInstance.get(`/api/posts/instagram/${userId}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axiosInstance.get(`/api/posts/twitter/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
                 ]);
-    
+                
+                // Extraction des données
                 const facebookPosts = facebookResp.data || [];
                 const instagramPosts = instagramResp.data || [];
-                const twitterPosts = twitterResp.data || [];
+                
                 console.log("Facebook posts:", facebookPosts);
                 console.log("Instagram posts:", instagramPosts);
 
-    
-                // Engagement total
+
+                // Calcul de l'engagement total : somme des likes + commentaires
                 const engagementFacebook = facebookPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
                 const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
+                
                 setTotalEngagement(engagementFacebook + engagementInstagram);
-    
-                // 👇 Calcul du total de publications ce mois
-                const isThisMonth = (dateStr) => {
-                    const date = new Date(dateStr);
-                    const now = new Date();
-                    return (
-                        date.getMonth() === now.getMonth() &&
-                        date.getFullYear() === now.getFullYear()
-                    );
-                };
-    
-                const allPosts = [...facebookPosts, ...instagramPosts, ...twitterPosts];
-                const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
-                setTotalPostsThisMonth(postsThisMonth.length);
-    
-                setIsLoading(false);
+
+
             } catch (error) {
                 console.error("Erreur lors de la récupération des infos :", error);
-                setIsLoading(false);
+                setIsLoading(false); // Marquer le chargement comme terminé même en cas d'erreur
             }
         };
-    
-        fetchData();
+
+        fetchData(); // Appel de la fonction pour récupérer les données
     }, []);
-    
-     // Fonction pour formater la date au format souhaité
+
+    // Fonction pour formater la date au format souhaité
     function formatDate(dateString) {
         const date = new Date(dateString);
         return `${date.getDate().toString().padStart(2, '0')}/${
@@ -147,7 +143,7 @@ export default function Dashboard() {
                             </div>
                             <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                                 <p className="text-gray-500 mb-2">Publications ce mois</p>
-                                <p className="text-3xl font-semibold text-gray-800">{totalPostsThisMonth}</p>
+                                <p className="text-3xl font-semibold text-gray-800">163</p>
                             </div>
                             <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-6">
                                 <p className="text-gray-500 mb-2">Engagement total</p>
