@@ -55,8 +55,8 @@ export default function Dashboard() {
                 });
                 setPostPlanifier(postsResp.data || []);
 
-                // Marquer la fin du chargement
-                setIsLoading(false);
+                
+                
 
                 // Récupération des posts Facebook et Instagram pour calculer l'engagement
                 const [facebookResp, instagramResp] = await Promise.all([
@@ -77,11 +77,12 @@ export default function Dashboard() {
 
 
                 // Calcul de l'engagement total : somme des likes + commentaires
-                const engagementFacebook = facebookPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
+                const engagementFacebook = facebookPosts.reduce((acc, post) => acc + (post.likes_count || 0) + (post.comments_count || 0), 0);
                 const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.likes || 0) + (post.comments || 0), 0);
                 
                 setTotalEngagement(engagementFacebook + engagementInstagram);
-
+                // Marquer la fin du chargement
+                setIsLoading(false);
 
             } catch (error) {
                 console.error("Erreur lors de la récupération des infos :", error);
