@@ -29,7 +29,6 @@ export default function Dashboard() {
                 const recommandationIA = await axiosInstance.get(`/api/posts/recommandationIA/${userId}`, {
                     headers: {
                     Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
                     },
                 });
                 setRecommandation(recommandationIA.data);
