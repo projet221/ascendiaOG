@@ -7,16 +7,15 @@ import {
   Tooltip, Legend, ResponsiveContainer
 } from "recharts";
 import { FaHeart, FaCommentDots, FaCalendarAlt, FaChartLine } from "react-icons/fa";
-import { Card, CardContent } from "@/components/ui/card";
 
 const KPIBlock = ({ icon: Icon, title, value }) => (
-  <Card className="flex items-center justify-between p-4 shadow-md">
+  <div className="bg-white shadow rounded p-4 flex justify-between items-center">
     <div className="text-2xl"><Icon /></div>
     <div className="text-right">
       <div className="text-sm text-gray-500">{title}</div>
       <div className="text-lg font-bold">{value}</div>
     </div>
-  </Card>
+  </div>
 );
 
 const StatistiquesGlobales = () => {
