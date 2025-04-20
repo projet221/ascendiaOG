@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MdThumbUp, MdFavorite, MdMood } from "react-icons/md";
 import { axiosInstance } from "../utils/axios.jsx";
 
 function Previsualisation({ platform, text, image }) {
@@ -132,32 +133,24 @@ function Previsualisation({ platform, text, image }) {
             )}
 
             {/* Réactions (likes) + commentaires / partages */}
-            <div className="border-b border-gray-200 px-4 py-2 text-xs text-gray-500 flex justify-between">
-                <div className="flex items-center gap-1">
-                    <i className="material-icons text-blue-600 text-sm">thumb_up</i>
-                    <i className="material-icons text-red-600 text-sm">favorite</i>
-                    <i className="material-icons text-blue-600 text-sm">mood</i>
-                    <span>123</span>
-                </div>
-                <span>16 commentaires · 6 partages</span>
+            <div className="flex items-center gap-1">
+                <MdThumbUp  className="text-blue-600" />
+                <MdFavorite className="text-red-600" />
+                <MdMood     className="text-blue-600" />
+                <span>123</span>
             </div>
 
             {/* Barre Like / Comment / Share */}
-            <div className="flex justify-evenly text-sm font-semibold text-gray-600">
-                {[
-                    { icon: "thumb_up", label: "J’aime" },
-                    { icon: "chat_bubble_outline", label: "Commenter" },
-                    { icon: "share", label: "Partager" }
-                ].map(({ icon, label }) => (
-                    <button
-                        key={icon}
-                        className="flex items-center gap-1 w-full justify-center py-2 hover:bg-gray-100"
-                    >
-                        <i className="material-icons text-base">{icon}</i>
-                        {label}
-                    </button>
-                ))}
-            </div>
+            {[
+                { Icon: MdThumbUp,           label: "J’aime"     },
+                { Icon: MdChatBubbleOutline, label: "Commenter"  },
+                { Icon: MdShare,             label: "Partager"   }
+            ].map(({ Icon, label }) => (
+                <button key={label} className="flex items-center gap-1 w-full justify-center py-2 hover:bg-gray-100">
+                    <Icon className="text-base" />
+                    {label}
+                </button>
+            ))}
         </div>
     );
 
