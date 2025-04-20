@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { MdThumbUp, MdFavorite, MdMood } from "react-icons/md";
-import { axiosInstance } from "../utils/axios.jsx";
+import {
+    MdThumbUp,
+    MdFavorite,
+    MdMood,
+    MdChatBubbleOutline,
+    MdShare} from "react-icons/md";import { axiosInstance } from "../utils/axios.jsx";
 
 function Previsualisation({ platform, text, image }) {
     const [username, setUsername] = useState("");
