@@ -90,40 +90,73 @@ function Previsualisation({ platform, text, image }) {
     );
 
     const renderFacebook = () => (
-        <div className="max-w-md w-full bg-blue border border-gray-300 rounded-md shadow mb-6">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
+
+        <div className="max-w-md w-full bg-white border border-gray-300 rounded-md shadow mb-6">
+            {/* Header : avatar + nom + date */}
+            <div className="relative p-4 pb-2">
+                <div className="flex items-start gap-3">
                     <img
                         src={profilePic || "/default-avatar.png"}
-                        alt="profil"
-                        className="w-10 h-10 rounded-full"
+                        alt="avatar"
+                        className="w-10 h-10 rounded-full object-cover"
                     />
-                    <span className="font-semibold text-sm">{username}</span>
+
+                    <div className="flex flex-col">
+          <span className="font-semibold text-sm text-blue-600 leading-none">
+            {username || "Page / Profil"}
+          </span>
+                        <span className="text-xs text-gray-500 flex items-center gap-1">
+            {/* Exemple : “maintenant · globe” */}
+                            maintenant <i className="material-icons text-[14px] align-middle">public</i>
+          </span>
+                    </div>
                 </div>
-                <span className="text-xl text-gray-500">⋯</span>
+                {/* menu 3 points */}
+                <span className="absolute right-4 top-4 text-xl text-gray-500">⋯</span>
             </div>
 
-            {/* Image */}
-            {image && <img src={image} alt="post" className="w-full max-h-[500px] object-cover" />}
-
-            {/* Boutons actions */}
-            <div className="flex items-center justify-between px-4 pt-4 text-xl">
-                <div className="flex gap-4">
-                    <span>❤️</span>
-                    <span>💬</span>
-                    <span>📤</span>
-                </div>
-                <span>🔖</span>
-            </div>
-
-            {/* Likes + texte */}
-            <div className="px-4 py-2">
-                <p className="text-sm font-semibold">32 j’aime</p>
-                <p className="text-sm">
-                    <span className="font-semibold mr-1">{username}</span>
-                    <span className="whitespace-pre-wrap">{text}</span>
+            {/* Texte du post */}
+            {text && (
+                <p className="px-4 whitespace-pre-wrap mb-2 text-sm">
+                    {text}
                 </p>
+            )}
+
+            {/* Visuel (optionnel) */}
+            {image && (
+                <img
+                    src={image}
+                    alt="post"
+                    className="w-full max-h-[500px] object-cover"
+                />
+            )}
+
+            {/* Réactions (likes) + commentaires / partages */}
+            <div className="border-b border-gray-200 px-4 py-2 text-xs text-gray-500 flex justify-between">
+                <div className="flex items-center gap-1">
+                    <i className="material-icons text-blue-600 text-sm">thumb_up</i>
+                    <i className="material-icons text-red-600 text-sm">favorite</i>
+                    <i className="material-icons text-blue-600 text-sm">mood</i>
+                    <span>123</span>
+                </div>
+                <span>16 commentaires · 6 partages</span>
+            </div>
+
+            {/* Barre Like / Comment / Share */}
+            <div className="flex justify-evenly text-sm font-semibold text-gray-600">
+                {[
+                    { icon: "thumb_up", label: "J’aime" },
+                    { icon: "chat_bubble_outline", label: "Commenter" },
+                    { icon: "share", label: "Partager" }
+                ].map(({ icon, label }) => (
+                    <button
+                        key={icon}
+                        className="flex items-center gap-1 w-full justify-center py-2 hover:bg-gray-100"
+                    >
+                        <i className="material-icons text-base">{icon}</i>
+                        {label}
+                    </button>
+                ))}
             </div>
         </div>
     );
