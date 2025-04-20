@@ -265,9 +265,8 @@ function New() {
                     networks.map((account, index) => (
                         <Previsualisation
                             key={index}
-                            platform="facebook"{account.platform || account}
+                            platform={account.platform || account}
                             text={message}
-
                             image={fichier ? URL.createObjectURL(fichier) : null}
                         />
                     ))
