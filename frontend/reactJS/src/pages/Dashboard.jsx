@@ -18,116 +18,80 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Récupération du token et de l'ID utilisateur depuis le localStorage
                 const token = localStorage.getItem("token");
                 const userId = localStorage.getItem("user_id");
 
-                // Si le token ou l'ID utilisateur est manquant, on arrête le processus
                 if (!token || !userId) {
-                    console.warn("Aucun token ou user_id trouvé, utilisateur non connecté.");
+                    console.warn("Aucun token ou user_id trouvé.");
                     setUsername("Non connecté");
-                    setIsLoading(false); // Fin du chargement
+                    setIsLoading(false);
                     return;
                 }
 
-                // Récupération des données utilisateur (nom d'utilisateur)
-                const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                };
+
+                // Appels API en parallèle
+                const [
+                    userResponse,
+                    recommandationIA,
+                    postsResp,
+                    facebookResp,
+                    instagramResp,
+                    // twitterResp
+                ] = await Promise.all([
+                    axiosInstance.get(`/api/users/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/recommandation/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/scheduled/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/facebook/posts/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/instagram/posts/${userId}`, { headers }),
+                    // axiosInstance.get(`/api/posts/twitter/posts/${userId}`, { headers }),
+                ]);
+
+                // Traitement des réponses
                 const userData = userResponse.data;
                 setUsername(userData.username || "Utilisateur inconnu");
-
-
-                // Récupération de la recommandation de contenu par IA
-                const recommandationIA = await axiosInstance.get(`/api/posts/recommandation/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setRecommandation(recommandationIA.data[0].contenu);
-
-                // Récupération des publications planifiées
-                const postsResp = await axiosInstance.get(`/api/posts/scheduled/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                setRecommandation(recommandationIA.data[0]?.contenu || "");
                 setPostPlanifier(postsResp.data || []);
 
-                
-                
-
-                // Récupération des posts Facebook et Instagram pour calculer l'engagement
-                const [facebookResp, instagramResp, twitterResp] = await Promise.all([
-                    axiosInstance.get(`/api/posts/facebook/posts/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
-                    axiosInstance.get(`/api/posts/instagram/posts/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
-                    /*axiosInstance.get(`/api/posts/twitter/posts/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),*/
-                ]);
-    
                 const facebookPosts = facebookResp.data || [];
                 const instagramPosts = instagramResp.data || [];
-                //const twitterPosts = twitterResp.data || [];
 
-                
-                console.log("Facebook posts:", facebookPosts);
-                console.log("Instagram posts:", instagramPosts);
-                //console.log("Twitter posts:", twitterPosts);
-
-
-
-                // Calcul de l'engagement total : somme des likes + commentaires
                 const engagementFacebook = facebookPosts.reduce((acc, post) => {
                     const likes = post.likes?.summary?.total_count || 0;
                     const comments = post.comments?.summary?.total_count || 0;
                     return acc + likes + comments;
                 }, 0);
-                
-                const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0), 0);
 
-                /*const engagementTwitter = twitterPosts.reduce((acc, tweet) => {
-                    const likes = tweet.likes || 0;
-                    const retweets = tweet.retweets || 0;
-                    return acc + likes + retweets;
-                }, 0);*/
-    
-                
-                setTotalEngagement(engagementFacebook + engagementInstagram);   //+engagementTwitter
+                const engagementInstagram = instagramPosts.reduce(
+                    (acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0),
+                    0
+                );
+
+                setTotalEngagement(engagementFacebook + engagementInstagram);
+
                 const isThisMonth = (dateStr) => {
                     const date = new Date(dateStr);
                     const now = new Date();
-                    return (
-                        date.getMonth() === now.getMonth() &&
-                        date.getFullYear() === now.getFullYear()
-                    );
+                    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
                 };
-    
-                const allPosts = 
-                [
-                    ...facebookPosts.map(post => ({ ...post, publishedAt: post.created_time })),
-                    ...instagramPosts.map(post => ({ ...post, publishedAt: post.timestamp })),
-                   // ...twitterPosts.map(p => ({ publishedAt: p.publishedAt })),
+
+                const allPosts = [
+                    ...facebookPosts.map((post) => ({ ...post, publishedAt: post.created_time })),
+                    ...instagramPosts.map((post) => ({ ...post, publishedAt: post.timestamp })),
                 ];
-                const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
+                const postsThisMonth = allPosts.filter((post) => isThisMonth(post.publishedAt));
                 setTotalPostsThisMonth(postsThisMonth.length);
-        
 
-
-                // Marquer la fin du chargement
                 setIsLoading(false);
 
             } catch (error) {
                 console.error("Erreur lors de la récupération des infos :", error);
-                setIsLoading(false); // Marquer le chargement comme terminé même en cas d'erreur
+                setIsLoading(false);
             }
         };
-
         fetchData(); // Appel de la fonction pour récupérer les données
     }, []);
 
