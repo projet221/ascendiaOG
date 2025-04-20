@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../utils/axios.jsx";
 
-/** Sélecteur de comptes (et pages Facebook) */
 function SelectCompte({ setNetworks, setInfoComptes }) {
-    const [listeComptes, setListeComptes]   = useState([]);    // [{ id, name, provider }]
-    const [facebookPages, setFacebookPages] = useState({});    // { idCompte: [ {id,name}, … ] }
-    const [selectedIds, setSelectedIds]     = useState([]);    // ids cochés / pages choisies
+    const [listeComptes,   setListeComptes]   = useState([]);   // [{id, provider, name}]
+    const [facebookPages,  setFacebookPages]  = useState({});   // { idCompte: [ {id,name} ] }
+    const [selectedIds,    setSelectedIds]    = useState([]);   // comptes effectivement cochés
 
-
+    /* ------------------------------------------------------------- */
+    /* 1. Récupération des comptes sociaux                            */
+    /* ------------------------------------------------------------- */
     useEffect(() => {
         const fetchSocial = async () => {
             const token  = localStorage.getItem("token");
@@ -19,13 +20,13 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
-                /* 1) Construit la map pages Facebook puis la liste des comptes  */
+                /* Construit **d’abord** la map `pagesMap`, puis setState une seule fois */
                 const pagesMap   = {};
                 const comptesArr = data.map((item, idx) => {
                     if (item.provider === "facebook") {
-                        pagesMap[idx] = item.pages || [];
+                        pagesMap[idx] = item.pages || [];       // pages FB
                     }
-                    return { id: idx, name: item.provider, provider: item.provider };
+                    return { id: idx, provider: item.provider, name: item.provider };
                 });
 
                 setFacebookPages(pagesMap);   // un seul setState
@@ -37,15 +38,19 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
         fetchSocial();
     }, []);
 
-
+    /* ------------------------------------------------------------- */
+    /* 2. Chaque fois que sélection OU liste changent → networks     */
+    /* ------------------------------------------------------------- */
     useEffect(() => {
-        const selected = listeComptes
+        const nets = listeComptes
             .filter(c => selectedIds.includes(c.id))
-            .map(c => c.name);                      // ["facebook", "twitter", …]
-        setNetworks(selected);
+            .map(c => c.provider);              // ["facebook", "twitter", …]
+        setNetworks(nets);
     }, [selectedIds, listeComptes, setNetworks]);
 
-
+    /* ------------------------------------------------------------- */
+    /* 3. Helpers                                                    */
+    /* ------------------------------------------------------------- */
     const toggleSelect = (id) => {
         setSelectedIds(prev =>
             prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
@@ -53,11 +58,16 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
     };
 
     const handlePageSelect = (compteId, pageId) => {
+        if (!pageId) return; // -- Sélection vide --
         setInfoComptes(prev => ({ ...prev, [compteId]: pageId }));
-        if (!selectedIds.includes(compteId)) setSelectedIds(prev => [...prev, compteId]);
+
+        // ajoute le compte Facebook aux sélectionnés (si absent)
+        setSelectedIds(prev => (prev.includes(compteId) ? prev : [...prev, compteId]));
     };
 
-
+    /* ------------------------------------------------------------- */
+    /* 4. Render                                                     */
+    /* ------------------------------------------------------------- */
     return (
         <div>
             <label className="block text-gray-700 text-lg mb-2">
@@ -70,15 +80,16 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                         key={compte.id}
                         className="p-3 border rounded-md bg-white border-gray-300 hover:bg-blue-50"
                     >
-                        {/* Si Facebook → affiche la liste de pages */}
+                        {/* cas Facebook => liste déroulante des pages */}
                         {compte.provider === "facebook" && facebookPages[compte.id]?.length ? (
                             <>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium mb-1">
                                     Pages Facebook :
                                 </label>
                                 <select
                                     className="border border-gray-300 rounded px-2 py-1"
                                     onChange={e => handlePageSelect(compte.id, e.target.value)}
+                                    defaultValue=""
                                 >
                                     <option value="">-- Sélectionnez une page --</option>
                                     {facebookPages[compte.id].map(pg => (
@@ -87,10 +98,12 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                                 </select>
                             </>
                         ) : (
-                            /* Autres réseaux → simple bouton toggle */
+                            /* autres réseaux => simple toggle */
                             <div
                                 className={`cursor-pointer ${
-                                    selectedIds.includes(compte.id) ? "bg-blue-100 border-blue-500" : ""
+                                    selectedIds.includes(compte.id)
+                                        ? "bg-blue-100 border-blue-500"
+                                        : ""
                                 }`}
                                 onClick={() => toggleSelect(compte.id)}
                             >
