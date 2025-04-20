@@ -3,7 +3,7 @@ import {
     MdThumbUp,
     MdFavorite,
     MdMood,
-    MdChatBubbleOutline,
+    MdOutlineChatBubble,
     MdShare} from "react-icons/md";import { axiosInstance } from "../utils/axios.jsx";
 
 function Previsualisation({ platform, text, image }) {
@@ -147,7 +147,7 @@ function Previsualisation({ platform, text, image }) {
             {/* Barre Like / Comment / Share */}
             {[
                 { Icon: MdThumbUp,           label: "J’aime"     },
-                { Icon: MdChatBubbleOutline, label: "Commenter"  },
+                { Icon: MdOutlineChatBubble, label: "Commenter"  },
                 { Icon: MdShare,             label: "Partager"   }
             ].map(({ Icon, label }) => (
                 <button key={label} className="flex items-center gap-1 w-full justify-center py-2 hover:bg-gray-100">
