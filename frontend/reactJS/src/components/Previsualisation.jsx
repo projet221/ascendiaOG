@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import {
     MdThumbUp,
-    MdFavorite,
-    MdMood,
     MdOutlineChatBubble,
     MdShare} from "react-icons/md";import { axiosInstance } from "../utils/axios.jsx";
 
@@ -137,24 +135,23 @@ function Previsualisation({ platform, text, image }) {
             )}
 
             {/* Réactions (likes) + commentaires / partages */}
-            <div className="flex items-center gap-1">
-                <MdThumbUp  className="text-blue-600" />
-                <MdFavorite className="text-red-600" />
-                <MdMood     className="text-blue-600" />
-                <span>123</span>
+            <div className="flex justify-between border-t border-gray-200">
+                {[
+                    { Icon: MdThumbUp,           label: "J’aime" },
+                    { Icon: MdOutlineChatBubble, label: "Commenter" },
+                    { Icon: MdShare,             label: "Partager" }
+                ].map(({ Icon, label }) => (
+                    <button
+                        key={label}
+                        className="flex items-center gap-1 justify-center py-2 px-4 hover:bg-gray-100 flex-1"
+                        /* ⇡  flex-1 → chacun prend 1/3 ;
+                             retire‑le si tu préfères la largeur auto */
+                    >
+                        <Icon className="text-base" />
+                        {label}
+                    </button>
+                ))}
             </div>
-
-            {/* Barre Like / Comment / Share */}
-            {[
-                { Icon: MdThumbUp,           label: "J’aime"     },
-                { Icon: MdOutlineChatBubble, label: "Commenter"  },
-                { Icon: MdShare,             label: "Partager"   }
-            ].map(({ Icon, label }) => (
-                <button key={label} className="flex items-center gap-1 w-full justify-center py-2 hover:bg-gray-100">
-                    <Icon className="text-base" />
-                    {label}
-                </button>
-            ))}
         </div>
     );
 
