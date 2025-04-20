@@ -17,6 +17,8 @@ function New() {
     const [fichier, setFichier] = useState(null); // Fichier attaché (si présent)
     const [scheduleDate, setScheduleDate] = useState(""); // Date de planification
     const dateInputRef = useRef(null); // Référence pour l'input de date
+    const [infoComptes, setInfoComptes] = useState({}); //Pour la page facebook
+
 
     // Fonction pour gérer la modification du message
     const handleMessageChange = (e) => {
@@ -191,7 +193,8 @@ function New() {
                 <div className="h-screen flex bg-gray-100 overflow-hidden">
                     <div className="min-h-screen flex bg-gray-100">
                         <div className="p-6">
-                            <SelectCompte networks={networks} setNetworks={setNetworks} />
+                            <SelectCompte networks={networks} setNetworks={setNetworks}  setInfoComptes={setInfoComptes}
+                            />
                             <div className="relative mb-6">
                                 <label htmlFor="message" className="block text-gray-700 mb-2">
                                     Votre message :
