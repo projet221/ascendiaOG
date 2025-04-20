@@ -267,6 +267,7 @@ function New() {
                             key={index}
                             platform="facebook"{account.platform || account}
                             text={message}
+
                             image={fichier ? URL.createObjectURL(fichier) : null}
                         />
                     ))
