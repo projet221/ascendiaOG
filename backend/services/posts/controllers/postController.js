@@ -412,7 +412,7 @@ const postController = {
         const dateStart = req.query.dateStart
         const dateEnd = req.query.dateEnd;
         const id = req.params.id;
-        const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
+        //const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
         console.log("tokennnnnnnnnnns", response);
         const tokens = response.data;
         const facebookTokens = tokens.find(item => item.provider === "facebook");
