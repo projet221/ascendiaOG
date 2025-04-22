@@ -2,7 +2,13 @@ const express = require('express');
 const upload = require('../middlewares/upload'); 
 const router = express.Router();
 const postController = require('../controllers/postController');
-const {getInstagramPosts,getInstagramPostById, getInstagramPostComments} = require("../controllers/instagramController");
+const {
+  getInstagramPosts,
+  getInstagramPostById,
+  getInstagramPostComments,
+  getInstagramPostInsights,
+  getInstagramStories
+} = require("../controllers/instagramController");
 const {getFacebookPosts, getFacebookPostById, getFacebookPostComments } = require("../controllers/facebookController");
 
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
@@ -19,6 +25,9 @@ router.get('/instagram/post/:id/comments', getInstagramPostComments);
 router.get('/facebook/post/:id', getFacebookPostById);
 router.get('/facebook/post/:id/comments', getFacebookPostComments);
 //fin aly
+router.get('/instagram/posts/:id/insights', getInstagramPostInsights);
+router.get('/instagram/stories', getInstagramStories); 
+
 
 router.get('/:id', postController.getPostById);
 

@@ -9,6 +9,7 @@ const Instagram = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stories, setStories] = useState([]);
   const navigate = useNavigate();
 
   const fetchInstagramPosts = async () => {
@@ -26,9 +27,23 @@ const Instagram = () => {
       setLoading(false);
     }
   };
+  const fetchInstagramStories = async () => {
+    const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/instagram/stories`;
+    console.log("📡 Requête stories envoyée à :", API_URL);
+  
+    try {
+      const res = await axios.get(API_URL);
+      console.log("Stories reçues :", res.data);
+      setStories(res.data);
+    } catch (err) {
+      console.error("Erreur récupération des stories :", err);
+    }
+  };
+  
 
   useEffect(() => {
     fetchInstagramPosts();
+    fetchInstagramStories();
   }, []);
 
   return (
@@ -47,6 +62,32 @@ const Instagram = () => {
           <h1 className="text-4xl font-bold text-center text-[#FF0035] mb-10">
             🎯 Publications Instagram
           </h1>
+         
+  <div className="mb-10">
+    <h2 className="text-2xl font-semibold mb-4 text-center">📸 Stories Instagram</h2>
+    <div className="flex gap-4 overflow-x-auto px-4 py-2 bg-white rounded-xl shadow">
+      {stories.map((story) => (
+        <div key={story.id} className="min-w-[150px]">
+          {story.media_type === "VIDEO" ? (
+            <video controls className="w-full h-40 object-cover rounded-xl">
+              <source src={story.media_url} type="video/mp4" />
+              Votre navigateur ne supporte pas les vidéos.
+            </video>
+          ) : (
+            <img
+              src={story.media_url}
+              alt="Story Instagram"
+              className="w-full h-40 object-cover rounded-xl"
+            />
+          )}
+          <p className="text-xs text-center text-gray-600 mt-1">
+            {new Date(story.timestamp).toLocaleDateString()}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+
 
           {loading && <p className="text-gray-500 text-center">Chargement...</p>}
           {error && <p className="text-red-500 text-center">{error}</p>}
