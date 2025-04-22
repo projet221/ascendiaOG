@@ -122,32 +122,30 @@ function New() {
                                 </div>
                             </div>
 
-                            <div className="flex items-end gap-4 mt-6">
-                                <div className="flex flex-col">
-                                    <label htmlFor="publish-select" className="mb-1 text-gray-700 font-medium">
-                                        Choisissez une action :
-                                    </label>
-                                    <select
-                                        id="publish-select"
-                                        className="bg-[#FF0035] hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md"
-                                        value={action}
-                                        onChange={handleActionChange}
-                                    >
-                                        <option value="" disabled>-- Sélectionnez une option --</option>
-                                        <option value="maintenant">Publier Maintenant</option>
-                                        <option value="planifier">Planifier</option>
-                                        <option value="best">Publier au meilleur moment</option>
-                                    </select>
-                                </div>
+                            <div className="flex items-center gap-4 mt-4">
+                                <select
+                                    id="publish-select"
+                                    className="bg-[#FF0035] hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md"
+                                    value={action}
+                                    onChange={handleActionChange}
+                                >
+                                    <option value="" disabled>
+                                        -- Sélectionnez une option --
+                                    </option>
+                                    <option value="maintenant">Publier Maintenant</option>
+                                    <option value="planifier">Planifier</option>
+                                    <option value="best">Publier au meilleur moment</option>
+                                </select>
 
                                 <button
                                     onClick={handlePublish}
-                                    className="bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow mt-[26px]"
+                                    className="bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow"
                                 >
                                     Publier
                                 </button>
                             </div>
 
+                            {/* Affichage de la date planifiée (en dessous du bloc au lieu de pousser les autres) */}
                             {(action === "planifier" || action === "best") && (
                                 <div className="mt-4">
                                     <label className="block text-gray-700 mb-2" htmlFor="schedule-date">
