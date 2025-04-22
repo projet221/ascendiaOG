@@ -7,6 +7,7 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
     const [facebookPages, setFacebookPages] = useState({});
     const [fbSelectedPage, setFbSelectedPage] = useState({});
     const [selectedIds, setSelectedIds] = useState([]);
+    const [modalCompteId, setModalCompteId] = useState(null);
 
     useEffect(() => {
         const fetchSocial = async () => {
@@ -59,11 +60,13 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                 delete copy[compteId];
                 return copy;
             });
+            setModalCompteId(null);
             return;
         }
 
         setInfoComptes?.(prev => ({ ...prev, [compteId]: pageId }));
         setSelectedIds(prev => (prev.includes(compteId) ? prev : [...prev, compteId]));
+        setModalCompteId(null);
     };
 
     const getIcon = (provider) => {
@@ -96,7 +99,6 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                             onClick={() => {
                                 if (isFacebook) {
                                     if (isSelected) {
-                                        // Désélectionner Facebook
                                         setFbSelectedPage(prev => {
                                             const copy = { ...prev };
                                             delete copy[compte.id];
@@ -109,7 +111,7 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                                             return copy;
                                         });
                                     } else {
-                                        setSelectedIds(prev => [...prev, compte.id]);
+                                        setModalCompteId(compte.id);
                                     }
                                 } else {
                                     toggleSelect(compte.id);
@@ -119,26 +121,35 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                             <div className="flex items-center gap-2">
                                 {getIcon(compte.provider)}
                             </div>
-
-                            {isFacebook && hasPages && isSelected && (
-                                <div className="mt-2">
-                                    <label className="block text-sm font-medium mb-1">Pages Facebook :</label>
-                                    <select
-                                        className="border border-gray-300 rounded px-2 py-1"
-                                        value={fbSelectedPage[compte.id] ?? ""}
-                                        onChange={(e) => handlePageSelect(compte.id, e.target.value)}
-                                    >
-                                        <option value="">-- Sélectionnez une page --</option>
-                                        {facebookPages[compte.id].map(pg => (
-                                            <option key={pg.id} value={pg.id}>{pg.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
                         </div>
                     );
                 })}
             </div>
+
+            {/* Modal Facebook Pages */}
+            {modalCompteId !== null && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <h2 className="text-lg font-bold mb-4">Sélectionnez une page Facebook :</h2>
+                        <select
+                            className="border border-gray-300 rounded px-3 py-2 w-full"
+                            value={fbSelectedPage[modalCompteId] ?? ""}
+                            onChange={(e) => handlePageSelect(modalCompteId, e.target.value)}
+                        >
+                            <option value="">-- Choisir une page --</option>
+                            {facebookPages[modalCompteId]?.map(pg => (
+                                <option key={pg.id} value={pg.id}>{pg.name}</option>
+                            ))}
+                        </select>
+                        <button
+                            onClick={() => setModalCompteId(null)}
+                            className="mt-4 w-full bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
