@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import ConfigSocialMedia from "./ConfigSocialMedia";
+import { LinkIcon } from "@heroicons/react/24/outline";
+
 const BarreHaut = () => {
   const [menuOuvert, setMenuOuvert] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,21 +100,9 @@ const BarreHaut = () => {
                   style={{ borderColor: "#FF0035", color: "#FF0035" }}
                   title="Lier un compte"
               >
-                {/* Remplacez l’icône par celle de votre choix */}
-                <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                >
-                  <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4v16m8-8H4"
-                  />
-                </svg>
+                <LinkIcon className="w-5 h-5" />
               </button>
+
 
               {/* Bouton Profil (icône user) */}
               <div className="relative">
