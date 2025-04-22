@@ -53,7 +53,7 @@ const StatistiquesGlobales = () => {
     const userId = localStorage.getItem("user_id");
     const proxy = import.meta.env.VITE_PROXY_GATEWAY;
     //a modifier possiblement
-    const resfacebookengagement = await axiosInstance.get(`/api/stat/engagement/facebook/${userId}?dateStart=${dateRange.start}&dateEnd=${dateRange.end}`);
+    //const resfacebookengagement = await axiosInstance.get(`/api/stat/engagement/facebook/${userId}?dateStart=${dateRange.start}&dateEnd=${dateRange.end}`);
     console.log("le resultat requete facebook stat",resfacebookengagement);
 
     const [igRes, fbRes] = await Promise.all([
