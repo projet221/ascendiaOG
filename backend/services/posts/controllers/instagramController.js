@@ -3,6 +3,7 @@ const axios = require('axios');
 const igUserId = process.env.INSTAID;
 const accessToken = process.env.INSTATOKEN;
 
+// 📥 Récupérer les publications
 exports.getInstagramPosts = async (req, res) => {
   console.log(' [CONTROLLER] ➤ GET /api/socialauth/instagram/posts');
 
@@ -18,8 +19,7 @@ exports.getInstagramPosts = async (req, res) => {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${igUserId}/media`, {
       params: {
         access_token: accessToken,
-     fields: 'id,caption,media_type,media_url,permalink,timestamp,thumbnail_url,like_count,comments_count'
-
+        fields: 'id,caption,media_type,media_url,permalink,timestamp,thumbnail_url,like_count,comments_count'
       },
     });
 
@@ -35,10 +35,9 @@ exports.getInstagramPosts = async (req, res) => {
   }
 };
 
-
+// 📥 Récupérer une publication par ID
 exports.getInstagramPostById = async (req, res) => {
   const { id } = req.params;
-  const accessToken = process.env.INSTATOKEN;
 
   try {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${id}`, {
@@ -55,9 +54,9 @@ exports.getInstagramPostById = async (req, res) => {
   }
 };
 
+// 💬 Récupérer les commentaires
 exports.getInstagramPostComments = async (req, res) => {
   const { id } = req.params;
-  const accessToken = process.env.INSTATOKEN;
 
   try {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${id}/comments`, {
@@ -66,10 +65,46 @@ exports.getInstagramPostComments = async (req, res) => {
         fields: 'id,text,username,like_count,timestamp'
       }
     });
-    console.log(response.data);
+
     res.json(response.data.data || []);
   } catch (error) {
     console.error("Erreur récupération des commentaires :", error.response?.data || error.message);
     res.status(500).json({ error: "Impossible de récupérer les commentaires." });
+  }
+};
+
+// 📊 Récupérer les insights analytiques (vues, impressions, reach, engagement)
+exports.getInstagramPostInsights = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await axios.get(`https://graph.facebook.com/v19.0/${id}/insights`, {
+      params: {
+        access_token: accessToken,
+        metric: 'impressions,reach,engagement,video_views'
+      }
+    });
+
+    res.json(response.data.data || []);
+  } catch (error) {
+    console.error("Erreur récupération des insights :", error.response?.data || error.message);
+    res.status(500).json({ error: "Impossible de récupérer les insights du post." });
+  }
+};
+
+// 📸 Récupérer les stories du compte
+exports.getInstagramStories = async (req, res) => {
+  try {
+    const response = await axios.get(`https://graph.facebook.com/v19.0/${igUserId}/stories`, {
+      params: {
+        access_token: accessToken,
+        fields: 'id,media_type,media_url,timestamp'
+      }
+    });
+
+    res.json(response.data.data || []);
+  } catch (error) {
+    console.error("Erreur récupération des stories :", error.response?.data || error.message);
+    res.status(500).json({ error: "Impossible de récupérer les stories." });
   }
 };
