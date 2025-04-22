@@ -192,8 +192,8 @@ function New() {
             <div className="ml-64 mt-16">
                 <div className="h-screen flex bg-gray-100 overflow-hidden">
                     <div className="min-h-screen flex bg-gray-100">
-                        <div className="p-6">
-                            <SelectCompte networks={networks} setNetworks={setNetworks}  setInfoComptes={setInfoComptes}
+                        <div className="p-6 flex flex-col justify-between min-h-[650px] space-y-6">
+                        <SelectCompte networks={networks} setNetworks={setNetworks}  setInfoComptes={setInfoComptes}
                             />
                             <div className="relative mb-6">
                                 <label htmlFor="message" className="block text-gray-700 mb-2">
