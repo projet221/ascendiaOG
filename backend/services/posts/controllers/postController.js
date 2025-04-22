@@ -407,6 +407,60 @@ const postController = {
         }
     },
 
+    getFacebookEngagement: async(req,res) => {
+
+        const dateStart = req.query.dateStart
+        const dateEnd = req.query.dateEnd;
+        const id = req.params.id;
+        const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
+        console.log("tokennnnnnnnnnns", response);
+        const tokens = response.data;
+        const facebookTokens = tokens.find(item => item.provider === "facebook");
+                            
+                            if (!facebookTokens) {
+                                return res.status(400).json({ error: "Twitter tokens not found" });
+                            }
+        console.log("mes tokens", tokens);
+
+        const accessToken = facebookTokens.accessToken;
+        const res = await axios.get(`https://graph.facebook.com/v19.0/me/accounts?access_token=${accessToken}`);
+        const pages = res.data.data;
+        //const url = `https://graph.facebook.com/v19.0/${pageId}/insights?page_engaged_users&period=day&since=${dateStart}&until=${dateEnd}&access_token=${accessToken}`;
+        const result = [];
+        for (const page of pages) {
+            const pageId = page.id;
+            const pageToken = page.access_token; // token spécifique à cette page
+        
+            const metrics = ['page_engaged_users'];
+            const url = `https://graph.facebook.com/v19.0/${pageId}/insights?metric=${metrics.join(',')}&period=day&since=${dateStart}&until=${dateEnd}&access_token=${pageToken}`;
+        
+            try {
+              const res = await axios.get(url);
+              const values = res.data.data[0]?.values || [];
+                
+              const dailyMetrics = values.map(day => ({
+                date: day.end_time.split('T')[0], // Format date as YYYY-MM-DD
+                engagedUsers: day.value
+              }));
+        
+              const totalEngagedUsers = values.reduce((sum, day) => sum + (day.value || 0), 0);
+
+              //on renvoie un objet lisible avec les insights pour chaque page
+              result.push({
+                pageName: page.name,
+                pageId: pageId,
+                dailyMetrics: dailyMetrics,
+                totalEngagedUsers: totalEngagedUsers
+              });
+
+            } catch (err) {
+              console.error(`❌ Erreur pour la page ${page.name} :`, err.response?.data || err.message);
+            }
+
+            
+          }
+          return result;
+    }
 };
 
 module.exports = postController;
