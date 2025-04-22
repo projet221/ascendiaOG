@@ -5,6 +5,7 @@ const axios = require("axios");
 const { join} = require("node:path");
 const  Post = require("../models/Post");
 const Recommandation = require("../models/Recommandation");
+const sharp = require("sharp");
 
 const postController = {
     // Récupérer toutes les publications
@@ -130,7 +131,7 @@ const postController = {
                 const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
 
                 // Conversion en JPEG avant la sauvegarde
-                /*sharp(req.file.buffer)
+                sharp(req.file.buffer)
                 .jpeg({ quality: 90 })  // Qualité de compression de l'image
                 .toFile(uploadPath, (err, info) => {
                     if (err) {
@@ -140,7 +141,7 @@ const postController = {
 
                     console.log('Image convertie et sauvegardée avec succès:', info);
                 }); 
-                */
+
             }
             // Parcours des réseaux sociaux sélectionnés
             for (const network of networks) {
