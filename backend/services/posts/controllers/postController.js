@@ -145,6 +145,7 @@ const postController = {
             }
             // Parcours des réseaux sociaux sélectionnés
             for (const network of networks) {
+                console.log("tentative de publication sur : ", network);
                 switch (network) {
                     case "twitter":
                         const twitterTokens = tokens.find(item => item.provider === "twitter");
