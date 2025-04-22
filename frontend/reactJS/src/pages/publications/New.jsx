@@ -185,8 +185,7 @@ function New() {
             <SidebarPublication />
             <div className="ml-64 mt-16">
                 <div className="h-screen flex bg-gray-100 overflow-hidden">
-                    <div className="min-h-screen flex bg-gray-100 overflow-y-auto">
-                        <div className="p-6">
+                    <div className="h-screen flex bg-gray-100 overflow-y-auto p-6">
                             <SelectCompte networks={networks} setNetworks={setNetworks} setInfoComptes={setInfoComptes} />
 
                             <div className="mb-4">
@@ -270,8 +269,7 @@ function New() {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="w-1/3 fixed right-0 top-16 h-screen overflow-y-auto p-6 border-l bg-white">
+                <div className="w-1/3 fixed right-0 top-16 h-screen overflow-y-auto p-6 border-l bg-white">
                 <h2 className="text-xl font-semibold mb-4">Prévisualisation</h2>
                 {networks.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -289,7 +287,7 @@ function New() {
                         />
                     ))
                 )}
-            </div>
+                </div>
         </div>
     );
 }
