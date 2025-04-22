@@ -175,7 +175,7 @@ const postController = {
                                 // Si tu veux publier une photo
                                 const formData = new FormData();
                                 formData.append('message', message);
-                                formData.append('url', `${process.env.PROXY_POSTS}/uploads/${req.file.originalname}`);
+                                formData.append('url', `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpeg")}`);
                                 formData.append('access_token', accessToken);
                                 console.log(formData);
                                 try {
