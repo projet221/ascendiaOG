@@ -85,7 +85,7 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                 {listeComptes.map(compte => {
                     const isFacebook = compte.provider === "facebook";
                     const hasPages = facebookPages[compte.id]?.length > 0;
-                    const isSelected = selectedIds.includes(compte.id) || (isFacebook && fbSelectedPage[compte.id]);
+                    const isSelected = selectedIds.includes(compte.id);
 
                     return (
                         <div
@@ -94,9 +94,24 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                                 isSelected ? "bg-blue-100 border-blue-500 shadow-md scale-105" : "bg-white border-gray-300 hover:shadow"
                             }`}
                             onClick={() => {
-                                if (isFacebook && !isSelected) {
-                                    setSelectedIds(prev => [...prev, compte.id]);
-                                } else if (!isFacebook) {
+                                if (isFacebook) {
+                                    if (isSelected) {
+                                        // Désélectionner Facebook
+                                        setFbSelectedPage(prev => {
+                                            const copy = { ...prev };
+                                            delete copy[compte.id];
+                                            return copy;
+                                        });
+                                        setSelectedIds(prev => prev.filter(id => id !== compte.id));
+                                        setInfoComptes?.(prev => {
+                                            const copy = { ...prev };
+                                            delete copy[compte.id];
+                                            return copy;
+                                        });
+                                    } else {
+                                        setSelectedIds(prev => [...prev, compte.id]);
+                                    }
+                                } else {
                                     toggleSelect(compte.id);
                                 }
                             }}
