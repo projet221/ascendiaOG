@@ -25,7 +25,7 @@ router.get('/instagram/post/:id/comments', getInstagramPostComments);
 router.get('/facebook/post/:id', getFacebookPostById);
 router.get('/facebook/post/:id/comments', getFacebookPostComments);
 //fin aly
-router.get('/stat/engagement/facebook/:id',);
+router.get('/stat/engagement/facebook/:id',postController.getFacebookEngagement);
 router.get('/instagram/posts/:id/insights', getInstagramPostInsights);
 router.get('/instagram/stories', getInstagramStories); 
 
