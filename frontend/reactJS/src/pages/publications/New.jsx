@@ -243,7 +243,12 @@ function New() {
                                 <option value="planifier">Planifier</option>
                                 <option value="best">Publier au meilleur moment</option>
                             </select>
-
+                            <button
+                                onClick={handlePublish}
+                                className="mt-50 ml-40 bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow"
+                            >
+                                Publier
+                            </button>
                             {(action === "planifier" || action === "best") && (
                                 <div className="mt-4">
                                     <label className="block text-gray-700 mb-2" htmlFor="schedule-date">
@@ -261,12 +266,7 @@ function New() {
                                 </div>
                             )}
 
-                            <button
-                                onClick={handlePublish}
-                                className="mt-50 ml-40 bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow"
-                            >
-                                Publier
-                            </button>
+
                         </div>
                     </div>
                 </div>
