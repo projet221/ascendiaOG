@@ -20,18 +20,13 @@ function New() {
     const [selectedTemplate, setSelectedTemplate] = useState("");
 
     const templates = {
-        publicite: "Découvrez notre nouveau produit ! 🔥 #Promo #NouveauProduit",
-        annonce: "Nous avons une grande nouvelle à partager avec vous ! 🎉 #Annonce #Important",
-        evenement: "Rejoignez-nous pour notre événement spécial ce week-end ! 🎈 #Événement #Invitation",
+        publicite: "Découvrez notre nouveau produit ! 🔥\n[Décrire le produit] \n\n\n\n#Promo #NouveauProduit #[NomProduit]",
+        annonce: "Nous avons une grande nouvelle à partager avec vous ! 🎉\n[Faites votre annonce] \n\n\n\n#Annonce #Important",
+        evenement: "Rejoignez-nous pour notre événement spécial ce week-end ! 🎈\n [Parlez de l'évènement] \n\n\n\n#Événement #Invitation",
+        promotion : " ⚡  Offre limitée dans le temps ! Profitez de -[x]% sur tout le site aujourd'hui seulement. \n\n\n\n#BonPlan #PromoDuJour #[NomBoutique] ",
+        sondage : "📊 On a besoin de votre avis ! Préférez-vous [A] ou [B] ? Répondez en commentaire 👇 \n\n\n\n#Sondage #VotreAvisCompte #[ThemeDuSondage]",
+        retourEvenement : "Merci à tous pour votre présence ce week-end 🙌 Revivez les meilleurs moments en images ! \n\n\n\n #AfterEvent #Souvenirs #[NomEvenement]"
     };
-
-    /*const handleTemplateChange = (e) => {
-        const selected = e.target.value;
-        setSelectedTemplate(selected);
-        if (templates[selected]) {
-            setMessage(templates[selected]);
-        }
-    };*/
 
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
@@ -190,7 +185,7 @@ function New() {
             <SidebarPublication />
             <div className="ml-64 mt-16">
                 <div className="h-screen flex bg-gray-100 overflow-hidden">
-                    <div className="min-h-screen flex bg-gray-100">
+                    <div className="min-h-screen flex bg-gray-100 overflow-y-auto">
                         <div className="p-6">
                             <SelectCompte networks={networks} setNetworks={setNetworks} setInfoComptes={setInfoComptes} />
 
@@ -201,14 +196,24 @@ function New() {
                                         <button
                                             key={key}
                                             onClick={() => {
-                                                setSelectedTemplate(key);
-                                                setMessage(templates[key]);
+                                                if (selectedTemplate === key) {
+                                                    setSelectedTemplate("");
+                                                    setMessage("");
+                                                } else {
+                                                    setSelectedTemplate(key);
+                                                    setMessage(templates[key]);
+                                                }
                                             }}
-                                            className={`px-4 py-2 rounded-lg border font-medium ${selectedTemplate === key ? 'bg-red-500 text-white' : 'bg-white hover:bg-red-100 text-red-500 border-red-500'}`}
+                                            className={`px-4 py-2 rounded-lg border font-medium ${
+                                                selectedTemplate === key
+                                                    ? 'bg-red-500 text-white'
+                                                    : 'bg-white hover:bg-red-100 text-red-500 border-red-500'
+                                            }`}
                                         >
                                             {key.charAt(0).toUpperCase() + key.slice(1)}
                                         </button>
                                     ))}
+
                                 </div>
                             </div>
 
