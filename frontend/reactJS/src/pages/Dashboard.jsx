@@ -16,8 +16,11 @@ export default function Dashboard() {
 
     // Effet de récupération des données lorsque le composant est monté
     useEffect(() => {
+
         const token = localStorage.getItem("token");
         const userId = localStorage.getItem("user_id");
+        console.log("→ userId:", userId);
+        console.log("→ token:", token);
 
         if (!token || !userId) {
             setUsername("Non connecté");
@@ -125,6 +128,7 @@ export default function Dashboard() {
             default:
                 return null;
         }
+
     }
 
     return (
