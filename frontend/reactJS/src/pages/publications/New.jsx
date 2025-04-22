@@ -23,7 +23,7 @@ function New() {
         publicite: "Découvrez notre nouveau produit ! 🔥\n[Décrire le produit] \n\n\n\n#Promo #NouveauProduit #[NomProduit]",
         annonce: "Nous avons une grande nouvelle à partager avec vous ! 🎉\n[Faites votre annonce] \n\n\n\n#Annonce #Important",
         evenement: "Rejoignez-nous pour notre événement spécial ce week-end ! 🎈\n [Parlez de l'évènement] \n\n\n\n#Événement #Invitation",
-        promotion : " ⚡  Offre limitée dans le temps ! Profitez de -[x]% sur tout le site aujourd'hui seulement. \n\n\n\n#BonPlan #PromoDuJour #[NomBoutique] ",
+        promotion : " ⚡  Offre limitée dans le temps ! Profitez de -[x]% sur tout le site aujourd'hui seulement. \n [www.exemple.com]\n\n\n\n#BonPlan #PromoDuJour #[NomBoutique] ",
         sondage : "📊 On a besoin de votre avis ! Préférez-vous [A] ou [B] ? Répondez en commentaire 👇 \n\n\n\n#Sondage #VotreAvisCompte #[ThemeDuSondage]",
         retourEvenement : "Merci à tous pour votre présence ce week-end 🙌 Revivez les meilleurs moments en images ! \n\n\n\n #AfterEvent #Souvenirs #[NomEvenement]"
     };
