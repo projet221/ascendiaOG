@@ -175,7 +175,7 @@ const postController = {
                                 // Si tu veux publier une photo
                                 const formData = new FormData();
                                 formData.append('message', message);
-                                formData.append('url', `${process.env.PROXY_POSTS}/uploads/${req.file.originalname}`);
+                                formData.append('url', `${process.env.PROXY_POSTS}/uploads/${req.file.originalname.replace(/\.[^/.]+$/, ".jpeg")}`);
                                 formData.append('access_token', accessToken);
                                 console.log(formData);
                                 try {
@@ -423,8 +423,8 @@ const postController = {
         console.log("mes tokens", tokens);
 
         const accessToken = facebookTokens.accessToken;
-        const res = await axios.get(`https://graph.facebook.com/v19.0/me/accounts?access_token=${accessToken}`);
-        const pages = res.data.data;
+        const resultat = await axios.get(`https://graph.facebook.com/v19.0/me/accounts?access_token=${accessToken}`);
+        const pages = resultat.data.data;
         //const url = `https://graph.facebook.com/v19.0/${pageId}/insights?page_engaged_users&period=day&since=${dateStart}&until=${dateEnd}&access_token=${accessToken}`;
         const result = [];
         for (const page of pages) {
