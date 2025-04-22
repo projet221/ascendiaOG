@@ -83,9 +83,9 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
 
             <div className="flex flex-wrap gap-4">
                 {listeComptes.map(compte => {
-                    const isSelected = selectedIds.includes(compte.id);
                     const isFacebook = compte.provider === "facebook";
                     const hasPages = facebookPages[compte.id]?.length > 0;
+                    const isSelected = selectedIds.includes(compte.id) || (isFacebook && fbSelectedPage[compte.id]);
 
                     return (
                         <div
@@ -93,9 +93,12 @@ function SelectCompte({ setNetworks, setInfoComptes }) {
                             className={`p-3 rounded-md cursor-pointer border transition-all duration-200 ${
                                 isSelected ? "bg-blue-100 border-blue-500 shadow-md scale-105" : "bg-white border-gray-300 hover:shadow"
                             }`}
-
                             onClick={() => {
-                                if (!isFacebook) toggleSelect(compte.id);
+                                if (isFacebook && !isSelected) {
+                                    setSelectedIds(prev => [...prev, compte.id]);
+                                } else if (!isFacebook) {
+                                    toggleSelect(compte.id);
+                                }
                             }}
                         >
                             <div className="flex items-center gap-2">
