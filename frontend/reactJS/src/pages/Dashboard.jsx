@@ -16,120 +16,92 @@ export default function Dashboard() {
 
     // Effet de récupération des données lorsque le composant est monté
     useEffect(() => {
-        const fetchData = async () => {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("user_id");
+
+        if (!token || !userId) {
+            setUsername("Non connecté");
+            setIsLoading(false);
+            return;
+        }
+
+        const headers = { Authorization: `Bearer ${token}` };
+
+        // Chargement rapide : username + posts planifiés
+        const loadBasicInfos = async () => {
             try {
-                // Récupération du token et de l'ID utilisateur depuis le localStorage
-                const token = localStorage.getItem("token");
-                const userId = localStorage.getItem("user_id");
+                const [userRes, scheduledRes] = await Promise.all([
+                    axiosInstance.get(`/api/users/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/scheduled/${userId}`, { headers }),
+                ]);
+                setUsername(userRes.data.username || "Utilisateur inconnu");
+                setPostPlanifier(scheduledRes.data || []);
+            } catch (error) {
+                handleAPIError(error);
+            } finally {
+                setIsLoading(false); // on affiche déjà le dashboard de base
+            }
+        };
 
-                // Si le token ou l'ID utilisateur est manquant, on arrête le processus
-                if (!token || !userId) {
-                    console.warn("Aucun token ou user_id trouvé, utilisateur non connecté.");
-                    setUsername("Non connecté");
-                    setIsLoading(false); // Fin du chargement
-                    return;
-                }
-
-                // Récupération des données utilisateur (nom d'utilisateur)
-                const userResponse = await axiosInstance.get(`/api/users/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
-                const userData = userResponse.data;
-                setUsername(userData.username || "Utilisateur inconnu");
-
-
-                // Récupération de la recommandation de contenu par IA
-                const recommandationIA = await axiosInstance.get(`/api/posts/recommandation/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setRecommandation(recommandationIA.data[0].contenu);
-
-                // Récupération des publications planifiées
-                const postsResp = await axiosInstance.get(`/api/posts/scheduled/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setPostPlanifier(postsResp.data || []);
-
-
-
-
-                // Récupération des posts Facebook et Instagram pour calculer l'engagement
-                const [facebookResp, instagramResp, twitterResp] = await Promise.all([
-                    axiosInstance.get(`/api/posts/facebook/posts/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
-                    axiosInstance.get(`/api/posts/instagram/posts/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
-                    /*axiosInstance.get(`/api/posts/twitter/posts/${userId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),*/
+        // Chargement différé : recommandations + engagement
+        const loadAdvancedInfos = async () => {
+            try {
+                const [recRes, fbRes, igRes] = await Promise.all([
+                    axiosInstance.get(`/api/posts/recommandation/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/facebook/posts/${userId}`, { headers }),
+                    axiosInstance.get(`/api/posts/instagram/posts/${userId}`, { headers }),
                 ]);
 
-                const facebookPosts = facebookResp.data || [];
-                const instagramPosts = instagramResp.data || [];
-                //const twitterPosts = twitterResp.data || [];
+                setRecommandation(recRes.data[0]?.contenu || "");
 
+                const facebookPosts = fbRes.data || [];
+                const instagramPosts = igRes.data || [];
 
-                console.log("Facebook posts:", facebookPosts);
-                console.log("Instagram posts:", instagramPosts);
-                //console.log("Twitter posts:", twitterPosts);
-
-
-
-                // Calcul de l'engagement total : somme des likes + commentaires
                 const engagementFacebook = facebookPosts.reduce((acc, post) => {
                     const likes = post.likes?.summary?.total_count || 0;
                     const comments = post.comments?.summary?.total_count || 0;
                     return acc + likes + comments;
                 }, 0);
 
-                const engagementInstagram = instagramPosts.reduce((acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0), 0);
+                const engagementInstagram = instagramPosts.reduce(
+                    (acc, post) => acc + (post.like_count || 0) + (post.comments_count || 0),
+                    0
+                );
 
-                /*const engagementTwitter = twitterPosts.reduce((acc, tweet) => {
-                    const likes = tweet.likes || 0;
-                    const retweets = tweet.retweets || 0;
-                    return acc + likes + retweets;
-                }, 0);*/
+                setTotalEngagement(engagementFacebook + engagementInstagram);
 
-
-                setTotalEngagement(engagementFacebook + engagementInstagram);   //+engagementTwitter
                 const isThisMonth = (dateStr) => {
                     const date = new Date(dateStr);
                     const now = new Date();
-                    return (
-                        date.getMonth() === now.getMonth() &&
-                        date.getFullYear() === now.getFullYear()
-                    );
+                    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
                 };
 
-                const allPosts =
-                    [
-                        ...facebookPosts.map(post => ({ ...post, publishedAt: post.created_time })),
-                        ...instagramPosts.map(post => ({ ...post, publishedAt: post.timestamp })),
-                        // ...twitterPosts.map(p => ({ publishedAt: p.publishedAt })),
-                    ];
-                const postsThisMonth = allPosts.filter(post => isThisMonth(post.publishedAt));
-                setTotalPostsThisMonth(postsThisMonth.length);
+                const allPosts = [
+                    ...facebookPosts.map((post) => ({ ...post, publishedAt: post.created_time })),
+                    ...instagramPosts.map((post) => ({ ...post, publishedAt: post.timestamp })),
+                ];
 
-
-
-                // Marquer la fin du chargement
-                setIsLoading(false);
-
+                setTotalPostsThisMonth(allPosts.filter((post) => isThisMonth(post.publishedAt)).length);
             } catch (error) {
-                console.error("Erreur lors de la récupération des infos :", error);
-                setIsLoading(false); // Marquer le chargement comme terminé même en cas d'erreur
+                handleAPIError(error);
             }
         };
 
-        fetchData(); // Appel de la fonction pour récupérer les données
+        const handleAPIError = (error) => {
+            console.error("Erreur API :", error);
+
+            if (error.response && error.response.status === 401) {
+                console.warn("Token expiré ou invalide, déconnexion");
+                localStorage.removeItem("token");
+                localStorage.removeItem("user_id");
+                window.location.reload();
+            }
+        };
+
+        loadBasicInfos();
+        loadAdvancedInfos();
     }, []);
+
 
     // Fonction pour formater la date au format souhaité
     function formatDate(dateString) {
