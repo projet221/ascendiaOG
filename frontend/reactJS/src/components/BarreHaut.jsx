@@ -112,6 +112,7 @@ const BarreHaut = () => {
                     style={{ borderColor: "#FF0035", color: "#FF0035" }}
                     title="Profil"
                 >
+
                   <svg
                       className="w-6 h-6"
                       fill="none"
