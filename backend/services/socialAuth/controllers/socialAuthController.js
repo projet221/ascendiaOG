@@ -180,6 +180,7 @@ const socialAuthController = {
             console.log(err)
         }
     },
+
     getSocialMediaByUserId : async (req, res) => {
         try {
             const socialAuth = await SocialAuth.find({user: req.params.user_id});
@@ -191,6 +192,7 @@ const socialAuthController = {
             console.log(err)
         }
     },
+
     DeleteSocialMedia : async (req, res) => {
         try {
             const result = await SocialAuth.deleteOne({

@@ -318,9 +318,18 @@ const postController = {
         }
     },
     getRecommandation : async (req, res) => {
-        console.log("je viens bien dans getRecommandationIA" )
+        console.log("je viens bien dans getRecommandationIA");
         try {
-            const Recommandations = await Recommandation.find({ user_id: req.params.id });
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Début de la journée
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1); // Début du jour suivant
+
+            const Recommandations = await Recommandation.find({
+                user_id: req.params.id,
+                date: { $gte: today, $lt: tomorrow } // Date du jour
+            });
+
             res.json(Recommandations);
         } catch (error) {
             res.status(500).json({ error: error.message });
