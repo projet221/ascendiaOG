@@ -46,7 +46,7 @@ export default function PostCarousel({ post, onDelete }) {
         </button>
 
         {/* fixed-size, scrollable, centered & scaled container */}
-        <div className="relative w-100 h-150 border rounded-lg overflow-auto">
+        <div className="relative w-80 h-80 border rounded-lg overflow-auto">
           <div
             className="absolute"
             style={{
