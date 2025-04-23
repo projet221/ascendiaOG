@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import Previsualisation from "./Previsualisation";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-
+function bufferToBase64(bufferObj) {
+    const byteArray = new Uint8Array(bufferObj.data);
+    let binary = "";
+    byteArray.forEach(byte => binary += String.fromCharCode(byte));
+    return window.btoa(binary);
+  }
 export default function PostCarousel({ post, onDelete }) {
   // state for which platform we're on
   const [current, setCurrent] = useState(0);
