@@ -8,6 +8,8 @@ import SidebarPublication from "../../components/SideBarPublication.jsx";
 import { axiosInstance } from "../../utils/axios";
 import Previsualisation from "../../components/Previsualisation.jsx";
 
+import { Bold, Italic, Underline, Wand2, Languages } from 'lucide-react';
+
 function New() {
     const [message, setMessage] = useState("");
     const userId = localStorage.getItem("user_id");
@@ -269,6 +271,42 @@ function New() {
 
                         </div>
                     </div>
+
+
+
+                zone de test
+                <div className="bg-white rounded-xl p-4 shadow-md w-full max-w-3xl mx-auto">
+                    <div className="flex items-center gap-3 mb-2">
+                        <button   onClick={() => {/* Gras */}}>
+                            <Bold className="w-5 h-5 text-gray-600" />
+                        </button>
+                        <button   onClick={() => {/* Italique */}}>
+                            <Italic className="w-5 h-5 text-gray-600" />
+                        </button>
+                        <button   onClick={() => {/* Souligner */}}>
+                            <Underline className="w-5 h-5 text-gray-600" />
+                        </button>
+                        <button   onClick={() => {/* Correction IA */}}>
+                            <Wand2 className="w-5 h-5 text-blue-600" />
+                        </button>
+                        <button   onClick={() => {/* Traduction */}}>
+                            <Languages className="w-5 h-5 text-green-600" />
+                        </button>
+                    </div>
+
+                    <textarea
+                        className="w-full min-h-[200px] border border-gray-300 rounded-md p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                        placeholder="Écrivez votre message ici..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
+
+                    <div className="flex justify-end mt-4">
+                        <button className="bg-[#FF0035] hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow">
+                            Publier
+                        </button>
+                    </div>
+                </div>
                 </div>
                 <div className="w-1/3 fixed right-0 top-16 h-screen overflow-y-auto p-6 border-l bg-white">
                 <h2 className="text-xl font-semibold mb-4">Prévisualisation</h2>
