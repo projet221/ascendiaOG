@@ -80,14 +80,24 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
           <IoIosArrowBack />
         </button>
 
-           <div className="w-100 h-150 border rounded-lg overflow-auto flex flex-col p-2">
-  <Previsualisation
-    platform={currentPlatform}
-    text={post.content}
-    image={image}
-    className="flex-1"
-  />
-</div>
+        <div className="relative w-80 h-80 border rounded-lg overflow-hidden">
+    {/* inner box at natural size, then scaled */}
+    <div
+      className="absolute top-0 left-0 origin-top-left"
+      style={{
+        width: 400,         // natural width of your Previsualisation
+        height: 400,        // natural height
+        transform: 'scale(0.5)' // 400×0.5 = 200px → fits your  w-80 (320px) box at uniform scale
+      }}
+    >
+      <Previsualisation
+        platform={currentPlatform}
+        text={post.content}
+        image={image}
+        className="w-full h-full"
+      />
+    </div>
+  </div>
 
         <button
           onClick={nextPlatform}
