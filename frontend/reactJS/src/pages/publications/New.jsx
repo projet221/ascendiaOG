@@ -218,14 +218,11 @@ function New() {
         if (!message.trim()) return;
 
         try {
-            const formData = new FormData();
-            formData.append("message", message);
-
             const response = await axiosInstance.post(
                 "/api/posts/corriger",
-                formData,
+                { message }, // ← ici on envoie un objet JSON
                 {
-                    headers: { "Content-Type": "multipart/form-data" },
+                    headers: { "Content-Type": "application/json" },
                 }
             );
 
@@ -240,15 +237,11 @@ function New() {
     const traduireTexte = async (langue) => {
         if (!message.trim() || !langue) return;
         try {
-            const formData = new FormData();
-            formData.append("message", message);
-            formData.append("langue", langue);
-
             const response = await axiosInstance.post(
                 "/api/posts/traduire",
-                formData,
+                { message, langue }, // ← idem ici
                 {
-                    headers: { "Content-Type": "multipart/form-data" },
+                    headers: { "Content-Type": "application/json" },
                 }
             );
 
