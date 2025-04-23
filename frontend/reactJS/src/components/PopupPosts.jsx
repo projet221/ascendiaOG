@@ -48,12 +48,11 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
       ? `data:${media.contentType};base64,${bufferToBase64(media.data)}`
       : null;
 
-  // State pour suivre la plateforme affichée
+  // État local pour chaque post — si tu préfères, on peut l’extraire dans un composant enfant
   const [currentPlatformIndex, setCurrentPlatformIndex] = useState(0);
   const platforms = post.platform;
   const currentPlatform = platforms[currentPlatformIndex];
 
-  // Handlers de navigation
   const nextPlatform = () => {
     setCurrentPlatformIndex((prev) => (prev + 1) % platforms.length);
   };
@@ -66,30 +65,39 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
 
   return (
     <div key={index} className="w-full max-w-[500px] mb-6 border-b pb-4 flex flex-col items-center">
-      {/* Boutons de navigation */}
-      <div className="flex items-center gap-4 mb-2">
+      <div className="flex items-center justify-center w-full gap-4">
+        {/* Flèche gauche */}
         <button
           onClick={prevPlatform}
-          className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8"
+          className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center"
         >
           ◀
         </button>
-        <span className="font-semibold">{currentPlatform.toUpperCase()}</span>
+
+        {/* Prévisualisation */}
+        <div className="flex-1 max-w-[400px]">
+          <Previsualisation
+            platform={currentPlatform}
+            text={post.content}
+            image={image}
+          />
+        </div>
+
+        {/* Flèche droite */}
         <button
           onClick={nextPlatform}
-          className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8"
+          className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center"
         >
           ▶
         </button>
       </div>
 
-      {/* Prévisualisation de la plateforme courante */}
-      <Previsualisation
-        platform={currentPlatform}
-        text={post.content}
-        image={image}
-      />
+      {/* Indication de la plateforme */}
+      <div className="mt-2 text-sm text-gray-600 font-medium">
+        {currentPlatform.toUpperCase()}
+      </div>
 
+      {/* Bouton Supprimer */}
       <button
         onClick={() => deletePost(post._id)}
         className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm mt-4"
@@ -99,7 +107,6 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
     </div>
   );
 })}
-
       </div>
     </div>
   );
