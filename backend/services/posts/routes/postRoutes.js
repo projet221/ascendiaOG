@@ -10,6 +10,7 @@ const {
   getInstagramStories
 } = require("../controllers/instagramController");
 const {getFacebookPosts, getFacebookPostById, getFacebookPostComments } = require("../controllers/facebookController");
+const { traduireMessage, corrigerMessage } = require("../controllers/fonctionsIA");
 
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
 router.get("/scheduled/:id",postController.getScheduledPostsByUser);
@@ -40,5 +41,6 @@ router.put('/:id/analytics', postController.updateAnalytics);
 router.get('/instagram/posts/:id', getInstagramPosts);
 router.get("/facebook/posts/:id", getFacebookPosts);
 
-
+router.post("/traduire", traduireMessage);
+router.post("/corriger", corrigerMessage);
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre
