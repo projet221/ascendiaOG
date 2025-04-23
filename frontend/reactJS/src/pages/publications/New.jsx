@@ -197,23 +197,44 @@ function New() {
         }).join('');
     };
 
+    const unStylizeText = (text) => {
+        return text.split('').map(char => {
+            const code = char.codePointAt(0);
+
+            // Bold A-Z : 0x1D400-0x1D419, a-z : 0x1D41A-0x1D433
+            if (code >= 0x1D400 && code <= 0x1D419) return String.fromCharCode(code - 0x1D400 + 65);
+            if (code >= 0x1D41A && code <= 0x1D433) return String.fromCharCode(code - 0x1D41A + 97);
+
+            // Italic A-Z : 0x1D434-0x1D44D, a-z : 0x1D44E-0x1D467
+            if (code >= 0x1D434 && code <= 0x1D44D) return String.fromCharCode(code - 0x1D434 + 65);
+            if (code >= 0x1D44E && code <= 0x1D467) return String.fromCharCode(code - 0x1D44E + 97);
+
+            return char;
+        }).join('');
+    };
+
     const applyStyleToSelection = (style) => {
         const textarea = document.getElementById("message");
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const selected = textarea.value.slice(start, end);
 
-        let styled;
+        let newText;
         if (style === "underline") {
-            styled = "_" + selected + "_";
+            const isUnderlined = selected.startsWith("_") && selected.endsWith("_");
+            newText = textarea.value.slice(0, start) +
+                (isUnderlined ? selected.slice(1, -1) : "_" + selected + "_") +
+                textarea.value.slice(end);
         } else {
-            styled = stylizeText(selected, style);
+            const normalText = unStylizeText(selected);
+            const alreadyStylized = stylizeText(normalText, style) === selected;
+            const styled = alreadyStylized ? normalText : stylizeText(normalText, style);
+
+            newText = textarea.value.slice(0, start) + styled + textarea.value.slice(end);
         }
 
-        const newText = textarea.value.slice(0, start) + styled + textarea.value.slice(end);
         setMessage(newText);
     };
-
     const corrigerTexte = async () => {
         if (!message.trim()) return;
 
