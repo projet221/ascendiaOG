@@ -214,6 +214,51 @@ function New() {
         setMessage(newText);
     };
 
+    const corrigerTexte = async () => {
+        if (!message.trim()) return;
+
+        try {
+            const formData = new FormData();
+            formData.append("message", message);
+
+            const response = await axiosInstance.post(
+                "/api/posts/corriger",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            const texteCorrige = response.data.message;
+            setMessage(texteCorrige);
+        } catch (error) {
+            console.error("Erreur lors de la correction :", error);
+            alert("Une erreur est survenue pendant la correction.");
+        }
+    };
+
+    const traduireTexte = async (langue) => {
+        if (!message.trim() || !langue) return;
+        try {
+            const formData = new FormData();
+            formData.append("message", message);
+            formData.append("langue", langue);
+
+            const response = await axiosInstance.post(
+                "/api/posts/traduire",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            const texteTraduit = response.data.message;
+            setMessage(texteTraduit);
+        } catch (error) {
+            console.error("Erreur lors de la traduction :", error);
+            alert("Une erreur est survenue pendant la traduction.");
+        }
+    };
 
     return (
         <div>
@@ -265,21 +310,22 @@ function New() {
                                     <button onClick={() => applyStyleToSelection("bold")}><Bold className="w-5 h-5 text-gray-600" /></button>
                                     <button onClick={() => applyStyleToSelection("italic")}><Italic className="w-5 h-5 text-gray-600" /></button>
                                     <button onClick={() => applyStyleToSelection("underline")}><Underline className="w-5 h-5 text-gray-600" /></button>
-                                    <button onClick={() => {/* Correction IA */}} className="flex items-center gap-1 text-blue-600 text-sm hover:underline"><Wand2 className="w-5 h-5" />Corriger</button>
+                                    <button onClick={corrigerTexte} className="flex items-center gap-1 text-blue-600 text-sm hover:underline"><Wand2 className="w-5 h-5" />Corriger</button>
                                     <div className="flex items-center gap-1 text-green-700">
                                         <Languages className="w-5 h-5" />
                                         <label htmlFor="langues" className="text-sm">Traduire en</label>
-                                        <select id="langues" className="border border-gray-300 rounded px-2 py-1 text-sm" onChange={(e) => { const lang = e.target.value; /* traduction(lang) */ }}>
+                                        <select id="langues" className="border border-gray-300 rounded px-2 py-1 text-sm" onChange={(e) => traduireTexte(e.target.value)}>
                                             <option value="">Langue</option>
-                                            <option value="en">Anglais</option>
-                                            <option value="es">Espagnol</option>
-                                            <option value="it">Italien</option>
-                                            <option value="ru">Russe</option>
-                                            <option value="zh">Mandarin</option>
-                                            <option value="de">Allemand</option>
-                                            <option value="pt">Portugais</option>
-                                            <option value="ja">Japonais</option>
-                                            <option value="ar">Arabe</option>
+                                            <option value="Arabe">Arabe</option>
+                                            <option value="Allemand">Allemand</option>
+                                            <option value="Anglais">Anglais</option>
+                                            <option value="Mandarin">Mandarin</option>
+                                            <option value="Espagnol">Espagnol</option>
+                                            <option value="Français">Français</option>
+                                            <option value="Italien">Italien</option>
+                                            <option value="Japonais">Japonais</option>
+                                            <option value="Portugais">Portugais</option>
+                                            <option value="Russe">Russe</option>
                                         </select>
                                     </div>
                                     <span className="ml-auto"><AjoutFichierBouton gestionFichier={setFichier} /></span>
