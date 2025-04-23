@@ -48,7 +48,6 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
       ? `data:${media.contentType};base64,${bufferToBase64(media.data)}`
       : null;
 
-  // État local pour chaque post — si tu préfères, on peut l’extraire dans un composant enfant
   const [currentPlatformIndex, setCurrentPlatformIndex] = useState(0);
   const platforms = post.platform;
   const currentPlatform = platforms[currentPlatformIndex];
@@ -65,8 +64,14 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
 
   return (
     <div key={index} className="w-full max-w-[500px] mb-6 border-b pb-4 flex flex-col items-center">
+      
+      {/* 🔝 Nom de la plateforme */}
+      <div className="mb-2 text-lg font-semibold text-gray-700 uppercase">
+        {currentPlatform}
+      </div>
+
+      {/* Slider plateforme */}
       <div className="flex items-center justify-center w-full gap-4">
-        {/* Flèche gauche */}
         <button
           onClick={prevPlatform}
           className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center"
@@ -74,7 +79,6 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
           ◀
         </button>
 
-        {/* Prévisualisation */}
         <div className="flex-1 max-w-[400px]">
           <Previsualisation
             platform={currentPlatform}
@@ -83,18 +87,12 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
           />
         </div>
 
-        {/* Flèche droite */}
         <button
           onClick={nextPlatform}
           className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center"
         >
           ▶
         </button>
-      </div>
-
-      {/* Indication de la plateforme */}
-      <div className="mt-2 text-sm text-gray-600 font-medium">
-        {currentPlatform.toUpperCase()}
       </div>
 
       {/* Bouton Supprimer */}
