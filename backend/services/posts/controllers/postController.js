@@ -38,10 +38,9 @@ const postController = {
                             "user.fields": ["id", "name", "username", "profile_image_url"],
                         });*/
 
-                        
-                        const userId = twitterId;
+
                         //recuperer les tweets avec l'id
-                        /*const tweets = await twitterClient.v2.userTimeline(userId, {
+                        /*const tweets = await twitterClient.v2.userTimeline(twitterId, {
                             expansions: ['author_id', 'attachments.media_keys'],
                             'tweet.fields': ['created_at', 'public_metrics', 'text', 'attachments'],
                             'media.fields': ['url', 'preview_image_url'],
@@ -54,7 +53,7 @@ const postController = {
                         }*/
 
                         //aly
-                        const tweetsPaginator = await twitterClient.v2.userTimeline(userId, {
+                        const tweetsPaginator = await twitterClient.v2.userTimeline(twitterId, {
                             expansions: ['author_id', 'attachments.media_keys'],
                             'tweet.fields': ['created_at', 'public_metrics', 'text', 'attachments'],
                             'media.fields': ['url', 'preview_image_url'],
@@ -93,7 +92,6 @@ const postController = {
                         console.error("Twitter API Error:", twitterError);
                         return res.status(500).json({ error: "Failed to fetch Twitter user data" });
                     }
-                    break;
                 }
                 default:
                     return res.status(400).json({ error: "Unsupported network" });
@@ -131,15 +129,15 @@ const postController = {
                 const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
 
                 // Conversion en JPEG avant la sauvegarde
-                await sharp(req.file.buffer)
+                sharp(req.file.buffer)
                 .jpeg({ quality: 90 })  // Qualité de compression de l'image
-                .toFile(uploadPath, (err, info) => {
+                .toFile(uploadPath, (err) => {
                     if (err) {
-                        console.error('Erreur lors de la conversion et de la sauvegarde de l\'image:', err);
+                        console.error('Erreur lors de la conversion et de la sauvegarde de l\'image');
                         return;
                     }
 
-                    console.log('Image convertie et sauvegardée avec succès:', info);
+                    console.log('Image convertie et sauvegardée avec succès');
                 }); 
 
             }
@@ -169,8 +167,9 @@ const postController = {
 
                         if (facebookTokens) {
                             const pageId = facebookTokens.pages[0].id; // ID de la page Facebook
-                            const accessToken = facebookTokens.accessToken; // Le token d'accès de la page
-
+                            const accessToken = facebookTokens.pages[0].accessToken; // Le token d'accès de la page
+                            console.log("page id : ", pageId);
+                            console.log("access token : ", accessToken);
                             if (fileBuffer) {
                                 // Si tu veux publier une photo
                                 const formData = new FormData();
@@ -280,8 +279,9 @@ const postController = {
                             contentType: req.file.mimetype  // Enregistrement du type MIME
                         });
                     }
+                    console.log(networks)
                     const newPost = new Post({
-                        userId: userId,  // Remplace par un vrai ID d'utilisateur
+                        userId: userId,
                         content: message,
                         platform: networks,
                         mediaFiles: mediaFiles,
@@ -411,16 +411,14 @@ const postController = {
 
         const dateStart = req.query.dateStart
         const dateEnd = req.query.dateEnd;
-        const id = req.params.id;
+        //const id = req.params.id;
         //const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
-        console.log("tokennnnnnnnnnns", response);
         const tokens = response.data;
         const facebookTokens = tokens.find(item => item.provider === "facebook");
                             
                             if (!facebookTokens) {
                                 return res.status(400).json({ error: "Twitter tokens not found" });
                             }
-        console.log("mes tokens", tokens);
 
         const accessToken = facebookTokens.accessToken;
         const resultat = await axios.get(`https://graph.facebook.com/v19.0/me/accounts?access_token=${accessToken}`);
