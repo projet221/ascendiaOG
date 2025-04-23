@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import BarreHaut from "../components/BarreHaut";
 import { axiosInstance } from "../utils/axios.jsx";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-import { PieChart } from 'react-minimal-pie-chart'; // Librairie pour afficher un camembert (statistiques)
+//import { PieChart } from 'react-minimal-pie-chart'; // Librairie pour afficher un camembert (statistiques)
 
 export default function Dashboard() {
     // Déclaration des états nécessaires
@@ -130,6 +130,15 @@ export default function Dashboard() {
         }
 
     }
+    const sentimentScore = 4;
+
+    const getSmiley = (score) => {
+        if (score >= 9) return '😍';       // Très content
+        if (score >= 7) return '😊';       // Content
+        if (score >= 5) return '😐';       // Neutre
+        if (score >= 3) return '😕';       // Pas content
+        return '😡';                       // Très mécontent
+    };
 
     return (
         <div className="min-h-screen bg-pink-50">
@@ -168,26 +177,11 @@ export default function Dashboard() {
 
                         {/* Deuxième rangée : graphiques et informations supplémentaires */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                            {/* Card “Réseaux les plus utilisés” */}
+                            {/* Card “Sentiments des utilisateurs” */}
                             <div className="bg-white rounded-lg shadow p-6">
-                                <h2 className="text-xl font-bold text-gray-700 mb-4">📊 Réseaux les plus utilisés</h2>
-                                <div className="flex justify-center items-center h-48">
-                                    <PieChart
-                                        data={[
-                                            { title: 'Instagram', value: 40, color: '#E1306C' },
-                                            { title: 'Twitter', value: 30, color: '#1DA1F2' },
-                                            { title: 'YouTube', value: 20, color: '#FF0000' },
-                                            { title: 'Autres', value: 10, color: '#888888' }
-                                        ]}
-                                        animate
-                                        label={({ dataEntry }) => `${dataEntry.title} (${dataEntry.value}%)`}
-                                        labelStyle={{
-                                            fontSize: '5px',
-                                            fill: '#fff',
-                                        }}
-                                        radius={42}
-                                        labelPosition={112}
-                                    />
+                                <h2 className="text-xl font-bold text-gray-700 mb-4">😊 Sentiment des utilisateurs</h2>
+                                <div className="flex justify-center items-center h-48 text-7xl">
+                                    {getSmiley(sentimentScore)}
                                 </div>
                             </div>
 
