@@ -292,7 +292,7 @@ function New() {
                                 </div>
                             )}
 
-
+                    </div>
                         </div>
                     </div>
 
