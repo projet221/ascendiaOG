@@ -50,7 +50,7 @@ export default function PostCarousel({ post, onDelete }) {
           <div
             className="absolute"
             style={{
-              top: "50%",
+              top: "0%",
               left: "50%",
               width: NATURAL.w,
               height: NATURAL.h,
