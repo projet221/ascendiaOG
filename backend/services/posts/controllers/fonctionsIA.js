@@ -29,7 +29,7 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
                 }
             }
         );
-
+        console.log(response.data);
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error("Erreur de traduction IA :", error.message);
