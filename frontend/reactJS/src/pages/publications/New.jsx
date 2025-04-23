@@ -227,7 +227,7 @@ function New() {
             );
 
             const texteCorrige = response.data.message;
-            setMessage(texteCorrige);
+            setMessage(texteCorrige.replace(/^"(.*)"$/, "$1"));
         } catch (error) {
             console.error("Erreur lors de la correction :", error);
             alert("Une erreur est survenue pendant la correction.");
@@ -246,7 +246,7 @@ function New() {
             );
 
             const texteTraduit = response.data.message;
-            setMessage(texteTraduit);
+            setMessage(texteTraduit.replace(/^"(.*)"$/, "$1"));
         } catch (error) {
             console.error("Erreur lors de la traduction :", error);
             alert("Une erreur est survenue pendant la traduction.");
