@@ -279,8 +279,9 @@ const postController = {
                             contentType: req.file.mimetype  // Enregistrement du type MIME
                         });
                     }
+                    console.log(networks)
                     const newPost = new Post({
-                        userId: userId,  // Remplace par un vrai ID d'utilisateur
+                        userId: userId,
                         content: message,
                         platform: networks,
                         mediaFiles: mediaFiles,
