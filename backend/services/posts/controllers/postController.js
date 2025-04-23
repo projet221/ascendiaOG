@@ -131,13 +131,13 @@ const postController = {
                 // Conversion en JPEG avant la sauvegarde
                 sharp(req.file.buffer)
                 .jpeg({ quality: 90 })  // Qualité de compression de l'image
-                .toFile(uploadPath, (err, info) => {
+                .toFile(uploadPath, (err) => {
                     if (err) {
-                        console.error('Erreur lors de la conversion et de la sauvegarde de l\'image:', err);
+                        console.error('Erreur lors de la conversion et de la sauvegarde de l\'image');
                         return;
                     }
 
-                    console.log('Image convertie et sauvegardée avec succès:', info);
+                    console.log('Image convertie et sauvegardée avec succès');
                 }); 
 
             }
@@ -413,14 +413,12 @@ const postController = {
         const dateEnd = req.query.dateEnd;
         //const id = req.params.id;
         //const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${id}`);
-        console.log("tokennnnnnnnnnns", response);
         const tokens = response.data;
         const facebookTokens = tokens.find(item => item.provider === "facebook");
                             
                             if (!facebookTokens) {
                                 return res.status(400).json({ error: "Twitter tokens not found" });
                             }
-        console.log("mes tokens", tokens);
 
         const accessToken = facebookTokens.accessToken;
         const resultat = await axios.get(`https://graph.facebook.com/v19.0/me/accounts?access_token=${accessToken}`);

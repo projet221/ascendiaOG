@@ -47,13 +47,13 @@ cron.schedule("* * * * *", async () => {
                     // Conversion en JPEG avant la sauvegarde
                     sharp(fileBuffer)
                     .jpeg({ quality: 90 })  // Qualité de compression de l'image
-                    .toFile(uploadPath, (err, info) => {
+                    .toFile(uploadPath, (err) => {
                         if (err) {
-                            console.error('Erreur lors de la conversion et de la sauvegarde de l\'image:', err);
+                            console.error('Erreur lors de la conversion et de la sauvegarde de l\'image',);
                             return;
                         }
 
-                        console.log('Image convertie et sauvegardée avec succès:', info);
+                        console.log('Image convertie et sauvegardée avec succès');
                     });
 
 
@@ -111,16 +111,16 @@ cron.schedule("* * * * *", async () => {
                                 } else {
                                     // Si tu veux publier juste un message
                                     try {
-                                        const response = await axios.post(
+                                        await axios.post(
                                             `https://graph.facebook.com/${pageId}/feed`, // Endpoint de publication sur la page
                                             {
                                                 message: message, // Message à publier
                                                 access_token: accessToken // Token d'accès de la page
                                             }
                                         );
-                                        console.log('Message publié avec succès', response.data);
+                                        console.log('Message publié avec succès');
                                     } catch (err) {
-                                        console.error('Erreur lors de la publication du message', err);
+                                        console.error('Erreur lors de la publication du message' );
                                     }
                                 }
                             }
@@ -151,11 +151,11 @@ cron.schedule("* * * * *", async () => {
                                         }
                                     }
                                 );
-                                console.log("createMedia response", createMediaResponse);
+                                console.log("createMedia response");
                                 // Vérifier la réponse et récupérer l'ID du média
                                 const mediaId = createMediaResponse.data.id;
                                 if (!mediaId) {
-                                    console.error("Erreur lors de la création du média Instagram." );
+                                    continue;
                                 }
                                 console.log("\n id du media recu : ", mediaId);
                                 // Étape 2 : Publier le media
@@ -214,13 +214,13 @@ cron.schedule("* * * * *", async () => {
 
                 console.log(`✅ Post publié avec succès.`);
             } catch (err) {
-                console.error(`❌ Erreur lors de la publication du post:`, err);
+                console.error(`❌ Erreur lors de la publication du post` );
                 //post.status = "failed";
                 //await post.save();
             }
         }
     } catch (err) {
-        console.error("❌ Erreur lors de la récupération des posts planifiés :", err);
+        console.error("❌ Erreur lors de la récupération des posts planifiés ");
     }
 });
 
