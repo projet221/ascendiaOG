@@ -226,6 +226,7 @@ function New() {
                                     onChange={handleMessageChange}
                                 ></textarea>
                                 <div className="absolute bottom-2 right-3">
+                                    <button className="bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow"> Correction IA</button>
                                     <AjoutFichierBouton gestionFichier={setFichier} />
                                 </div>
                             </div>
