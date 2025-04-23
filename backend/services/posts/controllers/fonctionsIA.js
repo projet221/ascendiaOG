@@ -1,9 +1,20 @@
 const axios = require("axios");
 
+const formaterMessage = (message) => {
+    if (typeof message === "string") {
+        return message;
+    } else if (message && typeof message === "object") {
+        return JSON.stringify(message);
+    } else {
+        return String(message);
+    }
+};
+
 const traduireMessage = async (message, langue) => {
+    const contenu = formaterMessage(message);
     const prompt = `
 Voici un message à traduire :
-"${message}"
+"${contenu}"
 
 Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux sociaux. Ne commence pas ta réponse par "Traduction :" ni aucune introduction. Ne change pas le ton du message, garde les emojis si présents.
 `;
@@ -28,7 +39,7 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
                 }
             }
         );
-        console.log(JSON.stringify(response.data,null,2));
+        console.log(JSON.stringify(response.data, null, 2));
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error("Erreur de traduction IA :", error.message);
@@ -37,9 +48,10 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
 };
 
 const corrigerMessage = async (message) => {
+    const contenu = formaterMessage(message);
     const prompt = `
 Corrige le message suivant pour qu'il soit sans faute, clair et engageant sur les réseaux sociaux :
-"${message}"
+"${contenu}"
 
 Ne change pas l’intention du message, garde les emojis et ne donne que le texte corrigé, sans aucune explication ni introduction.
 `;
@@ -64,7 +76,7 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
                 }
             }
         );
-        console.log(JSON.stringify(response.data,null,2));
+        console.log(JSON.stringify(response.data, null, 2));
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error("Erreur de correction IA :", error.message);
