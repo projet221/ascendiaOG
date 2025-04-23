@@ -55,7 +55,7 @@ export default function PostCarousel({ post, onDelete }) {
               width: NATURAL.w,
               height: NATURAL.h,
               transform: `translate(-50%, -50%) scale(${scale})`,
-              transformOrigin: "top left",
+              transformOrigin: "center center",
             }}
           >
             <Previsualisation
