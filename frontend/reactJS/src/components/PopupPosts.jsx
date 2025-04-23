@@ -81,7 +81,7 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
         </button>
 
         <div className="flex-1 max-w-[400px] flex items-center justify-center">
-    <div className="w-100 h-150 border rounded-lg overflow-hidden flex items-center justify-center">
+    <div className="w-100 h-100 border rounded-lg overflow-auto flex items-center justify-center">
       <Previsualisation
         platform={currentPlatform}
         text={post.content}
