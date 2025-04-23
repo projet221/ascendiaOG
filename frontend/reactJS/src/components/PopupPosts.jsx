@@ -2,6 +2,7 @@
 import React, { useState,useEffect } from "react";
 import Previsualisation from "./Previsualisation";
 import { axiosInstance } from "../utils/axios.jsx";
+import { IoIosArrowBack,IoIosArrowForward } from "react-icons/io";
 function bufferToBase64(bufferObj) {
     const byteArray = new Uint8Array(bufferObj.data);
     let binary = "";
@@ -76,7 +77,7 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
           onClick={prevPlatform}
           className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center"
         >
-          ◀
+          <IoIosArrowBack />
         </button>
 
         <div className="flex-1 max-w-[400px]">
@@ -91,7 +92,7 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
           onClick={nextPlatform}
           className="text-xl bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center"
         >
-          ▶
+          <IoIosArrowForward />
         </button>
       </div>
 
