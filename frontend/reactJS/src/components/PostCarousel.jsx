@@ -26,7 +26,7 @@ export default function PostCarousel({ post, onDelete }) {
 
   // assume these are your natural dimensions:
   const NATURAL = { w: 400, h: 400 };
-  const DISPLAY = { w: 340, h: 400 };
+  const DISPLAY = { w: 320, h: 400 };
   const scale = DISPLAY.w / NATURAL.w; // = 0.8
 
   return (
