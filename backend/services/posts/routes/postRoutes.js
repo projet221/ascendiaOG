@@ -41,6 +41,34 @@ router.put('/:id/analytics', postController.updateAnalytics);
 router.get('/instagram/posts/:id', getInstagramPosts);
 router.get("/facebook/posts/:id", getFacebookPosts);
 
-router.post("/traduire", traduireMessage);
-router.post("/corriger", corrigerMessage);
+router.post("/traduire", async (req, res) => {
+  const { message, langue } = req.body;
+
+  if (!message || !langue) {
+    return res.status(400).json({ error: "Message ou langue manquant" });
+  }
+
+  try {
+    const texteTraduit = await traduireMessage(message, langue);
+    res.json({ message: texteTraduit });
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de la traduction" });
+  }
+});
+
+router.post("/corriger", async (req, res) => {
+  const { message } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: "Message manquant" });
+  }
+
+  try {
+    const texteCorrige = await corrigerMessage(message);
+    res.json({ message: texteCorrige });
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de la correction" });
+  }
+});
+
 module.exports = router; //c est har tt le monde a ce probleme mais personne sait comment résoudre

@@ -9,7 +9,6 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
 `;
 
     try {
-        console.log("tentative de traduction");
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
@@ -22,16 +21,12 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
             {
                 headers: {
                     Authorization: `Bearer ${process.env.CLE_API_IA}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": process.env.PROXY_GATEWAY,
-                    "X-Title": "Ascendia"
+                    "Content-Type": "application/json"
                 }
             }
         );
-        console.log(JSON.stringify(response.data,null,2));
         return response.data.choices[0].message.content;
     } catch (error) {
-        console.error("Erreur de traduction IA :", error.message);
         throw error;
     }
 };
@@ -45,7 +40,6 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
 `;
 
     try {
-        console.log("tentative de correction");
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
@@ -58,16 +52,12 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
             {
                 headers: {
                     Authorization: `Bearer ${process.env.CLE_API_IA}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": process.env.PROXY_GATEWAY,
-                    "X-Title": "Ascendia"
+                    "Content-Type": "application/json"
                 }
             }
         );
-        console.log(JSON.stringify(response.data,null,2));
         return response.data.choices[0].message.content;
     } catch (error) {
-        console.error("Erreur de correction IA :", error.message);
         throw error;
     }
 };
