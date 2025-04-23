@@ -181,6 +181,40 @@ function New() {
         }
     }, [action]);
 
+    const stylizeText = (text, style) => {
+        const toBold = (c) =>
+            String.fromCodePoint((c >= 65 && c <= 90) ? c + 0x1D400 - 65 :
+                (c >= 97 && c <= 122) ? c + 0x1D41A - 97 : c);
+        const toItalic = (c) =>
+            String.fromCodePoint((c >= 65 && c <= 90) ? c + 0x1D434 - 65 :
+                (c >= 97 && c <= 122) ? c + 0x1D44E - 97 : c);
+
+        return text.split('').map(char => {
+            const code = char.charCodeAt(0);
+            if (style === "bold") return toBold(code);
+            if (style === "italic") return toItalic(code);
+            return char;
+        }).join('');
+    };
+
+    const applyStyleToSelection = (style) => {
+        const textarea = document.getElementById("message");
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selected = textarea.value.slice(start, end);
+
+        let styled;
+        if (style === "underline") {
+            styled = "_" + selected + "_";
+        } else {
+            styled = stylizeText(selected, style);
+        }
+
+        const newText = textarea.value.slice(0, start) + styled + textarea.value.slice(end);
+        setMessage(newText);
+    };
+
+
     return (
         <div>
             <BarreHaut />
@@ -228,9 +262,9 @@ function New() {
                                     onChange={handleMessageChange}
                                 ></textarea>
                                 <div className="flex items-center gap-3 mt-2 flex-wrap">
-                                    <button onClick={() => {/* Gras */}}><Bold className="w-5 h-5 text-gray-600" /></button>
-                                    <button onClick={() => {/* Italique */}}><Italic className="w-5 h-5 text-gray-600" /></button>
-                                    <button onClick={() => {/* Souligner */}}><Underline className="w-5 h-5 text-gray-600" /></button>
+                                    <button onClick={() => applyStyleToSelection("bold")}><Bold className="w-5 h-5 text-gray-600" /></button>
+                                    <button onClick={() => applyStyleToSelection("italic")}><Italic className="w-5 h-5 text-gray-600" /></button>
+                                    <button onClick={() => applyStyleToSelection("underline")}><Underline className="w-5 h-5 text-gray-600" /></button>
                                     <button onClick={() => {/* Correction IA */}} className="flex items-center gap-1 text-blue-600 text-sm hover:underline"><Wand2 className="w-5 h-5" />Corriger</button>
                                     <div className="flex items-center gap-1 text-green-700">
                                         <Languages className="w-5 h-5" />
