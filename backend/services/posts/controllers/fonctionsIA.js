@@ -28,7 +28,7 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
                 }
             }
         );
-        console.log(response.data);
+        console.log(JSON.stringify(response.data,null,2));
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error("Erreur de traduction IA :", error.message);
@@ -64,7 +64,7 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
                 }
             }
         );
-
+        console.log(JSON.stringify(response.data,null,2));
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error("Erreur de correction IA :", error.message);
