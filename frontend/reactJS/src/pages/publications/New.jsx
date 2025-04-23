@@ -212,6 +212,7 @@ function New() {
             return char;
         }).join('');
     };
+    const extractLetters = (text) => text.replace(/[^a-zA-Z]/g, "");
 
     const applyStyleToSelection = (style) => {
         const textarea = document.getElementById("message");
@@ -219,7 +220,10 @@ function New() {
         const end = textarea.selectionEnd;
         const selected = textarea.value.slice(start, end);
 
+        if (!selected) return;
+
         let newText;
+
         if (style === "underline") {
             const isUnderlined = selected.startsWith("_") && selected.endsWith("_");
             newText = textarea.value.slice(0, start) +
@@ -227,14 +231,21 @@ function New() {
                 textarea.value.slice(end);
         } else {
             const normalText = unStylizeText(selected);
-            const alreadyStylized = stylizeText(normalText, style) === selected;
-            const styled = alreadyStylized ? normalText : stylizeText(normalText, style);
+            const reStylized = stylizeText(normalText, style);
 
-            newText = textarea.value.slice(0, start) + styled + textarea.value.slice(end);
+            const lettersOriginal = extractLetters(selected);
+            const lettersStyled = extractLetters(reStylized);
+
+            const alreadyStylized = lettersOriginal === lettersStyled;
+
+            const replacement = alreadyStylized ? normalText : reStylized;
+
+            newText = textarea.value.slice(0, start) + replacement + textarea.value.slice(end);
         }
 
         setMessage(newText);
     };
+
     const corrigerTexte = async () => {
         if (!message.trim()) return;
 
