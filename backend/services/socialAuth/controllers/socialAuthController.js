@@ -96,7 +96,7 @@ const socialAuthController = {
                         try {
                             const response = await axios.get(`https://graph.facebook.com/v18.0/me/accounts?access_token=${token}`);
                             console.log(" Grosse attention par icicccccccccccccccccccccccc : \n",response.data);
-                            return response.data.data.map(item => ({ name: item.name, id: item.id }));
+                            return response.data.data.map(item => ({ name: item.name, id: item.id, accessToken: item.access_token }));
                         } catch (error) {
                             console.error("Erreur lors de la récupération des pages:", error);
                             return []; // Retourner un tableau vide en cas d'erreur
