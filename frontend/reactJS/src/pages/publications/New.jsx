@@ -227,10 +227,28 @@ function New() {
                                     value={message}
                                     onChange={handleMessageChange}
                                 ></textarea>
-                                <div className="absolute bottom-2 right-3">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <button   onClick={() => {/* Gras */}}>
+                                        <Bold className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                    <button   onClick={() => {/* Italique */}}>
+                                        <Italic className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                    <button   onClick={() => {/* Souligner */}}>
+                                        <Underline className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                    <button   onClick={() => {/* Correction IA */}}>
+                                        <Wand2 className="w-5 h-5 text-blue-600" />
+                                    </button>
+                                    <button   onClick={() => {/* Traduction */}}>
+                                        <Languages className="w-5 h-5 text-green-600" />
+                                    </button>
+                                </div>
+
+                                {/*<div className="absolute bottom-2 right-3">
                                     <button className="bg-[#FF0035] hover:bg-red-700 text-white py-2 px-6 rounded-lg shadow"> Correction IA</button>
                                     <AjoutFichierBouton gestionFichier={setFichier} />
-                                </div>
+                                </div>*/}
                             </div>
 
                             <label htmlFor="publish-select">Choisissez une action : </label>
