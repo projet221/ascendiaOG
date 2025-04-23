@@ -80,13 +80,16 @@ const PopupPosts = ({ isOpen, onClose, posts, date }) => {
           <IoIosArrowBack />
         </button>
 
-        <div className="flex-1 max-w-[400px]">
-          <Previsualisation
-            platform={currentPlatform}
-            text={post.content}
-            image={image}
-          />
-        </div>
+        <div className="flex-1 max-w-[400px] flex items-center justify-center">
+    <div className="w-80 h-80 border rounded-lg overflow-hidden flex items-center justify-center">
+      <Previsualisation
+        platform={currentPlatform}
+        text={post.content}
+        image={image}
+        className="w-full h-full object-contain"
+      />
+    </div>
+  </div>
 
         <button
           onClick={nextPlatform}
