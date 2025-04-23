@@ -131,7 +131,7 @@ const postController = {
                 const uploadPath = join(uploadDir, req.file.originalname.replace(/\.[^/.]+$/, ".jpeg"));
 
                 // Conversion en JPEG avant la sauvegarde
-                await sharp(req.file.buffer)
+                sharp(req.file.buffer)
                 .jpeg({ quality: 90 })  // Qualité de compression de l'image
                 .toFile(uploadPath, (err, info) => {
                     if (err) {
@@ -169,7 +169,7 @@ const postController = {
 
                         if (facebookTokens) {
                             const pageId = facebookTokens.pages[0].id; // ID de la page Facebook
-                            const accessToken = facebookTokens.accessToken; // Le token d'accès de la page
+                            const accessToken = facebookTokens.pages[0].accessToken; // Le token d'accès de la page
 
                             if (fileBuffer) {
                                 // Si tu veux publier une photo
