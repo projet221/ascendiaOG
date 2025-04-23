@@ -51,7 +51,7 @@ export default function PostCarousel({ post, onDelete }) {
             className="absolute"
             style={{
               top: "0%",
-              left: "50%",
+              left: "0%",
               width: NATURAL.w,
               height: NATURAL.h,
               transform: "translateX(-50%) scale(...)",
