@@ -95,7 +95,7 @@ const getSentiment = async (req, res) => {
             });
 
             const result = await Promise.all(pageFetches);
-            console.log(`✅ Commentaires Facebook récupérés : ${result.flat().length}`);
+            console.log(`✅ Commentaires Facebook récupérés `);
             return result.flat();
         };
 
@@ -180,8 +180,8 @@ const getSentiment = async (req, res) => {
         res.json({ sentimentScore: score });
 
     } catch (error) {
-        console.error('❌ Erreur analyse sentiments :', error.message || error);
-        res.status(500).json({ error: "Erreur durant l'analyse de sentiments." });
+        console.error('❌ Erreur analyse sentiments :', error);
+        res.status(500).json({ error: "Erreur durant l'analyse de sentiments." , err:error});
     }
 };
 
