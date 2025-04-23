@@ -76,7 +76,7 @@ const getSentiment = async (req, res) => {
         let allComments = [];
 
         const fetchFacebookComments = async (account) => {
-            console.log(`📘 Récupération des commentaires Facebook pour ${account.profile.name}`);
+            console.log(`📘 Récupération des commentaires Facebook pour ${account.profile.username}`);
             const pageFetches = account.pages.map(async (page) => {
                 console.log(`➡️  Page Facebook : ${page.name} (${page.id})`);
 
@@ -138,8 +138,8 @@ const getSentiment = async (req, res) => {
         console.log("📡 Lancement de la récupération des commentaires...");
         const fetchTasks = socialAccounts.map(async (account) => {
             switch (account.provider) {
-                case 'facebook':
-                    return await fetchFacebookComments(account);
+                /*case 'facebook':
+                    return await fetchFacebookComments(account);*/
                 case 'instagram':
                     return await fetchInstagramComments(account);
                 /*case 'twitter':
