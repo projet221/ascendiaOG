@@ -26,7 +26,7 @@ export default function PostCarousel({ post, onDelete }) {
 
   // assume these are your natural dimensions:
   const NATURAL = { w: 400, h: 400 };
-  const DISPLAY = { w: 320, h: 320 };
+  const DISPLAY = { w: 320, h: 400 };
   const scale = DISPLAY.w / NATURAL.w; // = 0.8
 
   return (
@@ -46,7 +46,7 @@ export default function PostCarousel({ post, onDelete }) {
         </button>
 
         {/* fixed-size, scrollable, centered & scaled container */}
-        <div className="relative w-80 h-80 border rounded-lg overflow-auto">
+        <div className="relative w-80 h-[400px] border rounded-lg overflow-auto">
           <div
             className="absolute"
             style={{
