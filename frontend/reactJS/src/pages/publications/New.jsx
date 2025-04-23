@@ -185,7 +185,7 @@ function New() {
             <SidebarPublication />
             <div className="ml-64 mt-16">
                 <div className="h-screen flex bg-gray-100 overflow-hidden">
-                    <div className="h-screen flex bg-gray-100 overflow-y-auto p-6">
+                    <div className="h-screen bg-gray-100 overflow-y-auto p-6">
                             <SelectCompte networks={networks} setNetworks={setNetworks} setInfoComptes={setInfoComptes} />
 
                             <div className="mb-4">
