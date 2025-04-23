@@ -12,7 +12,7 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState(true); // État de chargement
     const [totalEngagement, setTotalEngagement] = useState(0); // Engagement total
     const [totalPostsThisMonth, setTotalPostsThisMonth] = useState(0);
-    const [sentimentScore,setSentimentScore ] = useState(0);
+    const [sentimentScore,setSentimentScore ] = useState(10);
 
 
     // Effet de récupération des données lorsque le composant est monté
@@ -54,9 +54,9 @@ export default function Dashboard() {
                     axiosInstance.get(`/api/posts/recommandation/${userId}`, { headers }),
                     axiosInstance.get(`/api/posts/facebook/posts/${userId}`, { headers }),
                     axiosInstance.get(`/api/posts/instagram/posts/${userId}`, { headers }),
-                    axiosInstance.get(`/api/posts/sentiment/${userId}`, { headers }),
+                    //axiosInstance.get(`/api/posts/sentiment/${userId}`, { headers }),
                 ]);
-                setSentimentScore(sentiment.data.score);
+                //setSentimentScore(sentiment.data.score);
                 setRecommandation(recRes.data[0]?.contenu || "");
 
                 const facebookPosts = fbRes.data || [];
