@@ -6,8 +6,8 @@ const postRoutes = require('./routes/postRoutes');
 const { join } = require("node:path");
 
 dotenv.config();
-require('./jobs/cronScheduler');
-require('./jobs/PromptRecommandations');
+//require('./jobs/cronScheduler');
+//require('./jobs/PromptRecommandations');
 const app = express();
 const PORT = process.env.PORT || 3002;
 

@@ -10,6 +10,7 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
 `;
 
     try {
+        console.log("tentative de traduction");
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
@@ -45,6 +46,7 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
 `;
 
     try {
+        console.log("tentative de correction");
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
