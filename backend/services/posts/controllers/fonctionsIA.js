@@ -65,13 +65,21 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
 
 const getSentiment = async (req, res) => {
     try {
+        console.log("🟢 Début de l'analyse de sentiment");
+
         const userId = req.params.id;
+        console.log(`🔍 Récupération des comptes sociaux pour l'utilisateur : ${userId}`);
+
         const response = await axios.get(`${process.env.PROXY_GATEWAY}/api/socialauth/tokens/${userId}`);
         const socialAccounts = response.data;
+
         let allComments = [];
 
         const fetchFacebookComments = async (account) => {
+            console.log(`📘 Récupération des commentaires Facebook pour ${account.profile.name}`);
             const pageFetches = account.pages.map(async (page) => {
+                console.log(`➡️  Page Facebook : ${page.name} (${page.id})`);
+
                 const postsRes = await axios.get(
                     `https://graph.facebook.com/v18.0/${page.id}/posts?access_token=${page.accessToken}`
                 );
@@ -87,10 +95,12 @@ const getSentiment = async (req, res) => {
             });
 
             const result = await Promise.all(pageFetches);
+            console.log(`✅ Commentaires Facebook récupérés : ${result.flat().length}`);
             return result.flat();
         };
 
         const fetchInstagramComments = async (account) => {
+            console.log(`📸 Récupération des commentaires Instagram pour ${account.profile.username}`);
             const igAccountId = account.profile.id;
 
             const postsRes = await axios.get(
@@ -104,7 +114,9 @@ const getSentiment = async (req, res) => {
                 return commentsRes.data.data.map(c => c.text);
             }));
 
-            return commentsPerPost.flat();
+            const all = commentsPerPost.flat();
+            console.log(`✅ Commentaires Instagram récupérés : ${all.length}`);
+            return all;
         };
 
         /*const fetchTwitterComments = async (account) => {
@@ -123,6 +135,7 @@ const getSentiment = async (req, res) => {
         };*/
 
         // Exécute tous les fetchs en parallèle
+        console.log("📡 Lancement de la récupération des commentaires...");
         const fetchTasks = socialAccounts.map(async (account) => {
             switch (account.provider) {
                 case 'facebook':
@@ -139,7 +152,10 @@ const getSentiment = async (req, res) => {
         const commentsBySource = await Promise.all(fetchTasks);
         allComments = commentsBySource.flat();
 
+        console.log(`📋 Nombre total de commentaires récupérés : ${allComments.length}`);
+
         // Analyse de sentiment via OpenRouter
+        console.log("🧠 Envoi des commentaires à l'IA pour analyse de sentiment...");
         const aiResponse = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
             model: 'gpt-3.5-turbo',
             messages: [
@@ -160,13 +176,15 @@ const getSentiment = async (req, res) => {
         });
 
         const score = parseInt(aiResponse.data.choices[0].message.content);
+        console.log(`🎯 Score de sentiment retourné par l'IA : ${score}`);
         res.json({ sentimentScore: score });
 
     } catch (error) {
-        console.error('Erreur analyse sentiments :', error.message || error);
+        console.error('❌ Erreur analyse sentiments :', error.message || error);
         res.status(500).json({ error: "Erreur durant l'analyse de sentiments." });
     }
 };
+
 module.exports = {
     traduireMessage,
     corrigerMessage,
