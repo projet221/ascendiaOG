@@ -10,12 +10,13 @@ const {
   getInstagramStories
 } = require("../controllers/instagramController");
 const {getFacebookPosts, getFacebookPostById, getFacebookPostComments } = require("../controllers/facebookController");
-const { traduireMessage, corrigerMessage } = require("../controllers/fonctionsIA");
+const { traduireMessage, corrigerMessage, getSentiment } = require("../controllers/fonctionsIA");
 
 router.get("/alive", (req, res) => {res.status(200).send("OK");});
 router.get("/scheduled/:id",postController.getScheduledPostsByUser);
 router.post('/delete',postController.deletePost);
 router.get('/recommandation/:id', postController.getRecommandation);
+router.get("/sentiment/:id", getSentiment );
 router.get('/:networks/:id', postController.getAllPosts);
 router.post('/',upload.single('file'), postController.createPost);
 router.post('/schedule',upload.single('file'), postController.schedulePost);
