@@ -117,8 +117,8 @@ function New() {
             <BarreHaut />
             <SidebarPublication />
             <div className="ml-64 mt-16">
-                <div className="h-screen flex bg-gray-100 overflow-hidden">
-                    <div className="min-h-screen flex bg-gray-100 overflow-y-auto">
+                <div className="min-h-screen flex flex-col bg-gray-100 overflow-y-auto">
+                <div className="min-h-screen flex bg-gray-100 overflow-y-auto">
                         <div className="p-6">
                             <SelectCompte networks={networks} setNetworks={setNetworks} setInfoComptes={setInfoComptes} />
 
