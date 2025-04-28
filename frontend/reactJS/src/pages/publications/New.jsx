@@ -101,6 +101,7 @@ function New() {
             return;
         }
         try {
+            const utcDate = DateTime.fromISO(scheduleDate, { zone: 'Europe/Paris' }).toUTC().toISO();
             const formData = new FormData();
             formData.append("userId", userId);
             networks.forEach(n => {
@@ -112,7 +113,7 @@ function New() {
                 formData.append("file", fichier);
             }
 
-            formData.append("scheduleDate", scheduleDate);
+            formData.append("scheduleDate", utcDate );
 
             const response = await axiosInstance.post(
                 "/api/posts/schedule",
