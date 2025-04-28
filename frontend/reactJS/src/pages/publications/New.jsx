@@ -10,7 +10,6 @@ import { axiosInstance } from "../../utils/axios";
 import Previsualisation from "../../components/Previsualisation.jsx";
 
 import { Bold, Italic, Underline, Wand2, Languages } from 'lucide-react';
-forma
 function New() {
     const [message, setMessage] = useState("");
     const userId = localStorage.getItem("user_id");
