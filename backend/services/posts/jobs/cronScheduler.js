@@ -215,7 +215,7 @@ cron.schedule("* * * * *", async () => {
 
                 console.log(`✅ Post publié avec succès.`);
             } catch (err) {
-                console.error(`❌ Erreur lors de la publication du post` );
+                console.error(`❌ Erreur lors de la publication du post`, err.message);
                 //post.status = "failed";
                 //await post.save();
             }
