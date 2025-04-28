@@ -146,9 +146,8 @@ export default function Dashboard() {
     };
 
     const formatDateDashboard = (dateISO) => {
-        return DateTime.fromISO(dateISO, { zone: "utc" }) // Je lis le format UTC brut
-            .setZone("Europe/Paris") // Je le convertis en heure française
-            .toFormat("dd/MM/yyyy HH:mm"); // Puis je l'affiche au bon format
+        return DateTime.fromISO(dateISO)
+            .toFormat("dd/MM/yyyy HH:mm");
     };
 
 
