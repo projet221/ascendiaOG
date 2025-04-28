@@ -122,8 +122,8 @@ export default function Dashboard() {
             try {
                 const proxy = import.meta.env.VITE_PROXY_GATEWAY;
                 const [igRes, fbRes] = await Promise.all([
-                    axios.get(`${proxy}/api/posts/instagram/posts/${userId}`),
-                    axios.get(`${proxy}/api/posts/facebook/posts/${userId}`)
+                    axiosInstance.get(`${proxy}/api/posts/instagram/posts/${userId}`),
+                    axiosInstance.get(`${proxy}/api/posts/facebook/posts/${userId}`)
                 ]);
 
                 const igPosts = igRes.data || [];
