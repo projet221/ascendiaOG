@@ -22,7 +22,7 @@ cron.schedule("* * * * *", async () => {
             scheduledFor: { $lte: nowUtc.toJSDate() },  // toJSDate() transforme Luxon en Date classique pour MongoDB
             status: "scheduled",
         });
-        console.log(`il est ${now} .\n voici les posts retourner : ${postsToPublish}`);
+        console.log(` Il est (UTC) ${nowUtc.toISO()}.\ Voici les posts retourner : ${postsToPublish}`);
         for (const post of postsToPublish) {
             try {
                 console.log("des posts sont en attente");
