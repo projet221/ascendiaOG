@@ -12,7 +12,7 @@ const { DateTime } = require("luxon"); //etre au bon Fuseau Horraire
 cron.schedule("* * * * *", async () => {
     console.log("🔄 Vérification des posts planifiés...");
 
-    const nowParis = DateTime.now().setZone("Europe/Paris");
+    const nowParis = DateTime.now();
     console.log("Il est (heure française) :", nowParis.toISO());
 
     try {
