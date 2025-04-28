@@ -12,12 +12,12 @@ const { DateTime } = require("luxon"); //etre au bon Fuseau Horraire
 cron.schedule("* * * * *", async () => {
     console.log("🔄 Vérification des posts planifiés...");
 
-    const nowParis = DateTime.now();
-    console.log("Il est (heure française) :", nowParis.toISO());
+    const nowUtc = DateTime.utc();
+    console.log("Il est (heure française) :", nowUtc.toISO());
 
     try {
         const postsToPublish = await Post.find({
-            scheduledFor: { $lte: nowParis.toJSDate() },  // toJSDate() transforme Luxon en Date classique pour MongoDB
+            scheduledFor: { $lte: nowUtc.toJSDate() },  // toJSDate() transforme Luxon en Date classique pour MongoDB
             status: "scheduled",
         });
         console.log(`il est ${now} .\n voici les posts retourner : ${postsToPublish}`);
