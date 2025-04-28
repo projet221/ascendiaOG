@@ -14,6 +14,8 @@ cron.schedule("* * * * *", async () => {
 
     const nowUtc = DateTime.utc();
     console.log("Il est (heure française) :", nowUtc.toISO());
+    const systemTime = new Date();
+    console.log("🕒 Heure système brute du serveur :", systemTime.toISOString());
 
     try {
         const postsToPublish = await Post.find({
