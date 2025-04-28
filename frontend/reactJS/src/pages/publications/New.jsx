@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { EyeOff } from 'lucide-react';
 
-
+import { DateTime } from "luxon";
 import SelectCompte from "../../components/SelectCompte.jsx";
 import AjoutFichierBouton from "../../components/AjoutFichierBouton.jsx";
 import BarreHaut from "../../components/BarreHaut.jsx";
@@ -10,7 +10,7 @@ import { axiosInstance } from "../../utils/axios";
 import Previsualisation from "../../components/Previsualisation.jsx";
 
 import { Bold, Italic, Underline, Wand2, Languages } from 'lucide-react';
-
+forma
 function New() {
     const [message, setMessage] = useState("");
     const userId = localStorage.getItem("user_id");
@@ -134,15 +134,12 @@ function New() {
     };
 
     const getMeilleurMoment = () => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const day = now.getDate();
+        const now = DateTime.now().setZone("Europe/Paris"); // Très important
 
-        const today1230 = new Date(year, month, day, 12, 30);
-        const today1500 = new Date(year, month, day, 15, 0);
-        const today1945 = new Date(year, month, day, 19, 45);
-        const tomorrow1230 = new Date(year, month, day + 1, 12, 30);
+        const today1230 = now.set({ hour: 12, minute: 30, second: 0, millisecond: 0 });
+        const today1500 = now.set({ hour: 15, minute: 0, second: 0, millisecond: 0 });
+        const today1945 = now.set({ hour: 19, minute: 45, second: 0, millisecond: 0 });
+        const tomorrow1230 = now.plus({ days: 1 }).set({ hour: 12, minute: 30, second: 0, millisecond: 0 });
 
         let bestTime;
 
@@ -153,11 +150,9 @@ function New() {
         } else if (now < today1945) {
             bestTime = today1945;
         } else {
-
             bestTime = tomorrow1230;
         }
-
-        return bestTime.toISOString().slice(0, 16);
+        return bestTime.toISO({ suppressMilliseconds: true }).slice(0, 16);
     };
 
     useEffect(() => {
@@ -297,7 +292,7 @@ function New() {
             <BarreHaut />
             <SidebarPublication />
             <div className="ml-64 mt-16">
-                <div className="h-screen flex bg-gray-100 overflow-hidden">
+                <div className="min-h-screen flex bg-gray-100 overflow-hidden">
                     <div className="h-screen bg-gray-100 overflow-y-auto p-6">
                         <SelectCompte networks={networks} setNetworks={setNetworks} setInfoComptes={setInfoComptes} />
 

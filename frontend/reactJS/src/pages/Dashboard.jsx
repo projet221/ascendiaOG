@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import BarreHaut from "../components/BarreHaut";
 import { axiosInstance } from "../utils/axios.jsx";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-import {DateTime} from "luxon";
+
+import { DateTime } from "luxon";
+
+
+
 //import { PieChart } from 'react-minimal-pie-chart'; // Librairie pour afficher un camembert (statistiques)
 
 export default function Dashboard() {
@@ -141,10 +145,10 @@ export default function Dashboard() {
         return '😡';                       // Très mécontent
     };
 
-    const dateBonFuseau = (dateStr) => {
-        return DateTime.fromISO(dateStr, { zone: "utc" })
-            .setZone("Europe/Paris")
-            .toFormat("dd/MM/yyyy HH:mm");
+    const formatDateDashboard = (dateISO) => {
+        return DateTime.fromISO(dateISO, { zone: "utc" }) // Je lis le format UTC brut
+            .setZone("Europe/Paris") // Je le convertis en heure française
+            .toFormat("dd/MM/yyyy HH:mm"); // Puis je l'affiche au bon format
     };
 
 
@@ -253,7 +257,8 @@ export default function Dashboard() {
                                                     <span key={idx}>{getPlatformIcon(p)}</span>
                                                 ))}
                                                 <span className="text-sm text-gray-500">
-                                                     — {dateBonFuseau(post.scheduledFor)}
+                                                     — {formatDateDashboard(post.scheduledFor)}
+
                                                 </span>
                                             </div>
                                             <p className="text-gray-600 text-sm">{post.content}</p>
