@@ -7,18 +7,17 @@ const {join} = require("node:path");
 const fs = require("fs");
 const sharp = require("sharp");
   // Service qui publie le post
-
+const { DateTime } = require("luxon"); //etre au bon Fuseau Horraire
 // Tâche cron exécutée toutes les minutes
 cron.schedule("* * * * *", async () => {
     console.log("🔄 Vérification des posts planifiés...");
 
-    const now = new Date();  // Date actuelle en UTC
-    now.setHours(now.getHours() + 2);  // Ajouter 1 heure pour passer à GMT+1
+    const nowParis = DateTime.now().setZone("Europe/Paris");
+    console.log("Il est (heure française) :", nowParis.toISO());
 
     try {
-        // Trouver les posts dont la date de publication est dépassée et qui ne sont pas encore publiés
         const postsToPublish = await Post.find({
-            scheduledFor: { $lte: now },
+            scheduledFor: { $lte: nowParis.toJSDate() },  // toJSDate() transforme Luxon en Date classique pour MongoDB
             status: "scheduled",
         });
         console.log(`il est ${now} .\n voici les posts retourner : ${postsToPublish}`);
