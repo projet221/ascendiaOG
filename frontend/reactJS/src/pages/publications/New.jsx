@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { EyeOff } from 'lucide-react';
 
+
 import SelectCompte from "../../components/SelectCompte.jsx";
 import AjoutFichierBouton from "../../components/AjoutFichierBouton.jsx";
 import BarreHaut from "../../components/BarreHaut.jsx";
@@ -138,9 +139,10 @@ function New() {
         const month = now.getMonth();
         const day = now.getDate();
 
-        const today1230 = new Date(year, month, day, 14, 30);
-        const today1500 = new Date(year, month, day, 17, 0);
-        const today1945 = new Date(year, month, day, 21, 45);
+        const today1230 = new Date(year, month, day, 12, 30);
+        const today1500 = new Date(year, month, day, 15, 0);
+        const today1945 = new Date(year, month, day, 19, 45);
+        const tomorrow1230 = new Date(year, month, day + 1, 12, 30);
 
         let bestTime;
 
@@ -151,7 +153,7 @@ function New() {
         } else if (now < today1945) {
             bestTime = today1945;
         } else {
-            const tomorrow1230 = new Date(year, month, day + 1, 14, 30);
+
             bestTime = tomorrow1230;
         }
 
@@ -284,6 +286,11 @@ function New() {
             alert("Une erreur est survenue pendant la traduction.");
         }
     };
+
+
+
+
+
 
     return (
         <div>

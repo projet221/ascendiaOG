@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import BarreHaut from "../components/BarreHaut";
 import { axiosInstance } from "../utils/axios.jsx";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import {DateTime} from "luxon";
 //import { PieChart } from 'react-minimal-pie-chart'; // Librairie pour afficher un camembert (statistiques)
 
 export default function Dashboard() {
@@ -109,14 +110,14 @@ export default function Dashboard() {
 
 
     // Fonction pour formater la date au format souhaité
-    function formatDate(dateString) {
+    /*function formatDate(dateString) {
         const date = new Date(dateString);
         return `${date.getDate().toString().padStart(2, '0')}/${
             (date.getMonth() + 1).toString().padStart(2, '0')}/${
             date.getFullYear()} ${
             date.getHours().toString().padStart(2, '0')}:${
             date.getMinutes().toString().padStart(2, '0')}`;
-    }
+    }*/
 
     // Fonction pour obtenir l'icône d'un réseau social basé sur son nom
     function getPlatformIcon(platform) {
@@ -139,6 +140,13 @@ export default function Dashboard() {
         if (score >= 3) return '😕';       // Pas content
         return '😡';                       // Très mécontent
     };
+
+    const dateBonFuseau = (dateStr) => {
+        return DateTime.fromISO(dateStr, { zone: "utc" })
+            .setZone("Europe/Paris")
+            .toFormat("dd/MM/yyyy HH:mm");
+    };
+
 
     return (
         <div className="min-h-screen bg-pink-50">
@@ -244,12 +252,15 @@ export default function Dashboard() {
                                                 {post.platform.map((p, idx) => (
                                                     <span key={idx}>{getPlatformIcon(p)}</span>
                                                 ))}
-                                                <span className="text-sm text-gray-500">— {formatDate(post.scheduledFor)}</span>
+                                                <span className="text-sm text-gray-500">
+                                                     — {dateBonFuseau(post.scheduledFor)}
+                                                </span>
                                             </div>
                                             <p className="text-gray-600 text-sm">{post.content}</p>
                                         </li>
                                     ))}
                             </ul>
+
                         </div>
                     </>
                 )}

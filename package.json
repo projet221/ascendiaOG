@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "fs": "^0.0.1-security",
     "luxon": "^3.6.1"
   }
 }
