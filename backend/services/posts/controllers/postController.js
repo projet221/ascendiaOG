@@ -6,6 +6,8 @@ const { join} = require("node:path");
 const  Post = require("../models/Post");
 const Recommandation = require("../models/Recommandation");
 const sharp = require("sharp");
+const { DateTime } = require('luxon');
+
 
 const postController = {
     // Récupérer toutes les publications
@@ -280,12 +282,13 @@ const postController = {
                         });
                     }
                     console.log(networks)
-                    const newPost = new Post({
+                const scheduleDateUTC = DateTime.fromISO(scheduleDate, { zone: "Europe/Paris" }).toUTC().toJSDate();
+                const newPost = new Post({
                         userId: userId,
                         content: message,
                         platform: networks,
                         mediaFiles: mediaFiles,
-                        scheduledFor: new Date(scheduleDate),
+                        scheduledFor:scheduleDateUTC,
                         status: "scheduled",
                     });
     
