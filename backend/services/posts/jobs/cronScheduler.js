@@ -54,7 +54,7 @@ cron.schedule("* * * * *", async () => {
                             return;
                         }
 
-                        console.log('Image convertie et sauvegardée avec succès');
+                        console.log(`Image convertie et sauvegardée avec succès ${uploadPath}`);
                     });
 
 
