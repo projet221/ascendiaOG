@@ -221,7 +221,7 @@ cron.schedule("* * * * *", async () => {
             }
         }
     } catch (err) {
-        console.error("❌ Erreur lors de la récupération des posts planifiés ");
+        console.error("❌ Erreur lors de la récupération des posts planifiés ",err);
     }
 });
 
