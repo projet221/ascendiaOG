@@ -16,7 +16,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(join(__dirname, 'controllers', 'uploads')));
-
+app.use('/uploadsjob', express.static(join(__dirname, 'jobs', 'uploads')));
 app.use(postRoutes);
 
 app.listen(PORT, () => {

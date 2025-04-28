@@ -96,7 +96,7 @@ cron.schedule("* * * * *", async () => {
                                     // Si tu veux publier une photo
                                     const formData = new FormData();
                                     formData.append('message', message);
-                                    formData.append('url', `${process.env.PROXY_POSTS}/uploads/${post._id+".jpeg"}`);
+                                    formData.append('url', `${process.env.PROXY_POSTS}/uploadsjob/${post._id+".jpeg"}`);
                                     formData.append('access_token', accessToken);
                                     console.log(formData);
                                     try {
@@ -141,10 +141,10 @@ cron.schedule("* * * * *", async () => {
                                 // Étape 1 : Créer un media
                                 console.log("voici le accesstoken IG : ", instagramTokens.accessToken);
                                 console.log("voici le userid du compte instagram : ",instagramTokens.profile.id)
-                                console.log("\nurl de l'image : ",`${process.env.PROXY_POSTS}/uploads/${post._id+".jpeg"}`)
+                                console.log("\nurl de l'image : ",`${process.env.PROXY_POSTS}/uploadsjob/${post._id+".jpeg"}`)
                                 const createMediaResponse = await axios.post(
                                     `https://graph.instagram.com/${instagramTokens.profile.id}/media`,
-                                    {"image_url": `${process.env.PROXY_POSTS}/uploads/${post._id+".jpeg"}`,
+                                    {"image_url": `${process.env.PROXY_POSTS}/uploadsjob/${post._id+".jpeg"}`,
                                         "caption":message},
                                     {
                                         headers: {
