@@ -18,6 +18,8 @@ export default function Dashboard() {
     const [totalEngagement, setTotalEngagement] = useState(0); // Engagement total
     const [totalPostsThisMonth, setTotalPostsThisMonth] = useState(0);
     const [sentimentScore,setSentimentScore ] = useState(10);
+    const [topPost, setTopPost] = useState(null); //post plus performant
+
 
 
     // Effet de récupération des données lorsque le composant est monté
@@ -112,16 +114,42 @@ export default function Dashboard() {
         loadAdvancedInfos();
     }, []);
 
+    useEffect(() => {
+        const fetchTopPost = async () => {
+            const userId = localStorage.getItem("user_id");
+            if (!userId) return;
 
-    // Fonction pour formater la date au format souhaité
-    /*function formatDate(dateString) {
-        const date = new Date(dateString);
-        return `${date.getDate().toString().padStart(2, '0')}/${
-            (date.getMonth() + 1).toString().padStart(2, '0')}/${
-            date.getFullYear()} ${
-            date.getHours().toString().padStart(2, '0')}:${
-            date.getMinutes().toString().padStart(2, '0')}`;
-    }*/
+            try {
+                const proxy = import.meta.env.VITE_PROXY_GATEWAY;
+                const [igRes, fbRes] = await Promise.all([
+                    axios.get(`${proxy}/api/posts/instagram/posts/${userId}`),
+                    axios.get(`${proxy}/api/posts/facebook/posts/${userId}`)
+                ]);
+
+                const igPosts = igRes.data || [];
+                const fbPosts = fbRes.data || [];
+
+                const allPosts = [...igPosts, ...fbPosts];
+
+                const top = allPosts.reduce((max, post) => {
+                    const likes = post.like_count || post.likes?.summary?.total_count || 0;
+                    const comments = post.comments_count || post.comments?.summary?.total_count || 0;
+                    const engagement = likes + comments;
+                    return engagement > max.engagement ? { ...post, engagement } : max;
+                }, { engagement: 0 });
+
+                setTopPost(top.engagement > 0 ? top : null);
+            } catch (error) {
+                console.error("Erreur lors de la récupération du Top Post :", error);
+            }
+        };
+
+        fetchTopPost();
+    }, []);
+
+
+
+
 
     // Fonction pour obtenir l'icône d'un réseau social basé sur son nom
     function getPlatformIcon(platform) {
@@ -196,35 +224,45 @@ export default function Dashboard() {
                                 </div>
                             </div>
 
-                            {/* Card “Hashtags Tendance” */}
+                            {/* Card “Top Post” */}
                             <div className="bg-white rounded-lg shadow p-6">
-                                <h2 className="text-xl font-bold text-gray-700 mb-4">🔥 Hashtags Tendance</h2>
-                                <p className="text-gray-600 mb-2">Top hashtags cette semaine</p>
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    <span className="bg-pink-100 text-pink-600 px-2 py-1 rounded-md text-sm">#valentinesDay</span>
-                                    <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-md text-sm">#Trump</span>
-                                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md text-sm">#marketing</span>
-                                    <span className="bg-purple-100 text-purple-600 px-2 py-1 rounded-md text-sm">#tech</span>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div>
-                                        <p className="text-gray-400 text-sm">+62% Visibilité</p>
-                                        <p className="text-sm text-gray-700">par rapport à la semaine dernière</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-400 text-sm">2.6K Utilisations</p>
-                                        <p className="text-sm text-gray-700">sur la dernière campagne</p>
-                                    </div>
-                                </div>
-                                <div className="mt-4 flex gap-2">
-                                    <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                                        Utiliser
-                                    </button>
-                                    <button className="border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-50">
-                                        Analyser
-                                    </button>
-                                </div>
+                                <h2 className="text-xl font-bold text-gray-700 mb-4">🔥 Top Post</h2>
+
+                                {topPost ? (
+                                    <>
+                                        {topPost.media_url || topPost.full_picture ? (
+                                            <img
+                                                src={topPost.media_url || topPost.full_picture}
+                                                alt="Top Post"
+                                                className="w-full h-40 object-cover rounded-md mb-4"
+                                            />
+                                        ) : (
+                                            <div className="h-40 bg-gray-100 flex items-center justify-center rounded-md mb-4 text-gray-400 text-sm">
+                                                Aucune image
+                                            </div>
+                                        )}
+
+                                        <p className="text-gray-700 mb-2">{topPost.caption || topPost.message || "Pas de description."}</p>
+
+                                        <div className="flex items-center justify-between text-gray-600 text-sm mt-4">
+                                            <p>Engagement : <span className="font-semibold">{topPost.engagement}</span></p>
+                                            {topPost.permalink || topPost.permalink_url ? (
+                                                <a
+                                                    href={topPost.permalink || topPost.permalink_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-500 hover:underline"
+                                                >
+                                                    Voir
+                                                </a>
+                                            ) : null}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-gray-400 italic">Aucun top post pour l'instant.</p>
+                                )}
                             </div>
+
 
                             {/* Card “Recommandation IA” */}
                             <div className="bg-white rounded-lg shadow p-6">
