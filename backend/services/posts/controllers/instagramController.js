@@ -12,9 +12,6 @@ exports.getInstagramPosts = async (req, res) => {
     return res.status(500).json({ error: 'INSTAID ou INSTATOKEN manquant.' });
   }
 
-  console.log(' INSTAID:', igUserId);
-  console.log(' Token partiel:', accessToken.slice(0, 15) + '...');
-
   try {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${igUserId}/media`, {
       params: {
@@ -25,12 +22,9 @@ exports.getInstagramPosts = async (req, res) => {
 
     const posts = response.data.data;
     console.log(`${posts.length} publications Instagram reçues.`);
-
     res.json(posts);
   } catch (error) {
-    console.error(' Erreur lors de la requête à Instagram Graph API :');
-    console.error(error.response?.data || error.message);
-
+    console.error('Erreur lors de la requête à Instagram Graph API :', error.response?.data || error.message);
     res.status(500).json({ error: 'Erreur lors de la récupération des publications Instagram.' });
   }
 };
@@ -77,16 +71,6 @@ exports.getInstagramPostComments = async (req, res) => {
 exports.getInstagramPostInsights = async (req, res) => {
   const { id } = req.params;
 
-  // Permet d'éviter d'appeler video_views si le post n'est pas une vidéo
-  if (req.query.skipViews === "true") {
-    return res.json({
-      impressions: 0,
-      reach: 0,
-      engagement: 0,
-      video_views: 0
-    });
-  }
-
   try {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${id}/insights`, {
       params: {
@@ -108,10 +92,20 @@ exports.getInstagramPostInsights = async (req, res) => {
 
     res.json(insights);
   } catch (error) {
+    const status = error.response?.status;
     const message = error.response?.data?.error?.message || error.message;
 
-    // Si la métrique video_views n’est pas disponible
-    if (message.includes("video_views is not available")) {
+    console.error("Erreur récupération des insights :", {
+      postId: id,
+      status,
+      message
+    });
+
+    if (
+      message.includes("video_views is not available") ||
+      message.includes("Unsupported get request") ||
+      status === 400 || status === 500
+    ) {
       return res.json({
         impressions: 0,
         reach: 0,
@@ -120,17 +114,9 @@ exports.getInstagramPostInsights = async (req, res) => {
       });
     }
 
-    console.error("Erreur récupération des insights :", {
-      status: error.response?.status,
-      message,
-      postId: id
-    });
-
     res.status(500).json({ error: "Impossible de récupérer les insights du post." });
   }
 };
-
-
 
 // 📸 Récupérer les stories du compte
 exports.getInstagramStories = async (req, res) => {
@@ -145,6 +131,8 @@ exports.getInstagramStories = async (req, res) => {
     res.json(response.data.data || []);
   } catch (error) {
     console.error("Erreur récupération des stories :", error.response?.data || error.message);
-    res.status(500).json({ error: "Impossible de récupérer les stories." });
+    res.status(504).json({ error: "Impossible de récupérer les stories (timeout ou indisponible)." });
   }
 };
+
+
