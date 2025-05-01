@@ -85,12 +85,37 @@ exports.getInstagramPostInsights = async (req, res) => {
       }
     });
 
-    res.json(response.data.data || []);
+    const data = response.data.data || [];
+
+    const insights = {};
+    data.forEach(metric => {
+      insights[metric.name] = metric.values?.[0]?.value || 0;
+    });
+
+    // Assure que video_views est au moins défini
+    if (!('video_views' in insights)) {
+      insights.video_views = 0;
+    }
+
+    res.json(insights);
   } catch (error) {
+    const message = error.response?.data?.error?.message || "";
+
+    // Cas fréquent : la métrique n'est pas dispo pour ce type de post
+    if (message.includes("video_views is not available")) {
+      return res.json({
+        impressions: 0,
+        reach: 0,
+        engagement: 0,
+        video_views: 0
+      });
+    }
+
     console.error("Erreur récupération des insights :", error.response?.data || error.message);
     res.status(500).json({ error: "Impossible de récupérer les insights du post." });
   }
 };
+
 
 // 📸 Récupérer les stories du compte
 exports.getInstagramStories = async (req, res) => {
