@@ -18,8 +18,24 @@ const Instagram = () => {
 
     try {
       const res = await axios.get(API_URL);
-      console.log("Publications reçues :", res.data);
-      setPosts(res.data);
+      const basePosts = res.data;
+
+      // Pour chaque post, on va chercher les vues via /insights
+      const postsWithViews = await Promise.all(
+        basePosts.map(async (post) => {
+          try {
+            const insightsUrl = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/instagram/posts/${post.id}/insights`;
+            const insightsRes = await axios.get(insightsUrl);
+            const views = insightsRes.data?.video_views || 0;
+            return { ...post, views };
+          } catch (err) {
+            console.warn(`Pas de vues pour le post ${post.id} :`, err.message);
+            return { ...post, views: 0 };
+          }
+        })
+      );
+
+      setPosts(postsWithViews);
     } catch (err) {
       console.error("Erreur récupération Instagram :", err);
       setError(`Erreur lors du chargement des publications. ${err.message}`);
@@ -27,10 +43,11 @@ const Instagram = () => {
       setLoading(false);
     }
   };
+
   const fetchInstagramStories = async () => {
     const API_URL = `${import.meta.env.VITE_PROXY_GATEWAY}/api/posts/instagram/stories`;
     console.log("📡 Requête stories envoyée à :", API_URL);
-  
+
     try {
       const res = await axios.get(API_URL);
       console.log("Stories reçues :", res.data);
@@ -39,7 +56,6 @@ const Instagram = () => {
       console.error("Erreur récupération des stories :", err);
     }
   };
-  
 
   useEffect(() => {
     fetchInstagramPosts();
@@ -51,43 +67,42 @@ const Instagram = () => {
       <BarreHaut />
       <div className="flex">
         <SidebarPublication />
-        
+
         <main className="flex-1 ml-64 mt-16 p-6 bg-gray-100 min-h-screen">
-        <button
-                onClick={() => navigate(-1)}
-                className="mb-4 flex items-center text-sm text-gray-600 hover:text-[#FF0035] transition"
-            >
-                <FaArrowLeft className="mr-2" /> Retour
-            </button>
+          <button
+            onClick={() => navigate(-1)}
+            className="mb-4 flex items-center text-sm text-gray-600 hover:text-[#FF0035] transition"
+          >
+            <FaArrowLeft className="mr-2" /> Retour
+          </button>
           <h1 className="text-4xl font-bold text-center text-[#FF0035] mb-10">
             🎯 Publications Instagram
           </h1>
-         
-  <div className="mb-10">
-    <h2 className="text-2xl font-semibold mb-4 text-center">📸 Stories Instagram</h2>
-    <div className="flex gap-4 overflow-x-auto px-4 py-2 bg-white rounded-xl shadow">
-      {stories.map((story) => (
-        <div key={story.id} className="min-w-[150px]">
-          {story.media_type === "VIDEO" ? (
-            <video controls className="w-full h-40 object-cover rounded-xl">
-              <source src={story.media_url} type="video/mp4" />
-              Votre navigateur ne supporte pas les vidéos.
-            </video>
-          ) : (
-            <img
-              src={story.media_url}
-              alt="Story Instagram"
-              className="w-full h-40 object-cover rounded-xl"
-            />
-          )}
-          <p className="text-xs text-center text-gray-600 mt-1">
-            {new Date(story.timestamp).toLocaleDateString()}
-          </p>
-        </div>
-      ))}
-    </div>
-  </div>
 
+          <div className="mb-10">
+            <h2 className="text-2xl font-semibold mb-4 text-center">📸 Stories Instagram</h2>
+            <div className="flex gap-4 overflow-x-auto px-4 py-2 bg-white rounded-xl shadow">
+              {stories.map((story) => (
+                <div key={story.id} className="min-w-[150px]">
+                  {story.media_type === "VIDEO" ? (
+                    <video controls className="w-full h-40 object-cover rounded-xl">
+                      <source src={story.media_url} type="video/mp4" />
+                      Votre navigateur ne supporte pas les vidéos.
+                    </video>
+                  ) : (
+                    <img
+                      src={story.media_url}
+                      alt="Story Instagram"
+                      className="w-full h-40 object-cover rounded-xl"
+                    />
+                  )}
+                  <p className="text-xs text-center text-gray-600 mt-1">
+                    {new Date(story.timestamp).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {loading && <p className="text-gray-500 text-center">Chargement...</p>}
           {error && <p className="text-red-500 text-center">{error}</p>}
@@ -95,20 +110,19 @@ const Instagram = () => {
           {!loading && !error && posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post) => (
-                  <div
-                      key={post.id}
-                      onClick={() =>
-                          navigate("/analyses/statistiquesparpublication", {
-                            state: {
-                              postId: post.id,
-                              reseau: "instagram",
-                              postData: post,
-                            },
-                          })
-                      }
-                      className="cursor-pointer bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition duration-300 hover:scale-[1.02] hover:shadow-2xl transition-transform
-"
-                  >
+                <div
+                  key={post.id}
+                  onClick={() =>
+                    navigate("/analyses/statistiquesparpublication", {
+                      state: {
+                        postId: post.id,
+                        reseau: "instagram",
+                        postData: post,
+                      },
+                    })
+                  }
+                  className="cursor-pointer bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition duration-300 hover:scale-[1.02] hover:shadow-2xl transition-transform"
+                >
                   {["IMAGE", "CAROUSEL_ALBUM"].includes(post.media_type) ? (
                     <img
                       src={post.media_url || post.thumbnail_url}
@@ -149,6 +163,11 @@ const Instagram = () => {
                         {typeof post.comments_count !== "undefined" && (
                           <span className="flex items-center gap-1">
                             <FaCommentDots className="text-blue-500" /> {post.comments_count}
+                          </span>
+                        )}
+                        {post.views > 0 && (
+                          <span className="flex items-center gap-1">
+                            👁 {post.views}
                           </span>
                         )}
                       </div>
