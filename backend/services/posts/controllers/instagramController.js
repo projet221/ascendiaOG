@@ -77,6 +77,16 @@ exports.getInstagramPostComments = async (req, res) => {
 exports.getInstagramPostInsights = async (req, res) => {
   const { id } = req.params;
 
+  // Permet d'éviter d'appeler video_views si le post n'est pas une vidéo
+  if (req.query.skipViews === "true") {
+    return res.json({
+      impressions: 0,
+      reach: 0,
+      engagement: 0,
+      video_views: 0
+    });
+  }
+
   try {
     const response = await axios.get(`https://graph.facebook.com/v19.0/${id}/insights`, {
       params: {
@@ -92,16 +102,15 @@ exports.getInstagramPostInsights = async (req, res) => {
       insights[metric.name] = metric.values?.[0]?.value || 0;
     });
 
-    // Assure que video_views est au moins défini
     if (!('video_views' in insights)) {
       insights.video_views = 0;
     }
 
     res.json(insights);
   } catch (error) {
-    const message = error.response?.data?.error?.message || "";
+    const message = error.response?.data?.error?.message || error.message;
 
-    // Cas fréquent : la métrique n'est pas dispo pour ce type de post
+    // Si la métrique video_views n’est pas disponible
     if (message.includes("video_views is not available")) {
       return res.json({
         impressions: 0,
@@ -111,10 +120,16 @@ exports.getInstagramPostInsights = async (req, res) => {
       });
     }
 
-    console.error("Erreur récupération des insights :", error.response?.data || error.message);
+    console.error("Erreur récupération des insights :", {
+      status: error.response?.status,
+      message,
+      postId: id
+    });
+
     res.status(500).json({ error: "Impossible de récupérer les insights du post." });
   }
 };
+
 
 
 // 📸 Récupérer les stories du compte
