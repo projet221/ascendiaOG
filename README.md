@@ -1,5 +1,5 @@
 
-# AscendiaOG
+# Ascendia
 
 Ce projet est une application composée de deux grandes parties : un **frontend** développé en React.js et un **backend** utilisant des microservices. L'objectif de ce projet est d'offrir un outil moderne pour la gestion automatisée des publications sur les réseaux sociaux.
 
