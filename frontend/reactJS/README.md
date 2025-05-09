@@ -1,8 +1,13 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Dossier ReactJS - Frontend
 
-Currently, two official plugins are available:
+Ce dossier contient l'application frontend développée avec React.js. L'application est configurée avec Vite pour le développement rapide et Tailwind CSS pour le style.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Fichiers et répertoires importants
+
+- **public/** : Contient les fichiers statiques accessibles publiquement.
+- **src/** : Contient le code source de l'application React.
+- **vite.config.js** : Fichier de configuration pour Vite.
+- **tailwind.config.js** : Configuration de Tailwind CSS.
+- **README.md** : Ce fichier.
+    
