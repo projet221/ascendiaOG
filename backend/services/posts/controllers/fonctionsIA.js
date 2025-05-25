@@ -12,7 +12,7 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "deepseek/deepseek-chat-v3-0324:free",
+                model: "google/gemma-3n-e4b-it:free",
                 messages: [
                     { role: "system", content: "Tu es un traducteur expert en communication sociale." },
                     { role: "user", content: prompt }
@@ -43,7 +43,7 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "deepseek/deepseek-chat-v3-0324:free",
+                model: "google/gemma-3n-e4b-it:free",
                 messages: [
                     { role: "system", content: "Tu es un assistant spécialisé dans la rédaction pour les réseaux sociaux." },
                     { role: "user", content: prompt }
@@ -157,7 +157,7 @@ const getSentiment = async (req, res) => {
         // Analyse de sentiment via OpenRouter
         console.log("🧠 Envoi des commentaires à l'IA pour analyse de sentiment...");
         const aiResponse = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',
+            model: 'google/gemma-3n-e4b-it:free',
             messages: [
                 {
                     role: 'system',
