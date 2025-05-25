@@ -66,7 +66,7 @@ Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de ti
             const contenu = await axios.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 {
-                    model: "deepseek/deepseek-chat-v3-0324:free",
+                    model: "google/gemma-3n-e4b-it:free",
                     messages: [
                         { role: "system", content: "Tu es un expert en réseaux sociaux." },
                         { role: "user", content: prompt }
