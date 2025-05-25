@@ -68,7 +68,6 @@ Ta réponse doit être en texte brut, sans mise en forme (pas de gras, pas de ti
                 {
                     model: "google/gemma-3n-e4b-it:free",
                     messages: [
-                        { role: "system", content: "Tu es un expert en réseaux sociaux." },
                         { role: "user", content: prompt }
                     ]
                 },
