@@ -14,7 +14,6 @@ Traduis-le en ${langue}, dans un style naturel, fluide et adapté aux réseaux s
             {
                 model: "google/gemma-3n-e4b-it:free",
                 messages: [
-                    { role: "system", content: "Tu es un traducteur expert en communication sociale." },
                     { role: "user", content: prompt }
                 ]
             },
@@ -45,7 +44,6 @@ Ne change pas l’intention du message, garde les emojis et ne donne que le text
             {
                 model: "google/gemma-3n-e4b-it:free",
                 messages: [
-                    { role: "system", content: "Tu es un assistant spécialisé dans la rédaction pour les réseaux sociaux." },
                     { role: "user", content: prompt }
                 ]
             },
@@ -160,12 +158,8 @@ const getSentiment = async (req, res) => {
             model: 'google/gemma-3n-e4b-it:free',
             messages: [
                 {
-                    role: 'system',
-                    content: "Tu es une IA d'analyse de sentiments. On va t'envoyer une liste de commentaires. Retourne uniquement un nombre de 1 à 10 indiquant le niveau général de satisfaction des utilisateurs."
-                },
-                {
                     role: 'user',
-                    content: JSON.stringify(allComments)
+                    content: "Tu es une IA d'analyse de sentiments. On va t'envoyer une liste de commentaires. Retourne uniquement un nombre de 1 à 10 indiquant le niveau général de satisfaction des utilisateurs."+JSON.stringify(allComments)
                 }
             ]
         }, {
